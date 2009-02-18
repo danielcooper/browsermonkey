@@ -1,5 +1,4 @@
 
-
 = Design Team =
 
 Low level - Aiming for week 10 first draft
@@ -13,7 +12,7 @@ Low level - Aiming for week 10 first draft
 	* Creation of Classes for every little thing - 1 day
 		
 ==Controller==
-	* Glue - 2 days
+	* 2 days contingency for inevitable model/view translation problems.
 ==View==
 	* Renderer - 3 week (this needs to be perhaps shortened)
 	* UI - 1 days
