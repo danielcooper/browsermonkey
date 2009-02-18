@@ -9,6 +9,8 @@ Low level - Aiming for week 10 first draft
 == Model ==
 	* Parser - Creates objects into tree - 2 day
 	* Tag classes, etc - 1 day
+        * Lexer - 0.5 days
+
 		
 ==Controller==
 	* 2 days contingency for inevitable model/view translation problems.
