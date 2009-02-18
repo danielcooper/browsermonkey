@@ -7,21 +7,21 @@ Low level - Aiming for week 10 first draft
 = Programming team =
 
 == Model ==
-	* Parser - Creates objects into tree - 2 day
-	* Tag classes, etc - 1 day
-        * Lexer - 0.5 days
+ * Parser - Creates objects into tree - 2 day
+ * Tag classes, etc - 1 day
+ * Lexer - 0.5 days
 
 		
 ==Controller==
-	* 2 days contingency for inevitable model/view translation problems.
+ * 2 days contingency for inevitable model/view translation problems.
 ==View==
-	* Renderer - 3 week (this needs to be perhaps shortened)
-	* UI - 1 days
+ * Renderer - 3 week (this needs to be perhaps shortened)
+ * UI - 1 days
 ==Extras==
-	* Fonts - 1 hour
-	* links - 1 hours + glue
-	* tables - tba
-	* searching - 2 days
-	* zoom - 1 hours
-	* logging - 1 hour
-	* internets - 1 hour
+ * Fonts - 1 hour
+ * links - 1 hours + glue
+ * tables - tba
+ * searching - 2 days
+ * zoom - 1 hours
+ * logging - 1 hour
+* internets - 1 hour
