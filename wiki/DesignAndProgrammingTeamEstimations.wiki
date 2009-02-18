@@ -1,4 +1,3 @@
-
 = Design Team =
 
 Low level - Aiming for week 10 first draft
@@ -9,7 +8,7 @@ Low level - Aiming for week 10 first draft
 
 == Model ==
 	* Parser - Creates objects into tree - 2 day
-	* Creation of Classes for every little thing - 1 day
+	* Tag classes, etc - 1 day
 		
 ==Controller==
 	* 2 days contingency for inevitable model/view translation problems.
