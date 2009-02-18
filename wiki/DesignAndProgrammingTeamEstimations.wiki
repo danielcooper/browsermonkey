@@ -1,0 +1,27 @@
+
+
+= Design Team =
+
+Low level - Aiming for week 10 first draft
+	* big gaps in between working, waterfall - nice and wet.
+	* do you need individual task breakdown?
+
+= Programming team =
+
+== Model ==
+	* Parser - Creates objects into tree - 2 day
+	* Creation of Classes for every little thing - 1 day
+		
+==Controller==
+	* Glue - 2 days
+==View==
+	* Renderer - 3 week (this needs to be perhaps shortened)
+	* UI - 1 days
+==Extras==
+	* Fonts - 1 hour
+	* links - 1 hours + glue
+	* tables - tba
+	* searching - 2 days
+	* zoom - 1 hours
+	* logging - 1 hour
+	* internets - 1 hour
