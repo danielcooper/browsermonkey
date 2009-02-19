@@ -1,9 +1,28 @@
 = Design Team =
 
-Low level - Aiming for week 10 first draft
- * Daniel - Class Diagrams, week 10 (draft)
- * Merrigan - Object Diagrams, Week 1, summer (draft)
- * Adam - Report Compiling.(Week 2)
+==High Level ==
+We've got a meeting with the analysis team on Tuesday - as per the assignment, they'll be producing the docs for that - something which I don't think will take long. We should be able to hash out the High Level design in that session.
+ * High Level Class Diagram - 3 hours
+
+==Low Level ==
+ ===Model===
+  * DOM - 4 hours
+  * Tag classes - 3 hours
+  * Tokenizer - 2 Hours
+  * Scanner - 1 Hour
+  * File Opening - 30 mins
+
+ ===Controllers===
+  * Model/view translation - 2 hours
+  * Search - 3 hours
+
+ ===View===
+  * Line Wrapping - 2 hours
+  * SWING GUI - 1 hour
+  * Rendering Surface - 7 hours
+
+== Diagramming ==
+ * 4 Hours.  
 
 = Programming team =
 
