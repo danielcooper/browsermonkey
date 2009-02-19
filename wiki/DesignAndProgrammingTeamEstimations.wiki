@@ -25,7 +25,10 @@ We've got a meeting with the analysis team on Tuesday - as per the assignment, t
   * Tables - 2 hours.
 
 == Diagramming ==
- * 4 Hours.  
+ * Class Diagrams - 3 hours
+ * Object Diagrams - 2 hours
+ * State Chart - 2 hours
+ * UI sketches - 1 hour
 
 = Programming team =
 
