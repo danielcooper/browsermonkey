@@ -20,6 +20,9 @@ We've got a meeting with the analysis team on Tuesday - as per the assignment, t
   * Line Wrapping - 2 hours
   * SWING GUI - 1 hour
   * Rendering Surface - 7 hours
+  * Search - 2 hours
+  * Fonts & zoom - 2 hours
+  * Tables - 2 hours.
 
 == Diagramming ==
  * 4 Hours.  
