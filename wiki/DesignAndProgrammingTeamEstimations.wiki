@@ -1,9 +1,9 @@
 = Design Team =
 
 Low level - Aiming for week 10 first draft
-	Daniel - Class Diagrams, week 10 (draft)
-        Merrigan - Object Diagrams, Week 1, summer (draft)
-        Adam - Report Compiling.(Week 2)
+ *Daniel - Class Diagrams, week 10 (draft)
+ *Merrigan - Object Diagrams, Week 1, summer (draft)
+ *Adam - Report Compiling.(Week 2)
 
 = Programming team =
 
