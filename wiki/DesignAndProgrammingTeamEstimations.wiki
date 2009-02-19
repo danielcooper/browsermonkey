@@ -1,7 +1,7 @@
 = Design Team =
 
 ==High Level ==
-We've got a meeting with the analysis team on Tuesday - as per the assignment, they'll be producing the docs for that - something which I don't think will take long. We should be able to hash out the High Level design in that session.
+We've got a meeting with the analysis team on Tuesday to do the high level design- as per the assignment, they'll be producing the docs for that - something which I don't think will take long. We should be able to hash out the High Level design in that session.
  * High Level Class Diagram - 3 hours
 
 ==Low Level ==
