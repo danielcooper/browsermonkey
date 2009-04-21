@@ -1,0 +1,2 @@
+31/12/2008 23:58 C:\Manuals\thresher.html Unexpected < symbol on line 78
+14/01/2009 11:04 www.somewhere.com/index.html Expected <head> on line 1
