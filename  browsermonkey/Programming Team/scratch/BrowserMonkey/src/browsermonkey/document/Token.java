@@ -1,4 +1,4 @@
-package browsermonkey.parse;
+package browsermonkey.document;
 
 /**
  *

@@ -1,7 +1,5 @@
 package browsermonkey.document;
 
-import browsermonkey.document.tree.*;
-
 /**
  *
  * @author Paul Calcraft
@@ -9,8 +7,12 @@ import browsermonkey.document.tree.*;
 public class Document {
     DocumentNode nodeTree;
 
-    public Document(String text) {
-        nodeTree = new DocumentNodeBase(new TextDocumentNode(text), new TextDocumentNode(text));
+    /**
+     * Constructs a new <code>Document</code> by parsing a source string.
+     * @param source the source to parse
+     */
+    public Document(String source) {
+        nodeTree = new DocumentNodeBase(new TextDocumentNode(source), new TextDocumentNode(source));
     }
 
     public DocumentNode getNodeTree() {

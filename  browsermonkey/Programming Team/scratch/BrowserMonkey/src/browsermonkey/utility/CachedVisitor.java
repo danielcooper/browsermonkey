@@ -4,7 +4,8 @@ import java.util.*;
 import java.lang.reflect.*;
 
 /**
- *
+ * Provides an optimised version of the reflective visitor pattern outlined in
+ * {@link https://studydirect.sussex.ac.uk/mod/resource/view.php?id=116492}.
  * @author Paul Calcraft
  */
 public class CachedVisitor {

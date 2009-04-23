@@ -1,4 +1,4 @@
-package browsermonkey.render.components;
+package browsermonkey.render;
 
 import java.awt.*;
 import java.awt.font.*;
@@ -6,13 +6,17 @@ import javax.swing.*;
 import java.text.*;
 
 /**
- *
+ * Renders unformatted text with word wrap.
  * @author Paul Calcraft
  */
 public class TextRenderComponent extends JComponent {
     private String text;
     private boolean widthChanged = true;
     
+    /**
+     * Constructs a <code>TextRenderComponent</code> with the specified text.
+     * @param text
+     */
     public TextRenderComponent(String text) {
         this.text = text;
     }
@@ -32,6 +36,9 @@ public class TextRenderComponent extends JComponent {
             coord.y += layout.getDescent() + layout.getLeading();
         }
         if (widthChanged) {
+            // If the width has changed since the last render, the height needs
+            // to be updated to fit the wrapped text. We set 0 as the preferred
+            // width so it can defer width control to its parent/layout manager.
             setPreferredSize(new Dimension(0, coord.y));
             widthChanged = false;
             revalidate();
@@ -40,6 +47,8 @@ public class TextRenderComponent extends JComponent {
 
     @Override
     public void setBounds(int x, int y, int width, int height) {
+        // If the bounding width changes, we need to set widthChanged so the
+        // paint method knows to reset the height when it word wraps.
         if (this.getBounds().width != width) {
             widthChanged = true;
         }

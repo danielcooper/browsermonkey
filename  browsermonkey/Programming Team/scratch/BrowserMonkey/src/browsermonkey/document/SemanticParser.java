@@ -1,6 +1,4 @@
-package browsermonkey.parse;
-
-import browsermonkey.document.tree.*;
+package browsermonkey.document;
 
 /**
  *
