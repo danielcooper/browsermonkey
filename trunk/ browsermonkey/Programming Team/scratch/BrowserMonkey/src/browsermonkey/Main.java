@@ -1,6 +1,6 @@
 package browsermonkey;
 
-import browsermonkey.gui.GUI;
+import browsermonkey.GUI;
 
 /**
  *

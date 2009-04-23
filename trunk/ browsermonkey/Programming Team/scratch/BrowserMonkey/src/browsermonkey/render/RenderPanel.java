@@ -1,11 +1,12 @@
 package browsermonkey.render;
 
-import browsermonkey.document.tree.*;
+import browsermonkey.document.DocumentNode;
 import java.awt.*;
 import javax.swing.*;
 
 /**
- *
+ * A GUI component for laying out the JComponents to render a
+ * <code>DocumentNode</code> tree.
  * @author Paul Calcraft
  */
 public class RenderPanel extends JPanel {
@@ -13,6 +14,9 @@ public class RenderPanel extends JPanel {
     private GroupLayout.ParallelGroup horizontalGroup;
     private GroupLayout.SequentialGroup verticalGroup;
 
+    /**
+     * Constructs a <code>RenderPanel</code> by initialising the layout groups.
+     */
     public RenderPanel() {
         this.setBackground(Color.white);
 
@@ -34,6 +38,13 @@ public class RenderPanel extends JPanel {
         layout.setVerticalGroup(verticalIndentLayout);
     }
 
+    /**
+     * Sets the <code>DocumentNode</code> tree for this <code>RenderPanel</code>
+     * to render.
+     * Uses the {@link}RenderVisitor to generate renderable components for the
+     * tree and then adds these components to the layout managers.
+     * @param root
+     */
     public void setDocumentTree(DocumentNode root) {
         removeAll();
         RenderVisitor renderVisitor = new RenderVisitor();

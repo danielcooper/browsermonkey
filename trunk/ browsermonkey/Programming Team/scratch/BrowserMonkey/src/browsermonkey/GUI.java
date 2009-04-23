@@ -4,7 +4,7 @@
  * Created on 16-Apr-2009, 17:27:19
  */
 
-package browsermonkey.gui;
+package browsermonkey;
 
 import browsermonkey.document.Document;
 import java.io.*;
