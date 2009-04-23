@@ -1,7 +1,5 @@
 package browsermonkey;
 
-import browsermonkey.GUI;
-
 /**
  *
  * @author Paul Calcraft
