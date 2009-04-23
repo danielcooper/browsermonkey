@@ -1,6 +1,6 @@
 package browsermonkey.render;
 
-import browsermonkey.document.DocumentNode;
+import browsermonkey.document.*;
 import java.awt.*;
 import javax.swing.*;
 
@@ -9,15 +9,16 @@ import javax.swing.*;
  * <code>DocumentNode</code> tree.
  * @author Paul Calcraft
  */
-public class RenderPanel extends JPanel {
+public class DocumentPanel extends JPanel {
+    private Document document;
     private GroupLayout layout;
     private GroupLayout.ParallelGroup horizontalGroup;
     private GroupLayout.SequentialGroup verticalGroup;
 
     /**
-     * Constructs a <code>RenderPanel</code> by initialising the layout groups.
+     * Constructs a <code>DocumentPanel</code> by initialising the layout groups.
      */
-    public RenderPanel() {
+    public DocumentPanel() {
         this.setBackground(Color.white);
 
         layout = new GroupLayout(this);
@@ -39,18 +40,26 @@ public class RenderPanel extends JPanel {
     }
 
     /**
-     * Sets the <code>DocumentNode</code> tree for this <code>RenderPanel</code>
-     * to render.
-     * Uses the {@link}RenderVisitor to generate renderable components for the
-     * tree and then adds these components to the layout managers.
-     * @param root
+     * Sets the <code>Document</code> for this <code>DocumentPanel</code> to
+     * render.
+     * @param document
      */
-    public void setDocumentTree(DocumentNode root) {
+    public void setDocument(Document document) {
+        this.document = document;
+        load();
+    }
+
+    /**
+     * Uses the {@link}RenderVisitor to generate the render nodes
+     * and then adds these components to the layout managers.
+     */
+    public void load() {
         removeAll();
+        java.util.List<DocumentNode> rootNodes = document.getNodeTree().getChildren();
         RenderVisitor renderVisitor = new RenderVisitor();
-        for (DocumentNode node : root.getChildren())
+        for (DocumentNode node : rootNodes)
             renderVisitor.visit(node);
-        for (JComponent component : renderVisitor.getComponents()) {
+        for (JComponent component : renderVisitor.getNodes()) {
             verticalGroup.addComponent(component, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE);
             horizontalGroup.addComponent(component, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE);
         }

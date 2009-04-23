@@ -82,7 +82,7 @@
         </Component>
         <Component class="javax.swing.JTextField" name="addressField">
           <Properties>
-            <Property name="text" type="java.lang.String" value="C:\example.txt"/>
+            <Property name="text" type="java.lang.String" value="welcome.html"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="goButton">
@@ -122,7 +122,7 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Component class="browsermonkey.render.RenderPanel" name="renderPanel">
+        <Component class="browsermonkey.render.DocumentPanel" name="renderPanel">
         </Component>
       </SubComponents>
     </Container>
