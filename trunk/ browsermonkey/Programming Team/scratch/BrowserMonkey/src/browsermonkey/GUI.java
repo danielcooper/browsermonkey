@@ -23,8 +23,7 @@ public class GUI extends javax.swing.JFrame {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {}
         initComponents();
-        Document d = new Document("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.");
-        renderPanel.setDocumentTree(d.getNodeTree());
+        loadFile("welcome.html");
     }
 
     /** This method is called from within the constructor to
@@ -43,14 +42,14 @@ public class GUI extends javax.swing.JFrame {
         browseButton = new javax.swing.JButton();
         statusBar = new javax.swing.JLabel();
         documentScrollPanel = new javax.swing.JScrollPane();
-        renderPanel = new browsermonkey.render.RenderPanel();
+        renderPanel = new browsermonkey.render.DocumentPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("BrowserMonkey");
 
         addressLabel.setText("Address:");
 
-        addressField.setText("C:\\example.txt");
+        addressField.setText("welcome.html");
 
         goButton.setText("Go");
         goButton.addActionListener(new java.awt.event.ActionListener() {
@@ -127,36 +126,26 @@ public class GUI extends javax.swing.JFrame {
     private void browseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browseButtonActionPerformed
         final JFileChooser fc = new JFileChooser();
         fc.setSelectedFile(new File(addressField.getText()));
-        fc.showOpenDialog(this);
+        if (fc.showOpenDialog(this) != JFileChooser.APPROVE_OPTION)
+            return;
         String path = fc.getSelectedFile().getAbsolutePath();
         addressField.setText(path);
         loadFile(path);
     }//GEN-LAST:event_browseButtonActionPerformed
 
     private void loadFile(String path){
-        FileReader open = null;
+        Document doc = new Document(path);
+        
         try {
-            open = new FileReader(path);
-            BufferedReader br = new BufferedReader(open);
-            String line;
-            StringBuilder result = new StringBuilder();
-            while ((line = br.readLine()) != null) {
-                result.append(line);
-            }
-            renderPanel.setDocumentTree(new Document(result.toString()).getNodeTree());
+            doc.load();
+            renderPanel.setDocument(doc);
         } catch (FileNotFoundException ex) {
             BrowserMonkeyLogger.warning("File not found: "+path);
             loadFile("404.html");
         } catch (IOException ex) {
-            // Report read error
-        }
-        finally {
-            try {
-                if (open != null)
-                    open.close();
-            } catch (IOException ex) {
-                // Report close error / ignore
-            }
+            BrowserMonkeyLogger.warning("File read error: "+path);
+            // TODO: Make alternative error page for file read errors.
+            loadFile("404.html");
         }
     }
 
@@ -166,7 +155,7 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JButton browseButton;
     private javax.swing.JScrollPane documentScrollPanel;
     private javax.swing.JButton goButton;
-    private browsermonkey.render.RenderPanel renderPanel;
+    private browsermonkey.render.DocumentPanel renderPanel;
     private javax.swing.JLabel statusBar;
     private javax.swing.JPanel top;
     // End of variables declaration//GEN-END:variables

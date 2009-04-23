@@ -2,14 +2,13 @@ package browsermonkey.render;
 
 import java.awt.*;
 import java.awt.font.*;
-import javax.swing.*;
 import java.text.*;
 
 /**
  * Renders unformatted text with word wrap.
  * @author Paul Calcraft
  */
-public class TextRenderComponent extends JComponent {
+public class TextRenderComponent extends RenderNode {
     private String text;
     private boolean widthChanged = true;
     

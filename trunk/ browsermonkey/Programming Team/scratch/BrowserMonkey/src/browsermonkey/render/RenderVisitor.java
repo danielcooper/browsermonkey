@@ -1,19 +1,18 @@
 package browsermonkey.render;
 
 import java.util.*;
-import javax.swing.*;
 import browsermonkey.document.*;
 
 /**
- * Uses the visitor pattern to generate <code>JComponent</code>s for a
+ * Uses the visitor pattern to generate <code>RenderNode</code>s for a
  * <code>DocumentNode</code> tree.
  * @author Paul Calcraft
  */
 public class RenderVisitor extends browsermonkey.utility.CachedVisitor {
-    private List<JComponent> components = new ArrayList<JComponent>();
+    private List<RenderNode> nodes = new ArrayList<RenderNode>();
 
-    public List<JComponent> getComponents() {
-        return components;
+    public List<RenderNode> getNodes() {
+        return nodes;
     }
 
     /**
@@ -22,6 +21,6 @@ public class RenderVisitor extends browsermonkey.utility.CachedVisitor {
      * @param textNode
      */
     public void visitSub(TextDocumentNode textNode) {
-        components.add(new TextRenderComponent(textNode.getText()));
+        nodes.add(new TextRenderComponent(textNode.getText()));
     }
 }
