@@ -1,7 +1,10 @@
 class MonkeyTokenizer
 
+  #attr_reader is ruby short hand for a getter method
+  # so in java we'd write getPage() and getToken
   attr_reader :page, :tokens
 
+  #in java this would be the public MonkeyTokenizer(String page){...}
   def initialize(page)
     #puts page
     @current_pos = 0
@@ -46,7 +49,7 @@ end
 class MonkeyToken
 
 
-  #attr_reader is ruby short hand for a getter method
+  
   attr_reader :full_tag, :tag, :attributes, :type
   
   def initialize(full_tag, type)
