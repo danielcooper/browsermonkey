@@ -390,20 +390,7 @@
 
 </UML:Element.presentation></UML:Class>
 
-<UML:Aggregation xmi.id="DCE.5D3F519C-F9BA-2F0B-91FC-D9D5E58C674E" owner="DCE.53CC8EB8-43B5-EED0-9D21-203D3EF0A96E" aggregateEnd="DCE.8B8EB6EB-EC89-2EBD-59D7-4D6CBF22F184" partEnd="DCE.044B8BBB-7149-7468-6EA8-1F412BF67C39"><UML:Association.end>
-<UML:AssociationEnd xmi.id="DCE.8B8EB6EB-EC89-2EBD-59D7-4D6CBF22F184" visibility="private" type="DCE.60D4B25F-0C25-0EDE-C7EE-0F4C21468E6B" association="DCE.5D3F519C-F9BA-2F0B-91FC-D9D5E58C674E"><UML:TypedElement.multiplicity>
-<UML:Multiplicity xmi.id="DCE.B8E2D7F4-98B1-7AE0-1661-AB49F38FCB5C"/></UML:TypedElement.multiplicity></UML:AssociationEnd>
-<UML:AssociationEnd xmi.id="DCE.044B8BBB-7149-7468-6EA8-1F412BF67C39" visibility="private" type="DCE.62056984-5F15-F810-4C35-2D5099D66932" association="DCE.5D3F519C-F9BA-2F0B-91FC-D9D5E58C674E" name="rootNode"><UML:TypedElement.multiplicity>
-<UML:Multiplicity xmi.id="DCE.5BD6E882-EC06-043A-E7C0-C11F5763A898"/></UML:TypedElement.multiplicity><UML:Attribute.default>
-<UML:Expression xmi.id="DCE.FB50D5B6-E1EF-59C9-5BD3-B3F1A498C2C8"/></UML:Attribute.default></UML:AssociationEnd></UML:Association.end><UML:Element.presentation>
 
-
-
-
-
-
-
-</UML:Element.presentation></UML:Aggregation>
 <UML:DataType xmi.id="DCE.BE262B9A-9075-F532-C2C4-7C3AAA36F33C" name="LayoutManager" owner="DCE.53CC8EB8-43B5-EED0-9D21-203D3EF0A96E"/>
 
 
