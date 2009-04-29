@@ -124,7 +124,7 @@ end
 
 #little test and useage demo, feel free to butcher.
 #we need to decide what to do about really malformed html
-page = "<b>test</b><strong class='fakeBold'>bold</strong>"
+page = "<b>test</b><strong class='fakeBold' tes='foo'>bold</strong>"
 
 
 tokenizer = MonkeyTokenizer.new(page)
