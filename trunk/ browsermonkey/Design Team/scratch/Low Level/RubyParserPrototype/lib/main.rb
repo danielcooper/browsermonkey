@@ -137,7 +137,9 @@ class MonkeyParser
 
 
     #define all the tags and their general attributes. In the actual implementation
-    #it might be useful to derive this from a properties file
+    #this will be populated by a properties file.
+
+    #these tags are to demo, and are by no means an exausive list.
 
     @single_nestable_tags = ['html','head','body'] #tags that can only be used once
     @table_tags = ['table','tr','td'] #table tags need a special case
@@ -153,12 +155,17 @@ class MonkeyParser
   def parse
 
     @tokens.each_with_index do |token,i|
+
+      #add html if needed
       if i == 0 && token.tag != "html"
         @document_node = MonkeyDocumentNode.new("html", :tag)
         @open_elements << @document_node
       end
+
       if token.type == :tag
         if token.is_start_tag?
+
+          #if it's a table tag or if a row has been opened but not a cell - add the approprate elements
           if @table_tags.member? token.tag
             do_table_element token
           elsif @open_elements.length >= 1
@@ -167,6 +174,7 @@ class MonkeyParser
             end
           end
 
+          #perform listed tag functions
           if @listed_tags.member? token.tag
             do_listed_element token
           end
@@ -176,6 +184,8 @@ class MonkeyParser
                @open_elements.last.text = @open_elements.last.text + token.full_tag
            end
 
+          #For singuarly nestetable tags, check if the last tag is the same. If it is
+          #fix the nesting, if not - carry on.
           if @singuarly_nestable_tags.member? token.tag
             if @open_elements.length > 1 && @open_elements.last == token.tag
               do_end_token token
@@ -183,17 +193,22 @@ class MonkeyParser
             end
           end
 
+          #basic nestable tag
           if @nestable_tags.member? token.tag
             do_start_token token
           end
 
+          #add the leaf tag
           if @leaf_tags.member? token.tag
             do_leaf_element token
           end
+        
         else
+          #close and remove the token
           do_end_token token
         end
       else
+        #add a text element - but not without checking the state of the tables.
         if @open_elements.length >= 1
             if @open_elements.last.tag == "tr" || @open_elements.last.tag == "table"
               do_table_element MonkeyToken.new '<td>', :tag
