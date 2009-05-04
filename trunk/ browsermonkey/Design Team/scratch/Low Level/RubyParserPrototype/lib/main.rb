@@ -122,30 +122,245 @@ class MonkeyToken
 end
 
 
-#little test and useage demo, feel free to butcher.
-#we need to decide what to do about really malformed html
-page = "<b>test</b><strong class='fakeBold' tes='foo'>bold</strong>"
 
 
-tokenizer = MonkeyTokenizer.new(page)
+
+class MonkeyParser
+
+  attr_reader :original_page, :document_node
 
 
-tokenizer.tokens.each do |n|
-  if n.type == :tag
-    string = "start_tag: " if n.is_start_tag?
-    string = "end_tag: " if n.is_end_tag?
-    string << n.tag
+  def initialize(page)
+    @original_page = page
+    @tokenizer = MonkeyTokenizer.new page
+    @tokens = @tokenizer.tokens
 
-    if n.has_attributes?
-      n.attributes.each_pair {|key, value| string << "  with attrubute: #{key} is #{value}" }
+
+    #define all the tags and their general attributes. In the actual implementation
+    #it might be useful to derive this from a properties file
+
+    @single_nestable_tags = ['html','head','body'] #tags that can only be used once
+    @table_tokens = ['table','tr','td']
+    @nestable_tags = ['b','i','strong','em']
+    @singuarly_nestable_tags = ['p']
+    @non_nestable_tags =[]
+    @leaf_element =['br']
+    @listed_element =['li','ol','ul']
+    @open_elements = Array.new
+
+
+  end
+
+  def parse
+
+    @tokens.each_with_index do |token,i|
+      if i == 0 && token.tag != "html"
+        @document_node = MonkeyDocumentNode.new("html", :tag)
+        @open_elements << @document_node
+      end
+      if token.type == :tag
+        if token.is_start_tag?
+          if @table_tokens.member? token.tag
+            do_table_element token
+          elsif @open_elements.length >= 1
+            if @open_elements.last.tag == "tr" || @open_elements.last.tag == "table"
+              do_table_element MonkeyToken.new '<td>', :tag
+            end
+          end
+
+          if @listed_element.member? token.tag
+            do_listed_element token
+          end
+
+          if @singuarly_nestable_tags.member? token.tag
+            if @open_elements.length > 1 && @open_elements.last == token.tag
+              do_end_token token
+              do_start_token token
+            end
+          end
+
+          if @nestable_tags.member? token.tag
+            do_start_token token
+          end
+
+          if @leaf_element.member? token.tag
+            do_leaf_element token
+          end
+        else
+          do_end_token token
+        end
+      else
+        if @open_elements.length >= 1
+            if @open_elements.last.tag == "tr" || @open_elements.last.tag == "table"
+              do_table_element MonkeyToken.new '<td>', :tag
+            end
+          end
+        do_text token
+      end
+
+    end
+  end
+
+
+    def do_listed_element token
+      if token.tag == 'li'
+        if @open_elements.length >= 1
+          if @open_elements[-1].tag == "ol" || @open_elements[-1].tag == "ul"
+            do_start_token token
+          elsif @open_elements[-1].tag == "li"
+            do_end_token @open_elements[-1]
+            do_start_token token
+          else
+            do_listed_element MonkeyToken.new '<ul>', :tag
+            do_start_token token
+          end
+        else
+          do_table_token MonkeyToken.new '<ul>', :tag
+          do_start_token token
+        end
+
+      elsif token.tag == 'ol' || token.tag == 'ul'
+        do_start_token token
+      end
+
     end
 
-    puts string
+    def do_table_element token
+      if token.tag == 'td'
+        if @open_elements.length >= 1
+          if @open_elements[-1].tag == "tr"
+            do_start_token token
+          else
+            do_table_element MonkeyToken.new '<tr>', :tag
+            do_start_token token
+          end
+        else
+          do_table_token MonkeyToken.new '<tr>', :tag
+          do_start_token token
+        end
+      
+      elsif token.tag == 'tr'
+        if @open_elements.length >= 1
+          if @open_elements[-1].tag == "table"
+            do_start_token token
+          else
+            do_table_element MonkeyToken.new '<table>', :tag
+            do_start_token token
+          end
+        else
+          do_table_element MonkeyToken.new '<table>', :tag
+          do_start_token token
+        end
+    
+      elsif token.tag == "table"
+        do_start_token token
+      end
+    end
+
+    def do_leaf_element token
+      @open_elements.last << MonkeyDocumentNode.new(token.tag, token.type, token.attributes)
+    end
+
+    def do_text token
+      do_leaf_element token
+    end
+
+    def fix_nesting_error token
+      @open_elements.reverse_each do |element|
+        if element.tag == token.tag
+          @open_elements.delete element
+          break
+        end
+      end
+    end
+  
+    def do_end_token token
+      if token.tag == @open_elements.last.tag
+        @open_elements.pop
+      else
+        fix_nesting_error token
+      end
+    end
+
+
+
+    def do_start_token token
+      new_node = MonkeyDocumentNode.new(token.tag, token.type, token.attributes)
+
+      @open_elements.last << new_node
+      @open_elements << new_node
+      @document_node << @open_elements.first if @open_elements.size == 1
+    end
+
   end
+
+  class MonkeyDocumentNode
+    #A MonkeyDocumentNode is a node in a tree. It has children and a parent.
+
+    attr_reader :type, :tag, :attributes
+
+    def initialize(value, type, attributes = Hash.new)
+      @value = value
+      @tag = value
+      @type = type
+      @children = Array.new
+    end
+
+
+  
+
+    #This allow to add documentnode to the children of a parent node  documentnode1 << documentnode2
+    def <<(value)
+      @children << value
+      return value
+    end
+
+    #each provides the standard ruby way of itterating over a collection
+    #We're traversing the tree recurivly and each time we find an element we yield back to the calling block.
+    def each
+      yield value
+      @children.each do |child_node|
+        child_node.each { |e| yield e }
+      end
+    end
+
+  end
+
+
+
+
+
+
+
+  #little test and useage demo, feel free to butcher.
+  #we need to decide what to do about really malformed html
+  page = "<ul><b>test</b><li>lol</li></ul>"
+  #"<b>test<strong class='fakeBold' tes='foo'>bold</strong></b>"
+
+
+  tokenizer = MonkeyTokenizer.new(page)
+
+
+  tokenizer.tokens.each do |n|
+    if n.type == :tag
+      string = "start_tag: " if n.is_start_tag?
+      string = "end_tag: " if n.is_end_tag?
+      string << n.tag
+
+      if n.has_attributes?
+        n.attributes.each_pair {|key, value| string << "  with attrubute: #{key} is #{value}" }
+      end
+
+      puts string
+    end
   
  
-  puts "text:" + n.tag if n.type == :text
-end
+    puts "text:" + n.tag if n.type == :text
+  end
 
+
+  parser = MonkeyParser.new(page)
+  parser.parse
+  bar = "foo"
 
 
