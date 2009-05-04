@@ -115,9 +115,9 @@ class MonkeyToken
       tag_pos = @full_tag.index(@tag, 0)
       @end_tag = true if end_tag < tag_pos
     end
-
-    
   end
+
+  
 
 end
 
@@ -140,12 +140,11 @@ class MonkeyParser
     #it might be useful to derive this from a properties file
 
     @single_nestable_tags = ['html','head','body'] #tags that can only be used once
-    @table_tokens = ['table','tr','td']
-    @nestable_tags = ['b','i','strong','em']
-    @singuarly_nestable_tags = ['p']
-    @non_nestable_tags =[]
-    @leaf_element =['br']
-    @listed_element =['li','ol','ul']
+    @table_tags = ['table','tr','td'] #table tags need a special case
+    @nestable_tags = ['b','i','strong','em'] #normal, nestable, tags
+    @singuarly_nestable_tags = ['p'] #these tags cannot be nested inside themselfs
+    @leaf_tags =['br','img'] #can have no children
+    @listed_tags =['li','ol','ul'] #list elements also need a special case
     @open_elements = Array.new
 
 
@@ -160,7 +159,7 @@ class MonkeyParser
       end
       if token.type == :tag
         if token.is_start_tag?
-          if @table_tokens.member? token.tag
+          if @table_tags.member? token.tag
             do_table_element token
           elsif @open_elements.length >= 1
             if @open_elements.last.tag == "tr" || @open_elements.last.tag == "table"
@@ -168,9 +167,14 @@ class MonkeyParser
             end
           end
 
-          if @listed_element.member? token.tag
+          if @listed_tags.member? token.tag
             do_listed_element token
           end
+
+          #pre elements should not have any children, just text
+           if @open_elements.length >= 1 && @open_elements.last.tag == "pre"
+               @open_elements.last.text = @open_elements.last.text + token.full_tag
+           end
 
           if @singuarly_nestable_tags.member? token.tag
             if @open_elements.length > 1 && @open_elements.last == token.tag
@@ -183,7 +187,7 @@ class MonkeyParser
             do_start_token token
           end
 
-          if @leaf_element.member? token.tag
+          if @leaf_tags.member? token.tag
             do_leaf_element token
           end
         else
@@ -195,7 +199,7 @@ class MonkeyParser
               do_table_element MonkeyToken.new '<td>', :tag
             end
           end
-        do_text token
+        do_text_element token
       end
 
     end
@@ -261,7 +265,7 @@ class MonkeyParser
       @open_elements.last << MonkeyDocumentNode.new(token.tag, token.type, token.attributes)
     end
 
-    def do_text token
+    def do_text_element token
       do_leaf_element token
     end
 
@@ -297,17 +301,27 @@ class MonkeyParser
   class MonkeyDocumentNode
     #A MonkeyDocumentNode is a node in a tree. It has children and a parent.
 
-    attr_reader :type, :tag, :attributes
+
+    #both a getter and a setter
+    attr_accessor :type, :tag, :attributes, :children
 
     def initialize(value, type, attributes = Hash.new)
-      @value = value
+  
       @tag = value
       @type = type
       @children = Array.new
+      @attributes = attributes
     end
 
 
-  
+    def text
+      return @tag
+    end
+
+    def text=(text)
+      @tag = text
+    end
+
 
     #This allow to add documentnode to the children of a parent node  documentnode1 << documentnode2
     def <<(value)
@@ -322,6 +336,11 @@ class MonkeyParser
       @children.each do |child_node|
         child_node.each { |e| yield e }
       end
+    end
+
+    #same as overiding the toString() method in java
+    def to_s
+
     end
 
   end
