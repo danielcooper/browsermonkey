@@ -32,8 +32,11 @@ class MonkeyTokenizer
     else
       #calculate length of text and move pointer - then add to token list
       text_token_end = @page.index('<', @current_pos)
-      text = @page[@current_pos...text_token_end]
+      text = @page[@current_pos...text_token_end] if text_token_end != nil
+      text = @page[@current_pos...@page.length] if  text_token_end == nil
+
       @tokens << MonkeyToken.new(text, :text)
+      @current_pos = @page.length if text == ""
       @current_pos += text.length
     end
   end
@@ -142,8 +145,8 @@ class MonkeyParser
     #these tags are to demo, and are by no means an exausive list.
 
     @single_nestable_tags = ['html','head','body'] #tags that can only be used once
-    @table_tags = ['table','tr','td'] #table tags need a special case
-    @nestable_tags = ['b','i','strong','em'] #normal, nestable, tags
+    @table_tags = ['table','tr','td',] #table tags need a special case
+    @nestable_tags = ['b','i','strong','em','pre'] #normal, nestable, tags
     @singuarly_nestable_tags = ['p'] #these tags cannot be nested inside themselfs
     @leaf_tags =['br','img'] #can have no children
     @listed_tags =['li','ol','ul'] #list elements also need a special case
@@ -161,6 +164,11 @@ class MonkeyParser
         @document_node = MonkeyDocumentNode.new("html", :tag)
         @open_elements << @document_node
       end
+      if i == 0 && token.tag == "html"
+        @document_node = MonkeyDocumentNode.new("html", :tag)
+        @open_elements << @document_node
+      end
+
 
       if token.type == :tag
         if token.is_start_tag?
@@ -180,17 +188,17 @@ class MonkeyParser
           end
 
           #pre elements should not have any children, just text
-           if @open_elements.length >= 1 && @open_elements.last.tag == "pre"
-               @open_elements.last.text = @open_elements.last.text + token.full_tag
-           end
+          if @open_elements.length >= 1 && @open_elements.last.tag == "pre"
+            @open_elements.last.text = @open_elements.last.text + token.full_tag
+          end
 
           #For singuarly nestetable tags, check if the last tag is the same. If it is
           #fix the nesting, if not - carry on.
           if @singuarly_nestable_tags.member? token.tag
-            if @open_elements.length > 1 && @open_elements.last == token.tag
+            if @open_elements.length > 1 && @open_elements.last.tag == token.tag
               do_end_token token
-              do_start_token token
             end
+            do_start_token token
           end
 
           #basic nestable tag
@@ -210,10 +218,10 @@ class MonkeyParser
       else
         #add a text element - but not without checking the state of the tables.
         if @open_elements.length >= 1
-            if @open_elements.last.tag == "tr" || @open_elements.last.tag == "table"
-              do_table_element MonkeyToken.new '<td>', :tag
-            end
+          if @open_elements.last.tag == "tr" || @open_elements.last.tag == "table"
+            do_table_element MonkeyToken.new '<td>', :tag
           end
+        end
         do_text_element token
       end
 
@@ -221,160 +229,175 @@ class MonkeyParser
   end
 
 
-    def do_listed_element token
-      if token.tag == 'li'
-        if @open_elements.length >= 1
-          if @open_elements[-1].tag == "ol" || @open_elements[-1].tag == "ul"
-            do_start_token token
-          elsif @open_elements[-1].tag == "li"
-            do_end_token @open_elements[-1]
-            do_start_token token
-          else
-            do_listed_element MonkeyToken.new '<ul>', :tag
-            do_start_token token
-          end
+  #Does a standard list. If the user chooses to not close li tags then it assumes that the next li
+  #signifies the start of the tag. Also, if no list type is given, it defaults to ul
+  def do_listed_element token
+    if token.tag == 'li'
+      if @open_elements.length >= 1
+        if @open_elements[-1].tag == "ol" || @open_elements[-1].tag == "ul"
+          do_start_token token
+        elsif @open_elements[-1].tag == "li"
+          do_end_token @open_elements[-1]
+          do_start_token token
         else
-          do_table_token MonkeyToken.new '<ul>', :tag
+          do_listed_element MonkeyToken.new '<ul>', :tag
           do_start_token token
         end
-
-      elsif token.tag == 'ol' || token.tag == 'ul'
+      else
+        do_table_token MonkeyToken.new '<ul>', :tag
         do_start_token token
       end
 
+    elsif token.tag == 'ol' || token.tag == 'ul'
+      do_start_token token
     end
 
-    def do_table_element token
-      if token.tag == 'td'
-        if @open_elements.length >= 1
-          if @open_elements[-1].tag == "tr"
-            do_start_token token
-          else
-            do_table_element MonkeyToken.new '<tr>', :tag
-            do_start_token token
-          end
+  end
+
+
+  #ensures that tables are properly nested.
+  def do_table_element token
+    if token.tag == 'td'
+      if @open_elements.length >= 1
+        if @open_elements[-1].tag == "tr"
+          do_start_token token
         else
-          do_table_token MonkeyToken.new '<tr>', :tag
+          do_table_element MonkeyToken.new '<tr>', :tag
           do_start_token token
         end
+      else
+        do_table_token MonkeyToken.new '<tr>', :tag
+        do_start_token token
+      end
       
-      elsif token.tag == 'tr'
-        if @open_elements.length >= 1
-          if @open_elements[-1].tag == "table"
-            do_start_token token
-          else
-            do_table_element MonkeyToken.new '<table>', :tag
-            do_start_token token
-          end
+    elsif token.tag == 'tr'
+      if @open_elements.length >= 1
+        if @open_elements[-1].tag == "table"
+          do_start_token token
         else
           do_table_element MonkeyToken.new '<table>', :tag
           do_start_token token
         end
-    
-      elsif token.tag == "table"
+      else
+        do_table_element MonkeyToken.new '<table>', :tag
         do_start_token token
       end
+    
+    elsif token.tag == "table"
+      do_start_token token
     end
-
-    def do_leaf_element token
-      @open_elements.last << MonkeyDocumentNode.new(token.tag, token.type, token.attributes)
-    end
-
-    def do_text_element token
-      do_leaf_element token
-    end
-
-    def fix_nesting_error token
-      @open_elements.reverse_each do |element|
-        if element.tag == token.tag
-          @open_elements.delete element
-          break
-        end
-      end
-    end
-  
-    def do_end_token token
-      if token.tag == @open_elements.last.tag
-        @open_elements.pop
-      else
-        fix_nesting_error token
-      end
-    end
-
-
-
-    def do_start_token token
-      new_node = MonkeyDocumentNode.new(token.tag, token.type, token.attributes)
-
-      @open_elements.last << new_node
-      @open_elements << new_node
-      @document_node << @open_elements.first if @open_elements.size == 1
-    end
-
   end
 
-  class MonkeyDocumentNode
-    #A MonkeyDocumentNode is a node in a tree. It has children and a parent.
+  def do_leaf_element token
+    @open_elements.last << MonkeyDocumentNode.new(token.tag, token.type, token.attributes)
+  end
 
+  def do_text_element token
+    do_leaf_element token
+  end
 
-    #both a getter and a setter
-    attr_accessor :type, :tag, :attributes, :children
-
-    def initialize(value, type, attributes = Hash.new)
-  
-      @tag = value
-      @type = type
-      @children = Array.new
-      @attributes = attributes
+  def fix_nesting_error token
+    @open_elements.reverse_each do |element|
+      if element.tag == token.tag
+        @open_elements.delete element
+        break
+      end
     end
+  end
+  
+  def do_end_token token
+    if token.tag == @open_elements.last.tag
+      @open_elements.pop
+    else
+      fix_nesting_error token
+    end
+  end
 
 
-    def text
+
+  #adds a new standard token onto the last open element and appends a new element onto
+  #that list
+  def do_start_token token
+    new_node = MonkeyDocumentNode.new(token.tag, token.type, token.attributes)
+
+    @open_elements.last << new_node
+    @open_elements << new_node
+    @document_node << @open_elements.first if @open_elements.size == 1
+  end
+
+end
+
+class MonkeyDocumentNode
+  #A MonkeyDocumentNode is a node in a tree. It has children and a parent.
+  #In the implementation, two types of node will exist - tag and text.
+
+
+  #both a getter and a setter
+  attr_accessor :type, :tag, :attributes, :children
+
+  def initialize(value, type, attributes = Hash.new)
+  
+    @tag = value
+    @type = type
+    @children = Array.new
+    @attributes = attributes
+  end
+
+
+  #aliases for the tag method.
+  def text
+    return @tag
+  end
+
+  def text=(text)
+    @tag = text
+  end
+
+
+  #This allow to add documentnode to the children of a parent node  documentnode1 << documentnode2
+  def <<(value)
+    @children << value
+    return value
+  end
+
+  #each provides the standard ruby way of itterating over a collection
+  #We're traversing the tree recurivly and each time we find an element we yield back to the calling block.
+  def each
+    yield value
+    @children.each do |child_node|
+      child_node.each { |e| yield e }
+    end
+  end
+
+  #prints as if it was still html
+  def friendly_print
+    if @type == :tag
+      return "<"+@tag+"/>" if @children.empty?
+      string = "<"+@tag+">"
+      @children.each do |n|
+        string <<  n.friendly_print
+      end
+      string << "</"+@tag+">"
+    else
       return @tag
     end
 
-    def text=(text)
-      @tag = text
-    end
-
-
-    #This allow to add documentnode to the children of a parent node  documentnode1 << documentnode2
-    def <<(value)
-      @children << value
-      return value
-    end
-
-    #each provides the standard ruby way of itterating over a collection
-    #We're traversing the tree recurivly and each time we find an element we yield back to the calling block.
-    def each
-      yield value
-      @children.each do |child_node|
-        child_node.each { |e| yield e }
-      end
-    end
-
-    #same as overiding the toString() method in java
-    def to_s
-
-    end
-
   end
 
+end
 
 
 
 
 
+def run_test page, name
 
-  #little test and useage demo, feel free to butcher.
-  #we need to decide what to do about really malformed html
-  page = "<ul><b>test</b><li>lol</li></ul>"
-  #"<b>test<strong class='fakeBold' tes='foo'>bold</strong></b>"
-
-
+  puts ""
+  puts "-------------------------------------------"
+  puts "Test name: "+name
+  puts "testing with string: "+page
+  puts "testing tokeniser:"
   tokenizer = MonkeyTokenizer.new(page)
-
-
   tokenizer.tokens.each do |n|
     if n.type == :tag
       string = "start_tag: " if n.is_start_tag?
@@ -382,19 +405,29 @@ class MonkeyParser
       string << n.tag
 
       if n.has_attributes?
-        n.attributes.each_pair {|key, value| string << "  with attrubute: #{key} is #{value}" }
+        string << " with attributes:"
+        n.attributes.each_pair {|key, value| string << " #{key}=#{value}"}
       end
-
       puts string
     end
-  
- 
     puts "text:" + n.tag if n.type == :text
   end
 
-
+  puts "testing parser:"
   parser = MonkeyParser.new(page)
   parser.parse
-  bar = "foo"
+  puts parser.document_node.friendly_print
+  puts "-------------------------------------------"
+end
 
 
+run_test "<b>hello<i>world</i></b>", "Simple"
+run_test "<b>hello<i>world</b></i>", "Incorrect Nesting"
+run_test "<tr>hello</tr>", "Missing table cell"
+run_test "<html><table><td>hello</table></td></html>", "Badly Formed Table"
+run_test "<table><tr>hello<table>world</table></tr></table>","badly formed and nested tables"
+run_test "<li>hello<li>world", "li shortcut"
+run_test "hello world", "just text"
+run_test "<p>hello<p>world</p></p>", "p nesting"
+run_test "<ol><b>hello</b><li>world</li></ol>", "element inside list"
+run_test "<br>hello</br>", "nest attempt on br"
