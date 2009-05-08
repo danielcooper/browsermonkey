@@ -134,11 +134,10 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_browseButtonActionPerformed
 
     private void loadFile(String path){
-        Document doc = new Document(path);
+        //Document doc = new Document(path);
         
         try {
-            doc.load();
-            renderPanel.setDocument(doc);
+            renderPanel.load(path);
         } catch (FileNotFoundException ex) {
             BrowserMonkeyLogger.warning("File not found: "+path);
             loadFile("404.html");

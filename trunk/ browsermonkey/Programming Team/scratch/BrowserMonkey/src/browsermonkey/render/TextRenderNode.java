@@ -3,26 +3,61 @@ package browsermonkey.render;
 import java.awt.*;
 import java.awt.font.*;
 import java.text.*;
+import java.util.*;
+import java.text.AttributedCharacterIterator.Attribute;
 
 /**
- * Renders unformatted text with word wrap.
+ * Renders formatted text with word wrap.
  * @author Paul Calcraft
  */
-public class TextRenderComponent extends RenderNode {
-    private String text;
+public class TextRenderNode extends RenderNode {
+    private AttributedString text;
     private boolean widthChanged = true;
-    
+
+    public TextRenderNode() {
+        this("");
+    }
+
     /**
      * Constructs a <code>TextRenderComponent</code> with the specified text.
      * @param text
      */
-    public TextRenderComponent(String text) {
-        this.text = text;
+    public TextRenderNode(String text) {
+        this.text = new AttributedString(text);
+    }
+
+    public void addText(String text, Map<Attribute,Object> formatting) {
+        ArrayList<Integer> endIndices = new ArrayList<Integer>();
+        ArrayList<Map<Attribute,Object>> formats = new ArrayList<Map<Attribute,Object>>();
+        AttributedCharacterIterator it = this.text.getIterator();
+        StringBuilder builder = new StringBuilder();
+
+        int previousEndIndex = 0;
+        for (char c = it.first(); c != CharacterIterator.DONE; c = it.next()) {
+            builder.append(c);
+            if (it.getRunLimit() > previousEndIndex) {
+                previousEndIndex = it.getRunLimit();
+                endIndices.add(previousEndIndex);
+                formats.add(it.getAttributes());
+            }
+        }
+
+        builder.append(text);
+        endIndices.add(previousEndIndex + text.length());
+        formats.add(formatting);
+
+        this.text = new AttributedString(builder.toString());
+        
+        previousEndIndex = 0;
+        for (int i = 0; i < endIndices.size(); i++) {
+            this.text.addAttributes(formats.get(i), previousEndIndex, endIndices.get(i));
+            previousEndIndex = endIndices.get(i);
+        }
     }
 
     @Override
     public void paint(Graphics g) {
-        AttributedCharacterIterator it = new AttributedString(text).getIterator();
+        AttributedCharacterIterator it = text.getIterator();
         LineBreakMeasurer lineBreaker = new LineBreakMeasurer(it, g.getFontMetrics().getFontRenderContext());
 
         Point coord = new Point(0, 0);

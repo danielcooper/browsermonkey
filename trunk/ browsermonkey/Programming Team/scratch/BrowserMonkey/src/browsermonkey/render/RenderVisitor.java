@@ -21,6 +21,6 @@ public class RenderVisitor extends browsermonkey.utility.CachedVisitor {
      * @param textNode
      */
     public void visitSub(TextDocumentNode textNode) {
-        nodes.add(new TextRenderComponent(textNode.getText()));
+        nodes.add(new TextRenderNode(textNode.getText()));
     }
 }
