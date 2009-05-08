@@ -38,7 +38,14 @@ public class Document {
             reader.close();
             throw ex;
         }
-        nodeTree = new DocumentNodeBase(new TextDocumentNode(result.toString()));
+        nodeTree = new TagDocumentNode("html", null,
+                new TextDocumentNode(result.toString()),
+                new TagDocumentNode("b", null,
+                    new TextDocumentNode(" Bold text"),
+                    new TextDocumentNode(" over multiple text nodes.")
+                ),
+                new TextDocumentNode(" No longer bold.")
+            );
     }
 
     public DocumentNode getNodeTree() {

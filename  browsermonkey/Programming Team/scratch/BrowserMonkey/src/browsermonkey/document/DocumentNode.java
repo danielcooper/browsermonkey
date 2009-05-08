@@ -1,15 +1,33 @@
 package browsermonkey.document;
 
+import java.util.*;
+
 /**
- * The <code>DocumentNode</code> interface represents a node in the document
- * tree.
+ * Provides default implementation for a <code>DocumentNode</code>'s children
+ * handling.
  * @author Paul Calcraft
  */
-public interface DocumentNode {
+public abstract class DocumentNode {
+    List<DocumentNode> children;
+
     /**
-     * Returns the children of this <code>DocumentNode</code>. Should not return
-     * null - an empty list should indicate no children.
-     * @return this instance's children
+     * Constructs a <code>DocumentNode</code> with no children.
      */
-    public java.util.List<DocumentNode> getChildren();
+    public DocumentNode() {
+        children = new ArrayList<DocumentNode>();
+    }
+
+    /**
+     * Constructs a <code>DocumentNode</code> with the list of children
+     * provided as arguments.
+     * For example: <code>new DocumentNode(child1, child2);</code>
+     * @param children
+     */
+    public DocumentNode(DocumentNode... children) {
+        this.children = new ArrayList<DocumentNode>(Arrays.asList(children));
+    }
+
+    public List<DocumentNode> getChildren() {
+        return children;
+    }
 }

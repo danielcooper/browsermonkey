@@ -2,6 +2,8 @@ package browsermonkey.render;
 
 import browsermonkey.document.*;
 import java.awt.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import javax.swing.*;
 
 /**
@@ -14,6 +16,8 @@ public class DocumentPanel extends JPanel {
     private GroupLayout layout;
     private GroupLayout.ParallelGroup horizontalGroup;
     private GroupLayout.SequentialGroup verticalGroup;
+    private float zoomLevel = 1.0f;
+    private RenderNode rootRenderNode;
 
     /**
      * Constructs a <code>DocumentPanel</code> by initialising the layout groups.
@@ -40,29 +44,19 @@ public class DocumentPanel extends JPanel {
     }
 
     /**
-     * Sets the <code>Document</code> for this <code>DocumentPanel</code> to
-     * render.
-     * @param document
-     */
-    public void setDocument(Document document) {
-        this.document = document;
-        load();
-    }
-
-    /**
      * Uses the {@link}RenderVisitor to generate the render nodes
      * and then adds these components to the layout managers.
      */
-    public void load() {
+    public void load(String path) throws FileNotFoundException, IOException {
         removeAll();
-        java.util.List<DocumentNode> rootNodes = document.getNodeTree().getChildren();
-        RenderVisitor renderVisitor = new RenderVisitor();
-        for (DocumentNode node : rootNodes)
-            renderVisitor.visit(node);
-        for (JComponent component : renderVisitor.getNodes()) {
-            verticalGroup.addComponent(component, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE);
-            horizontalGroup.addComponent(component, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE);
-        }
+        document = new Document(path);
+        document.load();
+        Renderer r = new Renderer(new DocumentLinker(this));
+        rootRenderNode = r.renderRoot(document.getNodeTree(), zoomLevel);
+
+        verticalGroup.addComponent(rootRenderNode, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE);
+        horizontalGroup.addComponent(rootRenderNode, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE);
+        
         revalidate();
         repaint();
     }
