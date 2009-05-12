@@ -1,5 +1,6 @@
 package browsermonkey.document;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -44,6 +45,8 @@ public class Token {
     }
 
     public void classifyTag(){
+        ArrayList atts = new ArrayList<String>();
+        atts = fullTag.
 
     }
 }
