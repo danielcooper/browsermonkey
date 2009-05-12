@@ -7,7 +7,7 @@ import java.util.Map;
  * @author Paul Calcraft
  */
 public class TagDocumentNode extends DocumentNode {
-    private String type;
+    private String type;  //Tag
     private Map<String, String> attributes;
 
     public String getType() {
