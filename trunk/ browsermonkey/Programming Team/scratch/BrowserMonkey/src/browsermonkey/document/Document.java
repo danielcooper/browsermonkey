@@ -40,9 +40,16 @@ public class Document {
         }
         nodeTree = new TagDocumentNode("html", null,
                 new TextDocumentNode(result.toString()),
+                new TagDocumentNode("i", null,
+                    new TextDocumentNode(" Italics.")
+                ),
                 new TagDocumentNode("b", null,
                     new TextDocumentNode(" Bold text"),
-                    new TextDocumentNode(" over multiple text nodes.")
+                    new TextDocumentNode(" over multiple text nodes."),
+                    new TagDocumentNode("i", null,
+                        new TextDocumentNode(" Now italics as well.")
+                    ),
+                    new TextDocumentNode(" No longer italics.")
                 ),
                 new TextDocumentNode(" No longer bold.")
             );
