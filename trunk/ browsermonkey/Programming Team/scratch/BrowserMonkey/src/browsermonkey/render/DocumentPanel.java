@@ -43,14 +43,14 @@ public class DocumentPanel extends JPanel {
         layout.setVerticalGroup(verticalIndentLayout);
     }
 
-    /**
-     * Uses the {@link}RenderVisitor to generate the render nodes
-     * and then adds these components to the layout managers.
-     */
     public void load(String path) throws FileNotFoundException, IOException {
         removeAll();
         document = new Document(path);
-        document.load();
+        if (path.startsWith("t "))
+            document.loadTest(path.substring(2));
+        else
+            document.load();
+        
         Renderer r = new Renderer(new DocumentLinker(this));
         rootRenderNode = r.renderRoot(document.getNodeTree(), zoomLevel);
 

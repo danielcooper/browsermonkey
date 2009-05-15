@@ -39,19 +39,56 @@ public class Document {
             throw ex;
         }
         nodeTree = new TagDocumentNode("html", null,
-                new TextDocumentNode(result.toString()),
-                new TagDocumentNode("i", null,
-                    new TextDocumentNode(" Italics.")
-                ),
-                new TagDocumentNode("b", null,
-                    new TextDocumentNode(" Bold text"),
-                    new TextDocumentNode(" over multiple text nodes."),
-                    new TagDocumentNode("i", null,
-                        new TextDocumentNode(" Now italics as well.")
+                new TextDocumentNode(result.toString())
+            );
+    }
+
+    public void loadTest(String tagText) {
+        if (tagText.equals("table")) {
+            nodeTree = new TagDocumentNode("html", null,
+                new TextDocumentNode("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."),
+                new TagDocumentNode("table", null,
+                    new TagDocumentNode("tr", null,
+                        new TagDocumentNode("td", null,
+                            new TextDocumentNode("Table Test, Cell 1")
+                        ),
+                        new TagDocumentNode("td", null,
+                            new TextDocumentNode("Table Test, Cell 2")
+                        ),
+                        new TagDocumentNode("td", null,
+                            new TextDocumentNode("Table Test, Cell 3")
+                        )
                     ),
-                    new TextDocumentNode(" No longer italics.")
+                    new TagDocumentNode("tr", null,
+                        new TagDocumentNode("td", null,
+                            new TextDocumentNode("Table Test, Second Row")
+                        ),
+                        new TagDocumentNode("td", null,
+                            new TextDocumentNode("Table Test, Second Row, Cell 2")
+                        ),
+                        new TagDocumentNode("td", null,
+                            new TextDocumentNode("Table Test, Second Row, Cell 3")
+                        )
+                    )
                 ),
-                new TextDocumentNode(" No longer bold.")
+                new TextDocumentNode("Done.")
+            );
+            return;
+        }
+
+        String[] parts = tagText.split(" ");
+        String tag = parts[0];
+        java.util.Hashtable attributes = new java.util.Hashtable<String, String>();
+        for (int i = 1; i < parts.length; i++) {
+            String[] keyValue = parts[i].split("=");
+            attributes.put(keyValue[0].trim(), keyValue[1].trim().replace("\"", ""));
+        }
+        nodeTree = new TagDocumentNode("html", null,
+                new TextDocumentNode("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."),
+                new TagDocumentNode(tag, attributes,
+                    new TextDocumentNode(" Test <"+tagText+">.")
+                ),
+                new TextDocumentNode(" Back to normal.")
             );
     }
 
