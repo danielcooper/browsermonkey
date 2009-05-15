@@ -50,7 +50,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="addressLabel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="addressField" pref="382" max="32767" attributes="0"/>
+                  <Component id="addressField" pref="386" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="goButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
@@ -84,6 +84,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="welcome.html"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addressFieldActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="goButton">
           <Properties>
