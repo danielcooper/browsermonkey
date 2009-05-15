@@ -18,6 +18,7 @@ public class Renderer {
         rendererMap = new Hashtable<String, TagRenderer>();
         rendererMap.put("b", new BoldTagRenderer());
         rendererMap.put("i", new ItalicsTagRenderer());
+        rendererMap.put("table", new TableTagRenderer());
     }
 
     public LayoutRenderNode renderRoot(DocumentNode root, float zoom) {
