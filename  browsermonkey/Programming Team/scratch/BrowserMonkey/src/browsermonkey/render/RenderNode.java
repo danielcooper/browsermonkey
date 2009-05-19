@@ -7,5 +7,9 @@ import javax.swing.*;
  * @author Paul Calcraft
  */
 public abstract class RenderNode extends JComponent {
-    
+    protected Linkable linker;
+
+    public RenderNode(Linkable linker) {
+        this.linker = linker;
+    }
 }

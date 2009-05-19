@@ -18,6 +18,10 @@ public class Document {
     public Document(String path) {
         this.path = path;
     }
+
+    public String getPath() {
+        return path;
+    }
     
     /**
      * Opens the file specified by this <code>Document</code>'s path and
@@ -56,7 +60,31 @@ public class Document {
                             new TextDocumentNode("Table Test, Cell 2")
                         ),
                         new TagDocumentNode("td", null,
+                            new TextDocumentNode("Table Test, Cell 3"),
+                            new TagDocumentNode("table", null,
+                    new TagDocumentNode("tr", null,
+                        new TagDocumentNode("td", null,
+                            new TextDocumentNode("Table Test, Cell 1")
+                        ),
+                        new TagDocumentNode("td", null,
+                            new TextDocumentNode("Table Test, Cell 2")
+                        ),
+                        new TagDocumentNode("td", null,
                             new TextDocumentNode("Table Test, Cell 3")
+                        )
+                    ),
+                    new TagDocumentNode("tr", null,
+                        new TagDocumentNode("td", null,
+                            new TextDocumentNode("Table Test, Second Row")
+                        ),
+                        new TagDocumentNode("td", null,
+                            new TextDocumentNode("Table Test, Second Row, Cell 2")
+                        ),
+                        new TagDocumentNode("td", null,
+                            new TextDocumentNode("Table Test, Second Row, Cell 3")
+                        )
+                    )
+                )
                         )
                     ),
                     new TagDocumentNode("tr", null,
@@ -84,9 +112,9 @@ public class Document {
             attributes.put(keyValue[0].trim(), keyValue[1].trim().replace("\"", ""));
         }
         nodeTree = new TagDocumentNode("html", null,
-                new TextDocumentNode("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."),
+                new TextDocumentNode("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. "),
                 new TagDocumentNode(tag, attributes,
-                    new TextDocumentNode(" Test <"+tagText+">.")
+                    new TextDocumentNode("Test <"+tagText+">.")
                 ),
                 new TextDocumentNode(" Back to normal.")
             );

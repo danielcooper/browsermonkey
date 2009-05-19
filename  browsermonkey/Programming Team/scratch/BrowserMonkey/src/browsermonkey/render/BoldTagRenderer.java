@@ -7,9 +7,14 @@ import java.util.*;
 
 /**
  *
- * @author prtc20
+ * @author Paul Calcraft
  */
 public class BoldTagRenderer extends TagRenderer {
+
+    public BoldTagRenderer(Linkable linker) {
+        super(linker);
+    }
+    
     @Override
     public void render(Renderer renderer, TagDocumentNode tag, LayoutRenderNode parent, Map<Attribute, Object> formatting) {
         Map<Attribute, Object> newFormatting = (Map<Attribute, Object>)((Hashtable)formatting).clone();

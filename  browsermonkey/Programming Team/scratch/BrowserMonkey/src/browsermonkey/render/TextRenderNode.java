@@ -1,6 +1,8 @@
 package browsermonkey.render;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.font.*;
 import java.text.*;
 import java.util.*;
@@ -13,17 +15,55 @@ import java.text.AttributedCharacterIterator.Attribute;
 public class TextRenderNode extends RenderNode {
     private AttributedString text;
     private boolean widthChanged = true;
+    //private ArrayList<TextLayout> textLayouts;
+    private Map<Rectangle, TextLayout> textLayouts;
 
-    public TextRenderNode() {
-        this("");
+    public TextRenderNode(Linkable linker) {
+        this(linker, "");
     }
 
     /**
      * Constructs a <code>TextRenderComponent</code> with the specified text.
+     * @param linker
      * @param text
      */
-    public TextRenderNode(String text) {
+    public TextRenderNode(Linkable linker, String text) {
+        super(linker);
         this.text = new AttributedString(text);
+        this.addMouseListener(new MouseListener() {
+            public void mouseClicked(MouseEvent e) {
+                click(new Point(e.getX(), e.getY()));
+            }
+
+            public void mouseEntered(MouseEvent e) {}
+            public void mouseExited(MouseEvent e) {}
+            public void mousePressed(MouseEvent e) {}
+            public void mouseReleased(MouseEvent e) {}
+        });
+    }
+
+    public static final AttributedCharacterIterator.Attribute HREF_ATTRIBUTE = new AttributedCharacterIterator.Attribute("href") {};
+
+    private void click(Point hitPoint) {
+        int cumulativeCharacterCount = 0;
+        Set<Map.Entry<Rectangle, TextLayout>> textLines = textLayouts.entrySet();
+        for (Map.Entry<Rectangle, TextLayout> line : textLines) {
+            Rectangle lineRect = line.getKey();
+            TextLayout lineLayout = line.getValue();
+            if (lineRect.contains(hitPoint)) {
+                TextHitInfo hitInfo = lineLayout.hitTestChar(hitPoint.x-lineRect.x, hitPoint.y-lineRect.y);
+                if (hitInfo != null) {
+                    AttributedCharacterIterator aci = text.getIterator();
+                    aci.setIndex(cumulativeCharacterCount + hitInfo.getCharIndex());
+                    Object hrefValue = aci.getAttribute(HREF_ATTRIBUTE);
+                    if (hrefValue != null) {
+                        linker.followLink((String)hrefValue);
+                    }
+                }
+                
+            }
+            cumulativeCharacterCount += lineLayout.getCharacterCount();
+        }
     }
 
     public void addText(String text, Map<Attribute,Object> formatting) {
@@ -60,6 +100,8 @@ public class TextRenderNode extends RenderNode {
         AttributedCharacterIterator it = text.getIterator();
         LineBreakMeasurer lineBreaker = new LineBreakMeasurer(it, g.getFontMetrics().getFontRenderContext());
 
+        textLayouts = new LinkedHashMap<Rectangle, TextLayout>();
+
         Point coord = new Point(0, 0);
         float wrappingWidth = getWidth();
         while (lineBreaker.getPosition() < it.getEndIndex()) {
@@ -67,6 +109,7 @@ public class TextRenderNode extends RenderNode {
             coord.y += (layout.getAscent());
             float dx = layout.isLeftToRight() ? 0 : (wrappingWidth - layout.getAdvance());
             layout.draw((Graphics2D)g, coord.x + dx, coord.y);
+            textLayouts.put(layout.getPixelBounds(null, coord.x + dx, coord.y), layout);
             coord.y += layout.getDescent() + layout.getLeading();
         }
         if (widthChanged) {

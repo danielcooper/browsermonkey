@@ -2,20 +2,19 @@ package browsermonkey.render;
 
 import browsermonkey.document.*;
 import java.text.AttributedCharacterIterator.Attribute;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
  * @author Paul Calcraft
  */
-public class InvisibleTagRenderer extends TagRenderer {
-    public InvisibleTagRenderer(Linkable linker) {
+public class LineBreakTagRenderer extends TagRenderer {
+    public LineBreakTagRenderer(Linkable linker) {
         super(linker);
     }
 
     @Override
     public void render(Renderer renderer, TagDocumentNode tag, LayoutRenderNode parent, Map<Attribute, Object> formatting) {
-        for (DocumentNode child : tag.getChildren())
-            renderer.render(child, parent, formatting);
+        parent.addLineBreaks(1);
     }
 }

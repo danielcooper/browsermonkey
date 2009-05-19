@@ -1,6 +1,8 @@
 package browsermonkey.render;
 
 import browsermonkey.document.*;
+import java.util.ArrayList;
+import javax.swing.event.*;
 import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -56,8 +58,39 @@ public class DocumentPanel extends JPanel {
 
         verticalGroup.addComponent(rootRenderNode, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE);
         horizontalGroup.addComponent(rootRenderNode, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE);
-        
+
+        changed();
         revalidate();
         repaint();
+    }
+
+    public String getAddress() {
+        return document.getPath();
+    }
+
+    private ArrayList<ChangeListener> changeListeners = new ArrayList<ChangeListener>();
+
+    /**
+     * Adds a ChangeListener to the panel.
+     * @param listener
+     */
+    public void addChangeListener(ChangeListener listener) {
+        changeListeners.add(listener);
+    }
+
+    /**
+     * Removes a ChangeListener from the panel.
+     * @param listener
+     */
+    public void removeChangeListener(ChangeListener listener) {
+        changeListeners.remove(listener);
+    }
+
+    /**
+     * Alerts the ChangeListeners that the panel has changed.
+     */
+    protected void changed() {
+        for (ChangeListener listener : changeListeners)
+            listener.stateChanged(new ChangeEvent(this));
     }
 }
