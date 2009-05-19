@@ -125,7 +125,7 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Component class="browsermonkey.render.DocumentPanel" name="renderPanel">
+        <Component class="browsermonkey.render.DocumentPanel" name="documentPanel">
         </Component>
       </SubComponents>
     </Container>

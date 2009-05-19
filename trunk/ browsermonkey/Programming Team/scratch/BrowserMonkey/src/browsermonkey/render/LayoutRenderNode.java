@@ -1,11 +1,10 @@
 package browsermonkey.render;
 
 import javax.swing.*;
-import java.awt.Dimension;
 
 /**
  *
- * @author prtc20
+ * @author Paul Calcraft
  */
 public class LayoutRenderNode extends RenderNode {
     private GroupLayout layout;
@@ -13,7 +12,8 @@ public class LayoutRenderNode extends RenderNode {
     private GroupLayout.SequentialGroup verticalGroup;
     private TextRenderNode currentTextNode;
 
-    public LayoutRenderNode() {
+    public LayoutRenderNode(Linkable linker) {
+        super(linker);
         layout = new GroupLayout(this);
         this.setLayout(layout);
 
@@ -58,7 +58,7 @@ public class LayoutRenderNode extends RenderNode {
 
     public TextRenderNode getTextNode() {
         if (currentTextNode == null) {
-            currentTextNode = new TextRenderNode();
+            currentTextNode = new TextRenderNode(linker);
             addNode(currentTextNode);
         }
         return currentTextNode;

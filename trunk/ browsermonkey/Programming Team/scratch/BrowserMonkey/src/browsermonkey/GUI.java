@@ -8,6 +8,7 @@ package browsermonkey;
 
 import java.io.*;
 import javax.swing.*;
+import javax.swing.event.*;
 import browsermonkey.utility.BrowserMonkeyLogger;
 
 /**
@@ -22,6 +23,11 @@ public class GUI extends javax.swing.JFrame {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {}
         initComponents();
+        documentPanel.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                panelChanged();
+            }
+        });
         loadFile("welcome.html");
     }
 
@@ -41,7 +47,7 @@ public class GUI extends javax.swing.JFrame {
         browseButton = new javax.swing.JButton();
         statusBar = new javax.swing.JLabel();
         documentScrollPanel = new javax.swing.JScrollPane();
-        renderPanel = new browsermonkey.render.DocumentPanel();
+        documentPanel = new browsermonkey.render.DocumentPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("BrowserMonkey");
@@ -100,7 +106,7 @@ public class GUI extends javax.swing.JFrame {
         statusBar.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 5, 3, 5));
 
         documentScrollPanel.setMinimumSize(new java.awt.Dimension(0, 0));
-        documentScrollPanel.setViewportView(renderPanel);
+        documentScrollPanel.setViewportView(documentPanel);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -141,11 +147,14 @@ public class GUI extends javax.swing.JFrame {
         goButtonActionPerformed(null);
     }//GEN-LAST:event_addressFieldActionPerformed
 
+    private void panelChanged() {
+        this.addressField.setText(documentPanel.getAddress());
+        addressField.setCaretPosition(addressField.getText().length());
+    }
+
     private void loadFile(String path){
-        //Document doc = new Document(path);
-        
         try {
-            renderPanel.load(path);
+            documentPanel.load(path);
         } catch (FileNotFoundException ex) {
             BrowserMonkeyLogger.warning("File not found: "+path);
             loadFile("404.html");
@@ -160,9 +169,9 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JTextField addressField;
     private javax.swing.JLabel addressLabel;
     private javax.swing.JButton browseButton;
+    private browsermonkey.render.DocumentPanel documentPanel;
     private javax.swing.JScrollPane documentScrollPanel;
     private javax.swing.JButton goButton;
-    private browsermonkey.render.DocumentPanel renderPanel;
     private javax.swing.JLabel statusBar;
     private javax.swing.JPanel top;
     // End of variables declaration//GEN-END:variables
