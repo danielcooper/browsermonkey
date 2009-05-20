@@ -23,6 +23,7 @@ public class GUI extends javax.swing.JFrame {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {}
         initComponents();
+        documentScrollPanel.getVerticalScrollBar().setUnitIncrement(25);
         documentPanel.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 panelChanged();

@@ -62,29 +62,29 @@ public class Document {
                         new TagDocumentNode("td", null,
                             new TextDocumentNode("Table Test, Cell 3"),
                             new TagDocumentNode("table", null,
-                    new TagDocumentNode("tr", null,
-                        new TagDocumentNode("td", null,
-                            new TextDocumentNode("Table Test, Cell 1")
-                        ),
-                        new TagDocumentNode("td", null,
-                            new TextDocumentNode("Table Test, Cell 2")
-                        ),
-                        new TagDocumentNode("td", null,
-                            new TextDocumentNode("Table Test, Cell 3")
-                        )
-                    ),
-                    new TagDocumentNode("tr", null,
-                        new TagDocumentNode("td", null,
-                            new TextDocumentNode("Table Test, Second Row")
-                        ),
-                        new TagDocumentNode("td", null,
-                            new TextDocumentNode("Table Test, Second Row, Cell 2")
-                        ),
-                        new TagDocumentNode("td", null,
-                            new TextDocumentNode("Table Test, Second Row, Cell 3")
-                        )
-                    )
-                )
+                                new TagDocumentNode("tr", null,
+                                    new TagDocumentNode("td", null,
+                                        new TextDocumentNode("Table Test, Cell 1")
+                                    ),
+                                    new TagDocumentNode("td", null,
+                                        new TextDocumentNode("Table Test, Cell 2")
+                                    ),
+                                    new TagDocumentNode("td", null,
+                                        new TextDocumentNode("Table Test, Cell 3")
+                                    )
+                                ),
+                                new TagDocumentNode("tr", null,
+                                    new TagDocumentNode("td", null,
+                                        new TextDocumentNode("Table Test, Second Row")
+                                    ),
+                                    new TagDocumentNode("td", null,
+                                        new TextDocumentNode("Table Test, Second Row, Cell 2")
+                                    ),
+                                    new TagDocumentNode("td", null,
+                                        new TextDocumentNode("Table Test, Second Row, Cell 3")
+                                    )
+                                )
+                            )
                         )
                     ),
                     new TagDocumentNode("tr", null,
@@ -100,6 +100,20 @@ public class Document {
                     )
                 ),
                 new TextDocumentNode("Done.")
+            );
+            return;
+        }
+        else if (tagText.equals("a")) {
+            java.util.HashMap<String, String> aAttributes = new java.util.HashMap<String, String>();
+            aAttributes.put("href", "t table");
+            nodeTree = new TagDocumentNode("html", null,
+                new TextDocumentNode("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."),
+                new TagDocumentNode("br", null),
+                new TextDocumentNode("Check out the "),
+                new TagDocumentNode("a", aAttributes,
+                    new TextDocumentNode("table test")
+                ),
+                new TextDocumentNode(", it's really cool.")
             );
             return;
         }
