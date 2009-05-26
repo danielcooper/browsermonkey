@@ -1,7 +1,6 @@
 package browsermonkey.document;
 
 import java.util.*;
-import java.io.*;
 
 /**
  *
@@ -40,8 +39,22 @@ public class Tokeniser {
                 int tagTokenEnd = page.indexOf('>', currentPos + 1);
                 //Malformed html shiz
                 String tag = page.substring(currentPos, tagTokenEnd);
-                tokens.add(new Token(tag));
-
+                tokens.add(new Token(tag, TokenType.valueOf("Tag")));
+                currentPos = currentPos + tag.length();
+            }
+        } else {
+            int textTokenEnd = page.indexOf('<', currentPos);
+            String text = new String();
+            if(textTokenEnd != 0){
+                text = page.substring(currentPos, textTokenEnd);
+            } else {
+                text = page.substring(currentPos, page.length());
+            }
+            tokens.add(new Token(text, TokenType.valueOf("Text")));
+            if(text.equals("")){
+                currentPos = page.length();
+            } else {
+                currentPos = currentPos + text.length();
             }
         }
     }
