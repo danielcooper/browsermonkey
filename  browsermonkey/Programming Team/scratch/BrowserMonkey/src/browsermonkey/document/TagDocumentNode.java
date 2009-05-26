@@ -22,6 +22,12 @@ public class TagDocumentNode extends DocumentNode {
         this.attributes = attributes;
     }
 
+    public TagDocumentNode(String type, Map<String, String> attributes){
+        super();
+        this.type = type;
+        this.attributes = attributes;
+    }
+
     public TagDocumentNode(String type, Map<String, String> attributes, DocumentNode... children) {
         super(children);
         this.type = type;

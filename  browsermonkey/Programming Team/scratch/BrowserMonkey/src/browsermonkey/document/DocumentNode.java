@@ -30,4 +30,8 @@ public abstract class DocumentNode {
     public List<DocumentNode> getChildren() {
         return children;
     }
+
+    public void addChild(DocumentNode child){
+        children.add(child);
+    }
 }
