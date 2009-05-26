@@ -39,7 +39,7 @@ public class Tokeniser {
                 int tagTokenEnd = page.indexOf('>', currentPos + 1);
                 //Malformed html shiz
                 String tag = page.substring(currentPos, tagTokenEnd);
-                tokens.add(new Token(tag, TokenType.valueOf("Tag")));
+                tokens.add(new Token(tag, TokenType.TAG));
                 currentPos = currentPos + tag.length();
             }
         } else {
@@ -50,7 +50,7 @@ public class Tokeniser {
             } else {
                 text = page.substring(currentPos, page.length());
             }
-            tokens.add(new Token(text, TokenType.valueOf("Text")));
+            tokens.add(new Token(text, TokenType.TEXT));
             if(text.equals("")){
                 currentPos = page.length();
             } else {

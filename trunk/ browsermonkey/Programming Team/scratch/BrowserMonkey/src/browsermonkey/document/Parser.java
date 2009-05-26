@@ -46,19 +46,58 @@ public class Parser {
             Token currentToken = tokens.next();
 
             //add html if needed
-            if(i == 0 && !currentToken.tag().equals("html")){
+            if(i == 0 && !currentToken.getTag().equals("html")){
                 TagDocumentNode newNode = new TagDocumentNode("html", null);
                 openElements.add(newNode);
             }
 
-            if(currentToken.getType().equals("Tag")){
+            if(currentToken.getType() == TokenType.TAG){
                 if(currentToken.isStartTag()){
+                    //if it's  table tag or if a row has been opened but not a cell - add the approprate elements
                     if(tableTags.contains(currentToken.getTag())){
-
+                        doTableElement(currentToken);
+                    }else if(openElements.size() >= 1){
+                        if(openElements.get(openElements.size()-1).getType().equals("tr") || openElements.get(openElements.size()-1).getType().equals("table")){
+                            doTableElement(new Token("<td>", TokenType.TAG));
+                        }
                     }
-                }
+                    //perform listed tag functions
+                    if(listTags.contains(currentToken.getTag())){
+                        doListedElement(currentToken);
+                    }
+//                    //pre elements should not have any children, just text
+//                    if(openElements.size()>=1 && openElements.get(openElements.size()-1).getType().equals("pre")){
+//                        openElements.get(openElements.size()-1).
+//                    }
+                    //TODO Fix pre elements
+                    //For singularly nestable tags, check if the last tag is the same. If it is
+                    //fix the nesting, if not - carry on.
+                    if(singularlyNestableTags.contains(currentToken.getTag())){
+                        if(openElements.size() > 1 && openElements.get(openElements.size()-1).getType().equals(currentToken.getTag())){
+                            doEndToken(currentToken);
+                        }
+                        doStartToken(currentToken);
+                    }
+                    //basic nestable tag
+                    if(nestableTags.contains(currentToken.getTag())){
+                        doStartToken(currentToken);
+                    }
+                    //add the leaf tag
+                    if(leafTags.contains(currentToken.getTag())){
+                        doLeafElement(currentToken);
+                    }
 
+                } else {
+                    //add a text element - but not without checking the state of the tables.
+                    if(openElements.size() >= 1){
+                        if(openElements.get(openElements.size()-1).getType().equals("tr") || openElements.get(openElements.size()-1).getType().equals("table")){
+                            doTableElement(new Token("<td>", TokenType.TAG));
+                        }
+                    }
+                    doLeafElement(currentToken);
+                }
             }
+            i++;
         }
     }
 
@@ -68,20 +107,21 @@ public class Parser {
         if(token.tag().equals("li")){
             if(openElements.size() >= 1){
                 if(openElements.get(openElements.size()-1).getType().equals("ol") || openElements.get(openElements.size()-1).getType().equals("ul")){
-                    //do start token current token
+                    doStartToken(token);
                 } else if(openElements.get(openElements.size()-1).getType().equals("li")){
-                    //do end token on previous token
-                    //do start token current token
+                    doEndToken(openElements.get(openElements.size()-1));
+                    doStartToken(token);
                 } else {
-                    doListedElement(new Token("<ul>", TokenType.valueOf("Tag")));
-                    //do start token current token
+                    doListedElement(new Token("<ul>", TokenType.TAG));
+                    doStartToken(token);
                 }
             } else {
                 //do table token new <ul> token
-                //do start token current token
+                doListedElement(new Token("<ul>",TokenType.TAG));
+                doStartToken(token);
             }
         } else if(token.getTag().equals("ol") || token.getTag().equals("ul")){
-            //do start token current token
+            doStartToken(token);
         }
     }
 
@@ -90,30 +130,78 @@ public class Parser {
         if(token.getTag().equals("td")){
             if(openElements.size() >= 1){
                 if(openElements.get(openElements.size()-1).getType().equals("tr")){
-                    //do start token current token
+                    doStartToken(token);
                 } else {
-                    doTableElement(new Token("<tr>", TokenType.valueOf("Tag")));
-                    //do start token current token
+                    doTableElement(new Token("<tr>", TokenType.TAG));
+                    doStartToken(token);
                 }
             } else {
-                //do table token new <tr> token
-                //do start token current token
+                doTableElement(new Token("<tr>", TokenType.TAG));
+                doStartToken(token);
 
             }
         } else if(token.getTag().equals("tr")){
             if(openElements.size() >= 1){
                 if(openElements.get(openElements.size()-1).getType().equals("table")){
-                    //do start token current token
+                    doStartToken(token);
                 } else {
-                    doTableElement(new Token("<table>", TokenType.valueOf("Tag")));
-                    //do start token current token
+                    doTableElement(new Token("<table>", TokenType.TAG));
+                    doStartToken(token);
                 }
             } else {
-                doTableElement(new Token("<table>", TokenType.valueOf("Tag")));
-                //do start token current token
+                doTableElement(new Token("<table>", TokenType.TAG));
+                doStartToken(token);
             }
         } else if(token.getTag().equals("table")){
-            //do start token current token
+            doStartToken(token);
+        }
+    }
+
+    private void doLeafElement(Token token){
+        openElements.get(openElements.size()-1).addChild(new TagDocumentNode(token.getTag(), token.getAttributes()));
+    }
+
+    private void fixNestingError(Token token){
+        for(int i = openElements.size()-1;i==0;i--){
+            if(openElements.get(i).getType().equals(token.getTag())){
+                openElements.remove(openElements.get(i));
+                break;
+            }
+        }
+    }
+
+    private void fixNestingError(TagDocumentNode tagDocNode){
+        for(int i = openElements.size()-1;i==0;i--){
+            if(openElements.get(i).getType().equals(tagDocNode.getType())){
+                openElements.remove(openElements.get(i));
+                break;
+            }
+        }
+    }
+
+    private void doEndToken(Token token){
+        if(token.getTag().equals(openElements.get(openElements.size()-1).getType())){
+            openElements.remove(openElements.size()-1);
+        } else {
+            fixNestingError(token);
+        }
+    }
+
+    private void doEndToken(TagDocumentNode tagDocNode){
+        if(tagDocNode.getType().equals(openElements.get(openElements.size()-1).getType())){
+            openElements.remove(openElements.size()-1);
+        } else {
+            fixNestingError(tagDocNode);
+        }
+    }
+
+    private void doStartToken(Token token){
+        TagDocumentNode newNode = new TagDocumentNode(token.getTag(), token.getAttributes());
+
+        openElements.get(openElements.size()-1).addChild(newNode);
+        openElements.add(newNode);
+        if (openElements.size() == 1) {
+            rootNode = openElements.get(0);
         }
     }
 }

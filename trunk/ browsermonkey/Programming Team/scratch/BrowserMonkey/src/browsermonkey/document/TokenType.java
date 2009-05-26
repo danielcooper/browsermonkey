@@ -10,6 +10,6 @@ package browsermonkey.document;
  * @author Lawrence Dine
  */
 public enum TokenType {
-
+    TEXT,TAG
 
 }

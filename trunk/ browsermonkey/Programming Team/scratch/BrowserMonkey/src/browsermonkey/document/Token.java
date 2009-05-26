@@ -50,6 +50,10 @@ public class Token {
         return (attributes.size() > 0);
     }
 
+    public Map getAttributes() {
+        return attributes;
+    }
+
     public String getFullTag(){
         return fullTag;
     }
