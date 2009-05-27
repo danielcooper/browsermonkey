@@ -18,6 +18,21 @@ public class TextRenderNode extends RenderNode {
     //private ArrayList<TextLayout> textLayouts;
     private Map<Rectangle, TextLayout> textLayouts;
 
+    private static Map<String, Character> characterEntities;
+    static {
+        characterEntities = new HashMap<String, Character>();
+        characterEntities.put("nbsp", ' ');
+        characterEntities.put("pound", '£');
+        characterEntities.put("copy", '©');
+        characterEntities.put("reg", '®');
+        characterEntities.put("trade", '™');
+        characterEntities.put("quot", '"');
+        characterEntities.put("apos", '\'');
+        characterEntities.put("amp", '&');
+        characterEntities.put("lt", '<');
+        characterEntities.put("gt", '>');
+    }
+
     public TextRenderNode(Linkable linker) {
         this(linker, "");
     }
@@ -29,6 +44,7 @@ public class TextRenderNode extends RenderNode {
      */
     public TextRenderNode(Linkable linker, String text) {
         super(linker);
+
         this.text = new AttributedString(text);
         this.addMouseListener(new MouseListener() {
             public void mouseClicked(MouseEvent e) {
@@ -82,8 +98,44 @@ public class TextRenderNode extends RenderNode {
             }
         }
 
-        builder.append(text);
-        endIndices.add(previousEndIndex + text.length());
+        int currentPos = 0;
+        int findPos;
+        while ((findPos = text.indexOf('&', currentPos)) != -1) {
+            int endEntityIndex = text.indexOf(';', findPos+1);
+            if (endEntityIndex == -1)
+                break;
+            builder.append(text.substring(currentPos, findPos));
+            boolean entityReplaced = false;
+            String entityText = text.substring(findPos+1, endEntityIndex).toLowerCase();
+            if (entityText.charAt(0) == '#') {
+                int value;
+                if (entityText.charAt(1) == 'x')
+                    value = Integer.parseInt(entityText.substring(2), 16);
+                else
+                    value = Integer.parseInt(entityText.substring(1));
+                builder.append((char)value);
+                entityReplaced = true;
+                // TODO: Detect invalid characters.
+            }
+            else {
+                Character character = characterEntities.get(entityText);
+                if (character != null) {
+                    builder.append(character);
+                    entityReplaced = true;
+                }
+            }
+
+            if (entityReplaced)
+                currentPos = endEntityIndex+1;
+            else {
+                currentPos = findPos+1;
+                builder.append('&');
+            }
+        }
+        
+        builder.append(text.substring(currentPos));
+        endIndices.add(builder.length());
+       
         formats.add(formatting);
 
         this.text = new AttributedString(builder.toString());
