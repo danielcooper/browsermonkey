@@ -30,32 +30,28 @@ public class Tokeniser {
 
     public void getNextToken(){
         if(page.charAt(currentPos) == '<'){
-            if(page.substring(currentPos+1, currentPos+3).equals("!--")){
+            if(page.substring(currentPos+1, currentPos+4).equals("!--")){
                 //calculate length of token and move token
-                int tagTokenEnd = page.indexOf("-->", currentPos+1);
+                int tagTokenEnd = page.indexOf("-->", currentPos+4);
                 //TODO Malformed html shiz
-                currentPos = currentPos + (tagTokenEnd - currentPos);
+                currentPos = tagTokenEnd+3;
             } else {
                 int tagTokenEnd = page.indexOf('>', currentPos + 1);
                 //Malformed html shiz
-                String tag = page.substring(currentPos, tagTokenEnd);
+                String tag = page.substring(currentPos, tagTokenEnd+1);
                 tokens.add(new Token(tag, TokenType.TAG));
                 currentPos = currentPos + tag.length();
             }
         } else {
             int textTokenEnd = page.indexOf('<', currentPos);
-            String text = new String();
-            if(textTokenEnd != 0){
+            String text;
+            if(textTokenEnd != -1){
                 text = page.substring(currentPos, textTokenEnd);
             } else {
                 text = page.substring(currentPos, page.length());
             }
+            currentPos = currentPos + text.length();
             tokens.add(new Token(text, TokenType.TEXT));
-            if(text.equals("")){
-                currentPos = page.length();
-            } else {
-                currentPos = currentPos + text.length();
-            }
         }
     }
     

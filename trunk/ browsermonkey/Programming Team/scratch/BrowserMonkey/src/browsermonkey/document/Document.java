@@ -42,9 +42,9 @@ public class Document {
             reader.close();
             throw ex;
         }
-        nodeTree = new TagDocumentNode("html", null,
-                new TextDocumentNode(result.toString())
-            );
+        Parser parser = new Parser(result.toString());
+        parser.parse();
+        nodeTree = parser.getRootNode();
     }
 
     public void loadTest(String tagText) {

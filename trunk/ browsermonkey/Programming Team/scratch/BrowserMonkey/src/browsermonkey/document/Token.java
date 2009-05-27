@@ -1,10 +1,8 @@
 package browsermonkey.document;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import browsermonkey.utility.RegexUtility;
 
 /**
  *
@@ -14,7 +12,7 @@ public class Token {
     String tag;
     boolean endTag;
     String fullTag;
-    Map attributes;
+    Map<String, String> attributes;
     TokenType type;
 
     public String tag() {
@@ -25,15 +23,15 @@ public class Token {
         this.fullTag = fullTag;
         this.type = type;
 
-        attributes = new HashMap();
+        attributes = null;
 
         endTag = false;
 
-        if(){ //If type is text
+        if (type == TokenType.TEXT){
             tag = fullTag;
-        } else if(){ //If type is tag
+        } else if(type == TokenType.TAG) { //If type is tag
             //Regex to get the a in <a href="b">
-            tag = ;//funky regex!
+            tag = RegexUtility.scan(fullTag, "[\\w:-]+")[0][0];
             classifyTag();
         }
     }
@@ -50,7 +48,7 @@ public class Token {
         return (attributes.size() > 0);
     }
 
-    public Map getAttributes() {
+    public Map<String, String> getAttributes() {
         return attributes;
     }
 
@@ -67,7 +65,7 @@ public class Token {
     }
 
     public void classifyTag(){
-        ArrayList atts = new ArrayList<String>();
+        //ArrayList atts = new ArrayList<String>();
 //        atts = fullTag.
 //        Pattern attPattern = Pattern.compile("[\w:-]+");
 //        Matcher attMatcher = attPattern.matcher(fullTag);
@@ -77,7 +75,22 @@ public class Token {
         //for each attribute in attributes MAP
         //lowercase them
 
-        //Determine if the tag is an end tag by looking for a / before the tag name. (<\b>)
+
+        String[][] atts = RegexUtility.scan(fullTag, "<[\\w:-]+\\s+(.*)>");
+        if (atts.length > 0) {
+            String[][] attributeStrings = RegexUtility.scan(atts[0][0], "\\s*([\\w:-]+)\\s*=\\s*(\"[^\"]*\"|'[^']*'|[^\"'>][^\\s>]*)");
+
+            attributes = new HashMap<String, String>();
+
+            for (String[] attribute : attributeStrings) {
+                String value = attribute[1];
+                if ((value.startsWith("\"") && value.endsWith("\"")) || (value.startsWith("\'") && value.endsWith("\'")))
+                    value = value.substring(1, value.length()-1);
+                attributes.put(attribute[0], value);
+            }
+        }
+
+        //Determine if the tag is an end tag by looking for a / before the tag name. (</b>)
         int endTagIndex = fullTag.indexOf('/');
         if(endTagIndex != -1){
             int tagPos = fullTag.indexOf(tag);

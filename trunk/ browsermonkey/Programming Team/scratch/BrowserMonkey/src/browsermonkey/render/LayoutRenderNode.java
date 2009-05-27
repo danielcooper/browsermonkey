@@ -67,10 +67,10 @@ public class LayoutRenderNode extends RenderNode {
     public void addLineBreaks(int count) {
         if (count <= 0)
             return;
-        if (currentTextNode == null)
-            count--;
-        else
+        if (currentTextNode != null) {
             currentTextNode = null;
+            count--;
+        }
 
         for (int i = 0; i < count; i++)
             addLineSpace();
@@ -78,5 +78,9 @@ public class LayoutRenderNode extends RenderNode {
 
     private void addLineSpace() {
         verticalGroup.addGap(15);
+    }
+
+    public void ensureNewLine() {
+        currentTextNode = null;
     }
 }
