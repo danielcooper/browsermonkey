@@ -27,29 +27,57 @@ public class Parser {
     String originalPage;
     Iterator<Token> tokens;
 
+    public DocumentNode getRootNode() {
+        return rootNode;
+    }
+
     public Parser(String page) {
+        /*@single_nestable_tags = ['html','head','body'] #tags that can only be used once
+    @table_tags = ['table','tr','td',] #table tags need a special case
+    @nestable_tags = ['b','i','strong','em','pre'] #normal, nestable, tags
+    @singuarly_nestable_tags = ['p'] #these tags cannot be nested inside themselfs
+    @leaf_tags =['br','img'] #can have no children
+    @listed_tags =['li','ol','ul'] #list ele*/
         this.singleNestableTags = new HashSet<String>();
+        singleNestableTags.add("html");
+        singleNestableTags.add("head");
+        singleNestableTags.add("body");
         this.tableTags = new HashSet<String>();
+        tableTags.add("table");
+        tableTags.add("tr");
+        tableTags.add("td");
         this.nestableTags = new HashSet<String>();
+        nestableTags.add("b");
+        nestableTags.add("i");
+        nestableTags.add("strong");
+        nestableTags.add("em");
+        nestableTags.add("pre");
         this.singularlyNestableTags = new HashSet<String>();
+        singularlyNestableTags.add("p");
         this.leafTags = new HashSet<String>();
+        leafTags.add("br");
+        leafTags.add("img");
         this.listTags = new HashSet<String>();
-        this.rootNode = new DocumentNode() {}; //TODO FIX THIS
+        listTags.add("li");
+        listTags.add("ol");
+        listTags.add("ul");
         this.openElements = new ArrayList<TagDocumentNode>();
         originalPage = page;
-        tokens = new Tokeniser(page).getTokens();
+        Tokeniser tokeniser =  new Tokeniser(page);
+        tokeniser.tokenise();
+        tokens = tokeniser.getTokens();
     }
 
     public void parse(){
         int i = 0;
+        TagDocumentNode newNode = new TagDocumentNode("html", null);
+        openElements.add(newNode);
+        rootNode = newNode;
         while(tokens.hasNext()){
             Token currentToken = tokens.next();
 
-            //add html if needed
-            if(i == 0 && !currentToken.getTag().equals("html")){
-                TagDocumentNode newNode = new TagDocumentNode("html", null);
-                openElements.add(newNode);
-            }
+            if (i == 0 && currentToken.getTag().equals("html"))
+                continue;
 
             if(currentToken.getType() == TokenType.TAG){
                 if(currentToken.isStartTag()){
@@ -88,14 +116,15 @@ public class Parser {
                     }
 
                 } else {
-                    //add a text element - but not without checking the state of the tables.
-                    if(openElements.size() >= 1){
-                        if(openElements.get(openElements.size()-1).getType().equals("tr") || openElements.get(openElements.size()-1).getType().equals("table")){
-                            doTableElement(new Token("<td>", TokenType.TAG));
-                        }
-                    }
-                    doLeafElement(currentToken);
+                    doEndToken(currentToken);
                 }
+            }
+            else {
+                //add a text element - but not without checking the state of the tables.
+                if (openElements.size() >= 1)
+                    if (openElements.get(openElements.size()-1).getType().equals("tr") || openElements.get(openElements.size()-1).getType().equals("table"))
+                        this.doTableElement(new Token("<td>", TokenType.TAG));
+                doTextElement(currentToken);
             }
             i++;
         }
@@ -158,7 +187,13 @@ public class Parser {
     }
 
     private void doLeafElement(Token token){
-        openElements.get(openElements.size()-1).addChild(new TagDocumentNode(token.getTag(), token.getAttributes()));
+        TagDocumentNode tagNode = new TagDocumentNode(token.getTag(), token.getAttributes());
+        openElements.get(openElements.size()-1).addChild(tagNode);
+    }
+
+    private void doTextElement(Token token) {
+        TextDocumentNode textNode = new TextDocumentNode(token.getTag());
+        openElements.get(openElements.size()-1).addChild(textNode);
     }
 
     private void fixNestingError(Token token){

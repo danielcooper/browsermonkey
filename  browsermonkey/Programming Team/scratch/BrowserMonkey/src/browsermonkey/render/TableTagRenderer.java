@@ -40,9 +40,8 @@ public class TableTagRenderer extends TagRenderer {
             firstRow = false;
         }
 
-        parent.addLineBreaks(1);
+        parent.ensureNewLine();
         parent.addNode(tableNode);
-        parent.addLineBreaks(2);
     }
 
     private static class TableRenderNode extends LayoutRenderNode {

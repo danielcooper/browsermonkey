@@ -21,6 +21,7 @@ public class Renderer {
         rendererMap.put("table", new TableTagRenderer(linker));
         rendererMap.put("a", new AnchorTagRenderer(linker));
         rendererMap.put("br", new LineBreakTagRenderer(linker));
+        rendererMap.put("p", new ParagraphTagRenderer(linker));
     }
 
     public LayoutRenderNode renderRoot(DocumentNode root, float zoom) {
