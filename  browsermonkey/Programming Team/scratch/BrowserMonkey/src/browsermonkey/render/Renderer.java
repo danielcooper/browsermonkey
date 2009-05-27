@@ -22,6 +22,7 @@ public class Renderer {
         rendererMap.put("a", new AnchorTagRenderer(linker));
         rendererMap.put("br", new LineBreakTagRenderer(linker));
         rendererMap.put("p", new ParagraphTagRenderer(linker));
+        rendererMap.put("font", new FontTagRenderer(linker));
     }
 
     public LayoutRenderNode renderRoot(DocumentNode root, float zoom) {
