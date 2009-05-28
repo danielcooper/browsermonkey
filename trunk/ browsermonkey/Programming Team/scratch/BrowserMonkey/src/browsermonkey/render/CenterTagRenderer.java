@@ -8,17 +8,17 @@ import java.util.*;
  *
  * @author Paul Calcraft
  */
-public class ParagraphTagRenderer extends TagRenderer {
+public class CenterTagRenderer extends TagRenderer {
 
-    public ParagraphTagRenderer(Linkable linker) {
+    public CenterTagRenderer(Linkable linker) {
         super(linker);
     }
 
     @Override
     public void render(Renderer renderer, TagDocumentNode tag, LayoutRenderNode parent, Map<Attribute, Object> formatting) {
-        parent.addLineBreaks(1);
+        LayoutRenderNode div = new LayoutRenderNode(linker, true);
         for (DocumentNode child : tag.getChildren())
-            renderer.render(child, parent, formatting);
-        parent.addLineBreaks(1);
+            renderer.render(child, div, formatting);
+        parent.addNode(div);
     }
 }

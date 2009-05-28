@@ -14,13 +14,20 @@ public class LayoutRenderNode extends RenderNode {
     private GroupLayout.ParallelGroup horizontalGroup;
     private GroupLayout.SequentialGroup verticalGroup;
     private TextRenderNode currentTextNode;
+    private boolean centred;
 
     public LayoutRenderNode(Linkable linker) {
+        this(linker, false);
+    }
+
+    public LayoutRenderNode(Linkable linker, boolean centred) {
         super(linker);
+        this.centred = centred;
+        
         layout = new GroupLayout(this);
         this.setLayout(layout);
 
-        horizontalGroup = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
+        horizontalGroup = layout.createParallelGroup(centred ? GroupLayout.Alignment.CENTER : GroupLayout.Alignment.LEADING);
         layout.setHorizontalGroup(horizontalGroup);
 
         verticalGroup = layout.createSequentialGroup();
@@ -72,14 +79,26 @@ public class LayoutRenderNode extends RenderNode {
             layout.setVerticalGroup(verticalGroup);
     }
 
+    public void padLeftWithNode(RenderNode node) {
+        GroupLayout.SequentialGroup paddedContainer = layout.createSequentialGroup();
+        paddedContainer.addComponent(node);
+        paddedContainer.addGroup(horizontalGroup);
+        layout.setHorizontalGroup(paddedContainer);
+        GroupLayout.ParallelGroup verticalOverlapper = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
+        verticalOverlapper.addGroup(verticalGroup);
+        verticalOverlapper.addComponent(node, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE);
+        
+        layout.setVerticalGroup(verticalOverlapper);
+    }
+
     public void addNode(RenderNode node) {
         verticalGroup.addComponent(node, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE);
-        horizontalGroup.addComponent(node, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE);
+        horizontalGroup.addComponent(node, centred ? GroupLayout.Alignment.CENTER : GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE);
     }
 
     public TextRenderNode getTextNode() {
         if (currentTextNode == null) {
-            currentTextNode = new TextRenderNode(linker);
+            currentTextNode = new TextRenderNode(linker, centred);
             addNode(currentTextNode);
         }
         return currentTextNode;
@@ -98,7 +117,10 @@ public class LayoutRenderNode extends RenderNode {
     }
 
     private void addLineSpace() {
-        verticalGroup.addGap(15);
+        //verticalGroup.addGap(15);
+        TextRenderNode lineSpace = new TextRenderNode(linker);
+        lineSpace.addText(" ", Renderer.DEFAULT_FORMATTING);
+        addNode(lineSpace);
     }
 
     public void ensureNewLine() {

@@ -4,6 +4,7 @@ import browsermonkey.document.*;
 import java.util.*;
 import javax.swing.event.*;
 import java.awt.*;
+import java.awt.datatransfer.*;
 import java.awt.font.TextAttribute;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -68,6 +69,14 @@ public class DocumentPanel extends JPanel {
         horizontalGroup.addComponent(rootRenderNode, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE);
 
         title = r.getTitle();
+
+        //JOptionPane.showMessageDialog(this, document.getNodeTree().toDebugString(), "HTML parser output", JOptionPane.INFORMATION_MESSAGE);
+
+        // Store the html output into the clipboard for debug.
+        Clipboard systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+		Transferable transferableText = new StringSelection(document.getNodeTree().toDebugString());
+		systemClipboard.setContents(transferableText, null);
+
         changed();
         revalidate();
         repaint();

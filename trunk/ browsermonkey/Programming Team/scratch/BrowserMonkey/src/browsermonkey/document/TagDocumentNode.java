@@ -34,4 +34,21 @@ public class TagDocumentNode extends DocumentNode {
         this.attributes = attributes;
     }
 
+    @Override
+    public String toDebugString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append('<');
+        builder.append(type);
+        if (attributes != null)
+            for (Map.Entry<String, String> attribute : attributes.entrySet())
+               builder.append(" "+attribute.getKey()+"=\""+attribute.getValue()+"\"");
+        builder.append('>');
+        builder.append("\r\n");
+        for (DocumentNode child : children)
+            builder.append(child.toDebugString()+"\r\n");
+        builder.append("</");
+        builder.append(type);
+        builder.append('>');
+        return builder.toString();
+    }
 }

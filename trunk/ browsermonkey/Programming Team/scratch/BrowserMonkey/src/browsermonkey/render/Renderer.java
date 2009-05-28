@@ -13,6 +13,13 @@ public class Renderer {
     private Map<String, TagRenderer> rendererMap;
     private Linkable linker;
     private String title = null;
+    public static final Map<Attribute,Object> DEFAULT_FORMATTING;
+
+    static {
+        DEFAULT_FORMATTING = new HashMap<Attribute,Object>();
+        DEFAULT_FORMATTING.put(TextAttribute.SIZE, 12f);
+        DEFAULT_FORMATTING.put(TextAttribute.FAMILY, "Times New Roman");
+    }
 
     public String getTitle() {
         return title;
@@ -33,16 +40,15 @@ public class Renderer {
         rendererMap.put("p", new ParagraphTagRenderer(linker));
         rendererMap.put("font", new FontTagRenderer(linker));
         rendererMap.put("title", new TitleTagRenderer(linker));
+        rendererMap.put("ol", new OrderedListRenderer(linker));
+        rendererMap.put("ul", new BulletListRenderer(linker));
+        rendererMap.put("center", new CenterTagRenderer(linker));
     }
 
     public LayoutRenderNode renderRoot(DocumentNode root, float zoom) {
         LayoutRenderNode renderRoot = new LayoutRenderNode(linker);
 
-        Map<Attribute,Object> formatting = new HashMap<Attribute,Object>();
-        formatting.put(TextAttribute.SIZE, 12f);
-        formatting.put(TextAttribute.FAMILY, "Times New Roman");
-
-        render(root, renderRoot, formatting);
+        render(root, renderRoot, DEFAULT_FORMATTING);
 
         renderRoot.setZoomLevel(zoom);
 
