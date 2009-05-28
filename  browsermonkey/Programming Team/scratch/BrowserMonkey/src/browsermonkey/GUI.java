@@ -46,6 +46,13 @@ public class GUI extends javax.swing.JFrame {
         addressField = new javax.swing.JTextField();
         goButton = new javax.swing.JButton();
         browseButton = new javax.swing.JButton();
+        searchButton = new javax.swing.JButton();
+        zoomLabel = new javax.swing.JLabel();
+        zoomOutButton = new javax.swing.JButton();
+        zoomLevelLabel = new javax.swing.JLabel();
+        zoomInButton = new javax.swing.JButton();
+        searchField = new javax.swing.JTextField();
+        searchLabel = new javax.swing.JLabel();
         statusBar = new javax.swing.JLabel();
         documentScrollPanel = new javax.swing.JScrollPane();
         documentPanel = new browsermonkey.render.DocumentPanel();
@@ -76,6 +83,34 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
+        searchButton.setText("Search");
+        searchButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchButtonActionPerformed(evt);
+            }
+        });
+
+        zoomLabel.setText("Zoom:");
+
+        zoomOutButton.setText("-");
+        zoomOutButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                zoomOutButtonActionPerformed(evt);
+            }
+        });
+
+        zoomLevelLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        zoomLevelLabel.setText("100%");
+
+        zoomInButton.setText("+");
+        zoomInButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                zoomInButtonActionPerformed(evt);
+            }
+        });
+
+        searchLabel.setText("Search:");
+
         javax.swing.GroupLayout topLayout = new javax.swing.GroupLayout(top);
         top.setLayout(topLayout);
         topLayout.setHorizontalGroup(
@@ -84,7 +119,22 @@ public class GUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(addressLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(addressField, javax.swing.GroupLayout.DEFAULT_SIZE, 386, Short.MAX_VALUE)
+                .addGroup(topLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, topLayout.createSequentialGroup()
+                        .addComponent(zoomLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(zoomOutButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(zoomLevelLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(zoomInButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(searchLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(searchButton))
+                    .addComponent(addressField, javax.swing.GroupLayout.PREFERRED_SIZE, 503, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(goButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -100,7 +150,16 @@ public class GUI extends javax.swing.JFrame {
                     .addComponent(addressField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(browseButton)
                     .addComponent(goButton))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(topLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(searchButton)
+                    .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(searchLabel)
+                    .addComponent(zoomInButton)
+                    .addComponent(zoomLevelLabel)
+                    .addComponent(zoomOutButton)
+                    .addComponent(zoomLabel))
+                .addGap(3, 3, 3))
         );
 
         statusBar.setText("Ready");
@@ -113,16 +172,16 @@ public class GUI extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(statusBar, javax.swing.GroupLayout.DEFAULT_SIZE, 577, Short.MAX_VALUE)
-            .addComponent(documentScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 577, Short.MAX_VALUE)
+            .addComponent(statusBar, javax.swing.GroupLayout.DEFAULT_SIZE, 694, Short.MAX_VALUE)
             .addComponent(top, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(documentScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 694, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(top, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(top, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(documentScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
+                .addComponent(documentScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(statusBar))
         );
@@ -147,6 +206,47 @@ public class GUI extends javax.swing.JFrame {
     private void addressFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addressFieldActionPerformed
         goButtonActionPerformed(null);
     }//GEN-LAST:event_addressFieldActionPerformed
+
+    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
+        // TODO add your handling code here:
+}//GEN-LAST:event_searchButtonActionPerformed
+
+    private void zoomOutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomOutButtonActionPerformed
+        zoom(-1);
+}//GEN-LAST:event_zoomOutButtonActionPerformed
+
+    private void zoomInButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomInButtonActionPerformed
+        zoom(1);
+}//GEN-LAST:event_zoomInButtonActionPerformed
+
+    //private int zoomLevel = 100;
+    private int zoomLevelIndex = 4;
+    private static final int[] zoomLevels = new int[] {
+        60, 70, 80, 90,
+        100,
+        125, 150, 175, 200
+    };
+    /*private static final int maximumZoom = 250;
+    private static final int minimumZoom = 25;
+    private static final int zoomStep = 25;*/
+
+    private void zoom(int levelChange) {
+        int newIndex = zoomLevelIndex+levelChange;
+        //int newZoom = zoomLevel+amount;
+        if (newIndex < 0 || newIndex >= zoomLevels.length)
+        return;
+        //if (newZoom > maximumZoom || newZoom < minimumZoom)
+            
+        /*documentPanel.setZoomLevel(newZoom/100f);
+        zoomLevel = newZoom;
+        zoomLevelLabel.setText(zoomLevel+"%");*/
+
+        documentPanel.setZoomLevel(zoomLevels[newIndex]/100f);
+        zoomLevelIndex = newIndex;
+        zoomLevelLabel.setText(zoomLevels[newIndex]+"%");
+        zoomOutButton.setEnabled(newIndex > 0);
+        zoomInButton.setEnabled(newIndex < zoomLevels.length-1);
+    }
 
     private void panelChanged() {
         this.addressField.setText(documentPanel.getAddress());
@@ -173,8 +273,15 @@ public class GUI extends javax.swing.JFrame {
     private browsermonkey.render.DocumentPanel documentPanel;
     private javax.swing.JScrollPane documentScrollPanel;
     private javax.swing.JButton goButton;
+    private javax.swing.JButton searchButton;
+    private javax.swing.JTextField searchField;
+    private javax.swing.JLabel searchLabel;
     private javax.swing.JLabel statusBar;
     private javax.swing.JPanel top;
+    private javax.swing.JButton zoomInButton;
+    private javax.swing.JLabel zoomLabel;
+    private javax.swing.JLabel zoomLevelLabel;
+    private javax.swing.JButton zoomOutButton;
     // End of variables declaration//GEN-END:variables
 
 }

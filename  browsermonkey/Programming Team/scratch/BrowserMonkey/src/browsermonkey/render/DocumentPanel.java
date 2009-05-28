@@ -68,6 +68,13 @@ public class DocumentPanel extends JPanel {
         return document.getPath();
     }
 
+    public void setZoomLevel(float zoomLevel) {
+        rootRenderNode.setZoomLevel(zoomLevel);
+        this.zoomLevel = zoomLevel;
+        revalidate();
+        repaint();
+    }
+
     private ArrayList<ChangeListener> changeListeners = new ArrayList<ChangeListener>();
 
     /**

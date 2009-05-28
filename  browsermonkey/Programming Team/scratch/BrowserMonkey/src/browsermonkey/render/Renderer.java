@@ -15,7 +15,7 @@ public class Renderer {
 
     public Renderer(Linkable linker) {
         this.linker = linker;
-        rendererMap = new Hashtable<String, TagRenderer>();
+        rendererMap = new HashMap<String, TagRenderer>();
         rendererMap.put("b", new BoldTagRenderer(linker));
         rendererMap.put("i", new ItalicsTagRenderer(linker));
         rendererMap.put("table", new TableTagRenderer(linker));
@@ -28,10 +28,13 @@ public class Renderer {
     public LayoutRenderNode renderRoot(DocumentNode root, float zoom) {
         LayoutRenderNode renderRoot = new LayoutRenderNode(linker);
 
-        Map<Attribute,Object> formatting = new Hashtable<Attribute,Object>();
-        formatting.put(TextAttribute.SIZE, Math.round(12 * zoom));
+        Map<Attribute,Object> formatting = new HashMap<Attribute,Object>();
+        formatting.put(TextAttribute.SIZE, 12f);
+        formatting.put(TextAttribute.FAMILY, "Times New Roman");
 
         render(root, renderRoot, formatting);
+
+        renderRoot.setZoomLevel(zoom);
 
         return renderRoot;
     }

@@ -120,7 +120,7 @@ public class Document {
 
         String[] parts = tagText.split(" ");
         String tag = parts[0];
-        java.util.Hashtable attributes = new java.util.Hashtable<String, String>();
+        java.util.HashMap attributes = new java.util.HashMap<String, String>();
         for (int i = 1; i < parts.length; i++) {
             String[] keyValue = parts[i].split("=");
             attributes.put(keyValue[0].trim(), keyValue[1].trim().replace("\"", ""));

@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.font.*;
+import java.awt.geom.*;
 import java.text.*;
 import java.util.*;
 import java.text.AttributedCharacterIterator.Attribute;
@@ -14,8 +15,7 @@ import java.text.AttributedCharacterIterator.Attribute;
  */
 public class TextRenderNode extends RenderNode {
     private AttributedString text;
-    private boolean widthChanged = true;
-    //private ArrayList<TextLayout> textLayouts;
+    private boolean dimensionsChanged = true;
     private Map<Rectangle, TextLayout> textLayouts;
 
     private static Map<String, Character> characterEntities;
@@ -56,6 +56,14 @@ public class TextRenderNode extends RenderNode {
             public void mousePressed(MouseEvent e) {}
             public void mouseReleased(MouseEvent e) {}
         });
+    }
+
+    @Override
+    public void setZoomLevel(float zoomLevel) {
+        int screenRes = Toolkit.getDefaultToolkit().getScreenResolution();
+        double dpiCorrection = screenRes/72d;
+        text.addAttribute(TextAttribute.TRANSFORM, new TransformAttribute(AffineTransform.getScaleInstance(zoomLevel*dpiCorrection, zoomLevel*dpiCorrection)));
+        dimensionsChanged = true;
     }
 
     public static final AttributedCharacterIterator.Attribute HREF_ATTRIBUTE = new AttributedCharacterIterator.Attribute("href") {};
@@ -149,6 +157,10 @@ public class TextRenderNode extends RenderNode {
 
     @Override
     public void paint(Graphics g) {
+        // If possible, enable text antialiasing
+        if (g instanceof Graphics2D)
+            ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
         AttributedCharacterIterator it = text.getIterator();
         LineBreakMeasurer lineBreaker = new LineBreakMeasurer(it, g.getFontMetrics().getFontRenderContext());
 
@@ -164,12 +176,12 @@ public class TextRenderNode extends RenderNode {
             textLayouts.put(layout.getPixelBounds(null, coord.x + dx, coord.y), layout);
             coord.y += layout.getDescent() + layout.getLeading();
         }
-        if (widthChanged) {
+        if (dimensionsChanged) {
             // If the width has changed since the last render, the height needs
             // to be updated to fit the wrapped text. We set 0 as the preferred
             // width so it can defer width control to its parent/layout manager.
             setPreferredSize(new Dimension(0, coord.y));
-            widthChanged = false;
+            dimensionsChanged = false;
             revalidate();
         }
     }
@@ -179,7 +191,7 @@ public class TextRenderNode extends RenderNode {
         // If the bounding width changes, we need to set widthChanged so the
         // paint method knows to reset the height when it word wraps.
         if (this.getBounds().width != width) {
-            widthChanged = true;
+            dimensionsChanged = true;
         }
         super.setBounds(x, y, width, height);
     }
