@@ -12,6 +12,15 @@ import java.awt.font.*;
 public class Renderer {
     private Map<String, TagRenderer> rendererMap;
     private Linkable linker;
+    private String title = null;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     public Renderer(Linkable linker) {
         this.linker = linker;
@@ -23,6 +32,7 @@ public class Renderer {
         rendererMap.put("br", new LineBreakTagRenderer(linker));
         rendererMap.put("p", new ParagraphTagRenderer(linker));
         rendererMap.put("font", new FontTagRenderer(linker));
+        rendererMap.put("title", new TitleTagRenderer(linker));
     }
 
     public LayoutRenderNode renderRoot(DocumentNode root, float zoom) {

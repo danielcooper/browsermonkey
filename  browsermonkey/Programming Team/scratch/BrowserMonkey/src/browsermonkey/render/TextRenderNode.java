@@ -60,10 +60,15 @@ public class TextRenderNode extends RenderNode {
 
     @Override
     public void setZoomLevel(float zoomLevel) {
-        int screenRes = Toolkit.getDefaultToolkit().getScreenResolution();
-        double dpiCorrection = screenRes/72d;
+        int screenResolution = Toolkit.getDefaultToolkit().getScreenResolution();
+        double dpiCorrection = screenResolution/72d;
         text.addAttribute(TextAttribute.TRANSFORM, new TransformAttribute(AffineTransform.getScaleInstance(zoomLevel*dpiCorrection, zoomLevel*dpiCorrection)));
         dimensionsChanged = true;
+    }
+
+    @Override
+    public void extractTextInto(ArrayList<AttributedString> text) {
+        text.add(this.text);
     }
 
     public static final AttributedCharacterIterator.Attribute HREF_ATTRIBUTE = new AttributedCharacterIterator.Attribute("href") {};

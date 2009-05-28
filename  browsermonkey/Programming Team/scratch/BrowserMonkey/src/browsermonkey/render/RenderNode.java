@@ -1,5 +1,7 @@
 package browsermonkey.render;
 
+import java.text.AttributedString;
+import java.util.ArrayList;
 import javax.swing.*;
 
 /**
@@ -14,4 +16,6 @@ public abstract class RenderNode extends JComponent {
     }
 
     public void setZoomLevel(float zoomLevel) {}
+
+    public void extractTextInto(ArrayList<AttributedString> text) {}
 }

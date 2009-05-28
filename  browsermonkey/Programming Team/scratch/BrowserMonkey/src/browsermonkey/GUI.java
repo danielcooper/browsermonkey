@@ -208,7 +208,7 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_addressFieldActionPerformed
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
-        // TODO add your handling code here:
+        documentPanel.setSearch(searchField.getText());
 }//GEN-LAST:event_searchButtonActionPerformed
 
     private void zoomOutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomOutButtonActionPerformed
@@ -251,6 +251,10 @@ public class GUI extends javax.swing.JFrame {
     private void panelChanged() {
         this.addressField.setText(documentPanel.getAddress());
         addressField.setCaretPosition(addressField.getText().length());
+        if (documentPanel.getTitle() == null)
+            setTitle("BrowserMonkey");
+        else
+            setTitle(documentPanel.getTitle()+" - BrowserMonkey");
     }
 
     private void loadFile(String path){
