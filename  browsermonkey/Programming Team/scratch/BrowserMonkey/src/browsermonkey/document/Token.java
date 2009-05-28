@@ -31,7 +31,7 @@ public class Token {
             tag = fullTag;
         } else if(type == TokenType.TAG) { //If type is tag
             //Regex to get the a in <a href="b">
-            tag = RegexUtility.scan(fullTag, "[\\w:-]+")[0][0];
+            tag = RegexUtility.scan(fullTag, "[\\w:-]+")[0][0].toLowerCase();
             classifyTag();
         }
     }
@@ -65,17 +65,6 @@ public class Token {
     }
 
     public void classifyTag(){
-        //ArrayList atts = new ArrayList<String>();
-//        atts = fullTag.
-//        Pattern attPattern = Pattern.compile("[\w:-]+");
-//        Matcher attMatcher = attPattern.matcher(fullTag);
-//        attMatcher.
-        //TODO Regex Stuff, HALP
-
-        //for each attribute in attributes MAP
-        //lowercase them
-
-
         String[][] atts = RegexUtility.scan(fullTag, "<[\\w:-]+\\s+(.*)>");
         if (atts.length > 0) {
             String[][] attributeStrings = RegexUtility.scan(atts[0][0], "\\s*([\\w:-]+)\\s*=\\s*(\"[^\"]*\"|'[^']*'|[^\"'>][^\\s>]*)");
@@ -86,7 +75,7 @@ public class Token {
                 String value = attribute[1];
                 if ((value.startsWith("\"") && value.endsWith("\"")) || (value.startsWith("\'") && value.endsWith("\'")))
                     value = value.substring(1, value.length()-1);
-                attributes.put(attribute[0], value);
+                attributes.put(attribute[0].toLowerCase(), value);
             }
         }
 

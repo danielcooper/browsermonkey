@@ -22,4 +22,9 @@ public class TextDocumentNode extends DocumentNode {
     public TextDocumentNode(String text) {
         this.text = text;
     }
+
+    @Override
+    public String toDebugString() {
+        return text;
+    }
 }

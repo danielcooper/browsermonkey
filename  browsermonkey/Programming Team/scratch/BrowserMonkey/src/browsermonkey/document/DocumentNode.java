@@ -34,4 +34,6 @@ public abstract class DocumentNode {
     public void addChild(DocumentNode child){
         children.add(child);
     }
+
+    public abstract String toDebugString();
 }

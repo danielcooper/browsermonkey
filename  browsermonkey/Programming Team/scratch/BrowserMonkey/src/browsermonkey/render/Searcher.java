@@ -26,6 +26,11 @@ public class Searcher {
     }
 
     public static int highlightSearchTerm(AttributedString[] textRanges, String term, Map<Attribute, Object> highlightAttributes) {
+        for (AttributedString textRange : textRanges) {
+            for (Attribute attribute : highlightAttributes.keySet())
+                textRange.addAttribute(attribute, null);
+        }
+        
         if (term.length() == 0)
             return 0;
 
@@ -37,13 +42,14 @@ public class Searcher {
 
         //int currentRunStartRangeIndex = -1;
         //int currentRunStartCharacterIndex = -1;
-        
+
+        int currentRunCharacterIndex = 0;
         for (int i = 0; i < textRanges.length; i++) {
-            int currentRunCharacterIndex = 0;
+            
             AttributedCharacterIterator iterator = textRanges[i].getIterator();
-            char current;
             int rangeRunStartIndex = 0;
-            while ((current = Character.toLowerCase(iterator.next())) != AttributedCharacterIterator.DONE) {
+            for(char current = iterator.first(); current != CharacterIterator.DONE; current = iterator.next()) {
+                current = Character.toLowerCase(current);
                 if (term.charAt(currentRunCharacterIndex) == current) {
                     if (currentRunCharacterIndex == 0)
                         rangeRunStartIndex = iterator.getIndex();

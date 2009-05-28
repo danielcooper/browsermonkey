@@ -8,6 +8,7 @@ import java.awt.geom.*;
 import java.text.*;
 import java.util.*;
 import java.text.AttributedCharacterIterator.Attribute;
+import javax.swing.border.LineBorder;
 
 /**
  * Renders formatted text with word wrap.
@@ -15,6 +16,7 @@ import java.text.AttributedCharacterIterator.Attribute;
  */
 public class TextRenderNode extends RenderNode {
     private AttributedString text;
+    private boolean centred;
     private boolean dimensionsChanged = true;
     private Map<Rectangle, TextLayout> textLayouts;
 
@@ -34,17 +36,24 @@ public class TextRenderNode extends RenderNode {
     }
 
     public TextRenderNode(Linkable linker) {
-        this(linker, "");
+        this(linker, false);
+    }
+
+    public TextRenderNode(Linkable linker, boolean centred) {
+        this(linker, centred, "");
     }
 
     /**
      * Constructs a <code>TextRenderComponent</code> with the specified text.
      * @param linker
+     * @param centred
      * @param text
      */
-    public TextRenderNode(Linkable linker, String text) {
+    public TextRenderNode(Linkable linker, boolean centred, String text) {
         super(linker);
 
+        this.centred = centred;
+        //setBorder(LineBorder.createBlackLineBorder());
         this.text = new AttributedString(text);
         this.addMouseListener(new MouseListener() {
             public void mouseClicked(MouseEvent e) {
@@ -69,6 +78,12 @@ public class TextRenderNode extends RenderNode {
     @Override
     public void extractTextInto(ArrayList<AttributedString> text) {
         text.add(this.text);
+    }
+
+    public static final AttributedCharacterIterator.Attribute ALIGN_ATTRIBUTE = new AttributedCharacterIterator.Attribute("align") {};
+
+    public static enum TextAlign {
+        CENTRE
     }
 
     public static final AttributedCharacterIterator.Attribute HREF_ATTRIBUTE = new AttributedCharacterIterator.Attribute("href") {};
@@ -161,7 +176,7 @@ public class TextRenderNode extends RenderNode {
     }
 
     @Override
-    public void paint(Graphics g) {
+    public void paint(Graphics g) {        
         // If possible, enable text antialiasing
         if (g instanceof Graphics2D)
             ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
@@ -173,20 +188,43 @@ public class TextRenderNode extends RenderNode {
 
         Point coord = new Point(0, 0);
         float wrappingWidth = getWidth();
+        TextLayout layout = null;
         while (lineBreaker.getPosition() < it.getEndIndex()) {
-            TextLayout layout = lineBreaker.nextLayout(wrappingWidth);
-            coord.y += (layout.getAscent());
-            float dx = layout.isLeftToRight() ? 0 : (wrappingWidth - layout.getAdvance());
+            layout = lineBreaker.nextLayout(wrappingWidth);
+            coord.y += layout.getAscent() ;
+            float dx;
+            if (centred)
+                dx = (wrappingWidth-layout.getAdvance())/2f;
+            else
+                dx = layout.isLeftToRight() ? 0 : (wrappingWidth - layout.getAdvance());
             layout.draw((Graphics2D)g, coord.x + dx, coord.y);
             textLayouts.put(layout.getPixelBounds(null, coord.x + dx, coord.y), layout);
             coord.y += layout.getDescent() + layout.getLeading();
         }
+        //if (layout != null)
+        //    coord.y -= layout.getLeading();
+        //g.clearRect(0, 30, 300, 30);
+        //g.drawString("Preferred: "+getPreferredSize().toString(), 0, 50);
         if (dimensionsChanged) {
             // If the width has changed since the last render, the height needs
             // to be updated to fit the wrapped text. We set 0 as the preferred
             // width so it can defer width control to its parent/layout manager.
             setPreferredSize(new Dimension(0, coord.y));
+
+            int longestSingleWord = 0;
+            it.setIndex(it.getBeginIndex());
+            BreakIterator breakIterator = BreakIterator.getWordInstance();
+            breakIterator.setText(it);
+            for (int i = 0, j = breakIterator.first(); j != BreakIterator.DONE; i = j, j = breakIterator.next()) {
+                int pixelLength = (int)Math.ceil(g.getFontMetrics().getStringBounds(it, i, j, g).getWidth());
+                longestSingleWord = Math.max(longestSingleWord, pixelLength);
+            }
+            //setMinimumSize(new Dimension(longestSingleWord, 0));
+            setMaximumSize(new Dimension((int)Math.ceil(new TextMeasurer(it, g.getFontMetrics().getFontRenderContext()).getAdvanceBetween(it.getBeginIndex(), it.getEndIndex())), Short.MAX_VALUE));
+
             dimensionsChanged = false;
+            if (text.getIterator().first() == '•')
+                dimensionsChanged = false;
             revalidate();
         }
     }
