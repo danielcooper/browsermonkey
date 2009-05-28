@@ -1,6 +1,8 @@
 package browsermonkey.render;
 
 import java.awt.*;
+import java.text.AttributedString;
+import java.util.ArrayList;
 import javax.swing.*;
 
 /**
@@ -30,6 +32,15 @@ public class LayoutRenderNode extends RenderNode {
         for (Component component : getComponents()) {
             if (component instanceof RenderNode) {
                 ((RenderNode)component).setZoomLevel(zoomLevel);
+            }
+        }
+    }
+
+    @Override
+    public void extractTextInto(ArrayList<AttributedString> text) {
+        for (Component component : getComponents()) {
+            if (component instanceof RenderNode) {
+                ((RenderNode)component).extractTextInto(text);
             }
         }
     }

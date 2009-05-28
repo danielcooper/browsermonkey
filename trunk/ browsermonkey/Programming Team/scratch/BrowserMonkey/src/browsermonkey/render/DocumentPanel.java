@@ -1,11 +1,14 @@
 package browsermonkey.render;
 
 import browsermonkey.document.*;
-import java.util.ArrayList;
+import java.util.*;
 import javax.swing.event.*;
 import java.awt.*;
+import java.awt.font.TextAttribute;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.*;
+import java.util.ArrayList;
 import javax.swing.*;
 
 /**
@@ -15,11 +18,16 @@ import javax.swing.*;
  */
 public class DocumentPanel extends JPanel {
     private Document document;
+    private String title;
     private GroupLayout layout;
     private GroupLayout.ParallelGroup horizontalGroup;
     private GroupLayout.SequentialGroup verticalGroup;
     private float zoomLevel = 1.0f;
     private RenderNode rootRenderNode;
+
+    public String getTitle() {
+        return title;
+    }
 
     /**
      * Constructs a <code>DocumentPanel</code> by initialising the layout groups.
@@ -59,6 +67,7 @@ public class DocumentPanel extends JPanel {
         verticalGroup.addComponent(rootRenderNode, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE);
         horizontalGroup.addComponent(rootRenderNode, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE);
 
+        title = r.getTitle();
         changed();
         revalidate();
         repaint();
@@ -71,6 +80,17 @@ public class DocumentPanel extends JPanel {
     public void setZoomLevel(float zoomLevel) {
         rootRenderNode.setZoomLevel(zoomLevel);
         this.zoomLevel = zoomLevel;
+        revalidate();
+        repaint();
+    }
+
+    public void setSearch(String term) {
+        ArrayList<AttributedString> textRanges = new ArrayList<AttributedString>();
+        Map<AttributedCharacterIterator.Attribute, Object> highlightAttributes = new HashMap<AttributedCharacterIterator.Attribute, Object>();
+        //highlightAttributes.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD);
+        highlightAttributes.put(TextAttribute.BACKGROUND, new Color(0x38D878));
+        rootRenderNode.extractTextInto(textRanges);
+        Searcher.highlightSearchTerm(textRanges.toArray(new AttributedString[textRanges.size()]), term, highlightAttributes);
         revalidate();
         repaint();
     }
