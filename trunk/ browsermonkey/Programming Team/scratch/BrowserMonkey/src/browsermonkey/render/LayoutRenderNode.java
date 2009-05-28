@@ -1,5 +1,6 @@
 package browsermonkey.render;
 
+import java.awt.*;
 import javax.swing.*;
 
 /**
@@ -22,6 +23,15 @@ public class LayoutRenderNode extends RenderNode {
 
         verticalGroup = layout.createSequentialGroup();
         layout.setVerticalGroup(verticalGroup);
+    }
+
+    @Override
+    public void setZoomLevel(float zoomLevel) {
+        for (Component component : getComponents()) {
+            if (component instanceof RenderNode) {
+                ((RenderNode)component).setZoomLevel(zoomLevel);
+            }
+        }
     }
 
     public void setPadding(int left, int right, int top, int bottom) {

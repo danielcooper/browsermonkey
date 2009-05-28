@@ -12,4 +12,6 @@ public abstract class RenderNode extends JComponent {
     public RenderNode(Linkable linker) {
         this.linker = linker;
     }
+
+    public void setZoomLevel(float zoomLevel) {}
 }

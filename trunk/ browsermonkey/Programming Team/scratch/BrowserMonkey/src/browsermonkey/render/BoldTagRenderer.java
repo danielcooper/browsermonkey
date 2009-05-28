@@ -17,7 +17,7 @@ public class BoldTagRenderer extends TagRenderer {
     
     @Override
     public void render(Renderer renderer, TagDocumentNode tag, LayoutRenderNode parent, Map<Attribute, Object> formatting) {
-        Map<Attribute, Object> newFormatting = (Map<Attribute, Object>)((Hashtable)formatting).clone();
+        Map<Attribute, Object> newFormatting = (Map<Attribute, Object>)((HashMap)formatting).clone();
         newFormatting.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD);
         for (DocumentNode child : tag.getChildren())
             renderer.render(child, parent, newFormatting);

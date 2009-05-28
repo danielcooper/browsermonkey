@@ -84,11 +84,13 @@ public class Parser {
                     //if it's  table tag or if a row has been opened but not a cell - add the approprate elements
                     if(tableTags.contains(currentToken.getTag())){
                         doTableElement(currentToken);
+                        continue;
                     }else if(openElements.size() >= 1){
                         if(openElements.get(openElements.size()-1).getType().equals("tr") || openElements.get(openElements.size()-1).getType().equals("table")){
                             doTableElement(new Token("<td>", TokenType.TAG));
                         }
                     }
+
                     //perform listed tag functions
                     if(listTags.contains(currentToken.getTag())){
                         doListedElement(currentToken);
@@ -100,19 +102,23 @@ public class Parser {
                     //TODO Fix pre elements
                     //For singularly nestable tags, check if the last tag is the same. If it is
                     //fix the nesting, if not - carry on.
-                    if(singularlyNestableTags.contains(currentToken.getTag())){
+                    else if(singularlyNestableTags.contains(currentToken.getTag())){
                         if(openElements.size() > 1 && openElements.get(openElements.size()-1).getType().equals(currentToken.getTag())){
                             doEndToken(currentToken);
                         }
                         doStartToken(currentToken);
                     }
                     //basic nestable tag
-                    if(nestableTags.contains(currentToken.getTag())){
+                    else if(nestableTags.contains(currentToken.getTag())){
                         doStartToken(currentToken);
                     }
                     //add the leaf tag
-                    if(leafTags.contains(currentToken.getTag())){
+                    else if(leafTags.contains(currentToken.getTag())){
                         doLeafElement(currentToken);
+                    }
+                    else {
+                        // if in doubt...
+                        doStartToken(currentToken);
                     }
 
                 } else {

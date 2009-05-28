@@ -21,7 +21,7 @@ public class AnchorTagRenderer extends TagRenderer {
         Map<Attribute, Object> newFormatting = formatting;
         String href = tag.getAttributes().get("href");
         if (href != null) {
-            newFormatting = (Map<Attribute, Object>)((Hashtable)formatting).clone();
+            newFormatting = (Map<Attribute, Object>)((HashMap)formatting).clone();
             newFormatting.put(TextAttribute.FOREGROUND, Color.blue);
             newFormatting.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
             newFormatting.put(TextRenderNode.HREF_ATTRIBUTE, href);
