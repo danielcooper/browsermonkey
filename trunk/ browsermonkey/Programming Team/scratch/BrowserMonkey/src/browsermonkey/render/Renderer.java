@@ -64,6 +64,7 @@ public class Renderer {
         
         rendererMap = new HashMap<String, TagRenderer>();
         rendererMap.put("b", new BoldTagRenderer(linker));
+        rendererMap.put("strong", new BoldTagRenderer(linker));
         rendererMap.put("i", new ItalicsTagRenderer(linker));
         rendererMap.put("table", new TableTagRenderer(linker));
         rendererMap.put("a", new AnchorTagRenderer(linker));
@@ -83,6 +84,7 @@ public class Renderer {
         rendererMap.put("h4", new HeadingTagRenderer(linker));
         rendererMap.put("h5", new HeadingTagRenderer(linker));
         rendererMap.put("h6", new HeadingTagRenderer(linker));
+        rendererMap.put("u", new UnderlineTagRenderer(linker));
     }
 
     public LayoutRenderNode renderRoot(DocumentNode root, float zoom) {

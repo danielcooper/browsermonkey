@@ -144,11 +144,12 @@ public class Parser {
             ArrayList<TextDocumentNode> textNodes = textSearch(nonPreTag, false);
             for (TextDocumentNode textNode : textNodes) {
                 String text = textNode.getText().replaceAll("\\s+", " ");
-                int textIndex = nonPreTag.children.indexOf(textNode);
+                // TODO: Work out when and where to strip whitespace
+                /*int textIndex = nonPreTag.children.indexOf(textNode);
                 if (textIndex == 0)
                     text = text.trim();
                 else if (textIndex == nonPreTag.children.size()-1)
-                    text.trim();
+                    text.trim();*/
                 if (text.equals(""))
                     nonPreTag.children.remove(textNode);
                 else
