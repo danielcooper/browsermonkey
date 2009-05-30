@@ -33,7 +33,14 @@ public class FontTagRenderer extends TagRenderer {
         String face = tag.getAttributes().get("face");
 
         if (color != null) {
-            Color colour = getNamedColour(color);
+            Color colour;
+            if (color.charAt(0) == '#') {
+                colour = new Color(Integer.parseInt(color.substring(1), 16));
+                // TODO: Detect bad number formatting
+            }
+            else
+                colour = getNamedColour(color);
+
             if (colour != null) {
                 newFormatting.put(TextAttribute.FOREGROUND, colour);
             }
