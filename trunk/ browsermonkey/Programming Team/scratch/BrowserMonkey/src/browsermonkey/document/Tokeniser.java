@@ -51,8 +51,8 @@ public class Tokeniser {
                 text = page.substring(currentPos, page.length());
             }
             currentPos = currentPos + text.length();
-            text = text.replaceAll("\\s+", " ").trim();
-            if (!text.equals(""))
+            //text = text.replaceAll("\\s+", " ").trim();
+            //if (!text.equals(""))
                 tokens.add(new Token(text, TokenType.TEXT));
         }
     }

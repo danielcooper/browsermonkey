@@ -17,8 +17,8 @@ public abstract class ListTagRenderer extends TagRenderer {
     public void render(Renderer renderer, TagDocumentNode tag, LayoutRenderNode parent, Map<Attribute, Object> formatting) {
 
         LayoutRenderNode listNode = new LayoutRenderNode(linker);
-        listNode.setPadding(10, 0, 0, 0);
 
+        //listNode.setPadding(40, 0, 0, 0);
         int i = 0;
         for (DocumentNode itemNode : tag.getChildren()) {
             LayoutRenderNode itemLayoutNode = new LayoutRenderNode(linker);

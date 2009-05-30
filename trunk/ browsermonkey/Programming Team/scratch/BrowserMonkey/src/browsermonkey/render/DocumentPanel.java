@@ -69,9 +69,7 @@ public class DocumentPanel extends JPanel {
         horizontalGroup.addComponent(rootRenderNode, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE);
 
         title = r.getTitle();
-
-        //JOptionPane.showMessageDialog(this, document.getNodeTree().toDebugString(), "HTML parser output", JOptionPane.INFORMATION_MESSAGE);
-
+        
         // Store the html output into the clipboard for debug.
         Clipboard systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 		Transferable transferableText = new StringSelection(document.getNodeTree().toDebugString());

@@ -25,6 +25,6 @@ public class TextDocumentNode extends DocumentNode {
 
     @Override
     public String toDebugString() {
-        return text;
+        return '['+text+']';
     }
 }

@@ -134,6 +134,64 @@ public class Parser {
             }
             i++;
         }
+        postProcess();
+    }
+
+    private void postProcess() {
+        // Find all tags that are not inside a pre, and strip their whitespace.
+        ArrayList<TagDocumentNode> nonPreTags = shallowTagSearch(rootNode, "pre", true);
+        for (TagDocumentNode nonPreTag : nonPreTags) {
+            ArrayList<TextDocumentNode> textNodes = textSearch(nonPreTag, false);
+            for (TextDocumentNode textNode : textNodes) {
+                String text = textNode.getText().replaceAll("\\s+", " ");
+                int textIndex = nonPreTag.children.indexOf(textNode);
+                if (textIndex == 0)
+                    text = text.trim();
+                else if (textIndex == nonPreTag.children.size()-1)
+                    text.trim();
+                if (text.equals(""))
+                    nonPreTag.children.remove(textNode);
+                else
+                    textNode.setText(text);
+            }
+        }
+    }
+
+    private static ArrayList<TextDocumentNode> textSearch(DocumentNode parent, boolean deep) {
+        ArrayList<TextDocumentNode> result = new ArrayList<TextDocumentNode>();
+
+        for (DocumentNode child : parent.getChildren()) {
+            if (child instanceof TextDocumentNode) {
+                TextDocumentNode textNode = (TextDocumentNode)child;
+                result.add(textNode);
+            }
+            else if (deep)
+                result.addAll(textSearch(child, true));
+        }
+
+        return result;
+    }
+
+    private static ArrayList<TagDocumentNode> shallowTagSearch(DocumentNode parent, String type, boolean inverse) {
+        ArrayList<TagDocumentNode> result = new ArrayList<TagDocumentNode>();
+
+        if (parent instanceof TagDocumentNode) {
+            TagDocumentNode tagNode = (TagDocumentNode)parent;
+            if (tagNode.getType().equals(type)) {
+                if (inverse)
+                    return result;
+
+                result.add(tagNode);
+                return result;
+            }
+            else if (inverse)
+                result.add(tagNode);
+        }
+
+        for (DocumentNode child : parent.getChildren())
+            result.addAll(shallowTagSearch(child, type, inverse));
+
+        return result;
     }
 
     //Does a standard list. If the user chooses to not close li tags then it assumes that the next li

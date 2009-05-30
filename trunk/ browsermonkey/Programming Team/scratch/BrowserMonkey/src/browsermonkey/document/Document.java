@@ -32,11 +32,12 @@ public class Document {
     public void load() throws FileNotFoundException, IOException {
         FileReader reader = new FileReader(path);
         BufferedReader br = new BufferedReader(reader);
-        String line;
+        char[] buffer = new char[256];
+        int charactersRead;
         StringBuilder result = new StringBuilder();
         try {
-            while ((line = br.readLine()) != null) {
-                result.append(line);
+            while ((charactersRead = br.read(buffer)) != -1) {
+                result.append(buffer, 0, charactersRead);
             }
         } catch (IOException ex) {
             reader.close();
