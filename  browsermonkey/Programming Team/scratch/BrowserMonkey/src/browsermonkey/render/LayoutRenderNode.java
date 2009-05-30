@@ -87,7 +87,6 @@ public class LayoutRenderNode extends RenderNode {
         GroupLayout.ParallelGroup verticalOverlapper = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
         verticalOverlapper.addGroup(verticalGroup);
         verticalOverlapper.addComponent(node, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE);
-        
         layout.setVerticalGroup(verticalOverlapper);
     }
 
@@ -117,9 +116,8 @@ public class LayoutRenderNode extends RenderNode {
     }
 
     private void addLineSpace() {
-        //verticalGroup.addGap(15);
         TextRenderNode lineSpace = new TextRenderNode(linker);
-        lineSpace.addText(" ", Renderer.DEFAULT_FORMATTING);
+        lineSpace.addText(" ", Renderer.FIXED_DEFAULT_FORMATTING);
         addNode(lineSpace);
     }
 

@@ -11,6 +11,6 @@ public class BulletListRenderer extends ListTagRenderer{
 
     @Override
     protected String getListElementText(int index) {
-        return " • ";
+        return "    • ";
     }
 }

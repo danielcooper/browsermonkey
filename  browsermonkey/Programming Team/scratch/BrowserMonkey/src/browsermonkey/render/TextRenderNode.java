@@ -8,7 +8,8 @@ import java.awt.geom.*;
 import java.text.*;
 import java.util.*;
 import java.text.AttributedCharacterIterator.Attribute;
-import javax.swing.border.LineBorder;
+import java.util.ArrayList;
+import java.util.regex.*;
 
 /**
  * Renders formatted text with word wrap.
@@ -16,6 +17,7 @@ import javax.swing.border.LineBorder;
  */
 public class TextRenderNode extends RenderNode {
     private AttributedString text;
+    private String textString;
     private boolean centred;
     private boolean dimensionsChanged = true;
     private Map<Rectangle, TextLayout> textLayouts;
@@ -54,7 +56,8 @@ public class TextRenderNode extends RenderNode {
 
         this.centred = centred;
         //setBorder(LineBorder.createBlackLineBorder());
-        this.text = new AttributedString(text);
+        textString = text;
+        this.text = new AttributedString(textString);
         this.addMouseListener(new MouseListener() {
             public void mouseClicked(MouseEvent e) {
                 click(new Point(e.getX(), e.getY()));
@@ -69,6 +72,9 @@ public class TextRenderNode extends RenderNode {
 
     @Override
     public void setZoomLevel(float zoomLevel) {
+        if (isEmpty())
+            return;
+
         int screenResolution = Toolkit.getDefaultToolkit().getScreenResolution();
         double dpiCorrection = screenResolution/72d;
         text.addAttribute(TextAttribute.TRANSFORM, new TransformAttribute(AffineTransform.getScaleInstance(zoomLevel*dpiCorrection, zoomLevel*dpiCorrection)));
@@ -77,14 +83,11 @@ public class TextRenderNode extends RenderNode {
 
     @Override
     public void extractTextInto(ArrayList<AttributedString> text) {
-        text.add(this.text);
+        if (!isEmpty())
+            text.add(this.text);
     }
 
-    public static final AttributedCharacterIterator.Attribute ALIGN_ATTRIBUTE = new AttributedCharacterIterator.Attribute("align") {};
-
-    public static enum TextAlign {
-        CENTRE
-    }
+    public static final AttributedCharacterIterator.Attribute PRE_ATTRIBUTE = new AttributedCharacterIterator.Attribute("pre") {};
 
     public static final AttributedCharacterIterator.Attribute HREF_ATTRIBUTE = new AttributedCharacterIterator.Attribute("href") {};
 
@@ -110,6 +113,10 @@ public class TextRenderNode extends RenderNode {
         }
     }
 
+    public boolean isEmpty() {
+        return textString.isEmpty();
+    }
+
     public void addText(String text, Map<Attribute,Object> formatting) {
         ArrayList<Integer> endIndices = new ArrayList<Integer>();
         ArrayList<Map<Attribute,Object>> formats = new ArrayList<Map<Attribute,Object>>();
@@ -118,11 +125,21 @@ public class TextRenderNode extends RenderNode {
 
         int previousEndIndex = 0;
         for (char c = it.first(); c != CharacterIterator.DONE; c = it.next()) {
-            builder.append(c);
             if (it.getRunLimit() > previousEndIndex) {
                 previousEndIndex = it.getRunLimit();
                 endIndices.add(previousEndIndex);
                 formats.add(it.getAttributes());
+            }
+        }
+
+        builder.append(textString);
+
+        if (isEmpty()) {
+            Boolean preAttribute = (Boolean)formatting.get(PRE_ATTRIBUTE);
+            if (preAttribute == null || preAttribute == false) {
+                text = text.replaceFirst("^ +", "");
+                if (text.isEmpty())
+                    return;
             }
         }
 
@@ -166,7 +183,8 @@ public class TextRenderNode extends RenderNode {
        
         formats.add(formatting);
 
-        this.text = new AttributedString(builder.toString());
+        textString = builder.toString();
+        this.text = new AttributedString(textString);
         
         previousEndIndex = 0;
         for (int i = 0; i < endIndices.size(); i++) {
@@ -175,22 +193,60 @@ public class TextRenderNode extends RenderNode {
         }
     }
 
+    private static Pattern newLinePattern = Pattern.compile("\\r\\n|\\r|\\n");
+    private static Pattern breakableStringPattern = Pattern.compile("\\s+");
+
     @Override
-    public void paint(Graphics g) {        
-        // If possible, enable text antialiasing
-        if (g instanceof Graphics2D)
-            ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+    public void paint(Graphics g) {
+        if (isEmpty()) {
+            if (dimensionsChanged) {
+                Dimension newDimension = new Dimension(0, 0);
+                setMinimumSize(newDimension);
+                setPreferredSize(newDimension);
+                setMaximumSize(newDimension);
+            }
+            return;
+        }
+        // If possible, enable text antialiasing according to system settings
+        if (g instanceof Graphics2D) {
+            Toolkit tk = Toolkit.getDefaultToolkit();
+            Map map = (Map)(tk.getDesktopProperty("awt.font.desktophints"));
+            if (map != null) {
+                ((Graphics2D)g).addRenderingHints(map);
+            }
+            else
+                ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        }
 
         AttributedCharacterIterator it = text.getIterator();
         LineBreakMeasurer lineBreaker = new LineBreakMeasurer(it, g.getFontMetrics().getFontRenderContext());
 
         textLayouts = new LinkedHashMap<Rectangle, TextLayout>();
 
+        Matcher hardLineBreakFinder = newLinePattern.matcher(textString);
+
+        ArrayList<Integer> hardLineBreaks = new ArrayList<Integer>();
+
+        while (!hardLineBreakFinder.hitEnd()) {
+            if (!hardLineBreakFinder.find())
+                break;
+            hardLineBreaks.add(hardLineBreakFinder.start());
+        }
+        hardLineBreaks.add(textString.length());
+
+        int hardLineIndex = 0;
         Point coord = new Point(0, 0);
         float wrappingWidth = getWidth();
         TextLayout layout = null;
+        boolean failedToWrap = false;
         while (lineBreaker.getPosition() < it.getEndIndex()) {
-            layout = lineBreaker.nextLayout(wrappingWidth);
+            if (lineBreaker.getPosition() > hardLineBreaks.get(hardLineIndex))
+                hardLineIndex++;
+            layout = lineBreaker.nextLayout(wrappingWidth, hardLineBreaks.get(hardLineIndex)+1, true);
+            if (layout == null) {
+                failedToWrap = true;
+                break;
+            }
             coord.y += layout.getAscent() ;
             float dx;
             if (centred)
@@ -209,22 +265,38 @@ public class TextRenderNode extends RenderNode {
             // If the width has changed since the last render, the height needs
             // to be updated to fit the wrapped text. We set 0 as the preferred
             // width so it can defer width control to its parent/layout manager.
-            setPreferredSize(new Dimension(0, coord.y));
+            if (!failedToWrap)
+                setPreferredSize(new Dimension(0, coord.y));
+
+
 
             int longestSingleWord = 0;
-            it.setIndex(it.getBeginIndex());
-            BreakIterator breakIterator = BreakIterator.getWordInstance();
-            breakIterator.setText(it);
-            for (int i = 0, j = breakIterator.first(); j != BreakIterator.DONE; i = j, j = breakIterator.next()) {
-                int pixelLength = (int)Math.ceil(g.getFontMetrics().getStringBounds(it, i, j, g).getWidth());
-                longestSingleWord = Math.max(longestSingleWord, pixelLength);
+
+            Matcher softLineBreakFinder = breakableStringPattern.matcher(textString);
+
+            int previousBreak = 0;
+            while (!softLineBreakFinder.hitEnd()) {
+                int currentBreak = textString.length();
+                int currentBreakEnd = textString.length();
+
+                if (softLineBreakFinder.find()) {
+                    currentBreak = softLineBreakFinder.start();
+                    currentBreakEnd = softLineBreakFinder.end();
+                }
+
+                if (currentBreak-1 > previousBreak) {
+                    int pixelLength = (int)Math.ceil(new TextMeasurer(it, g.getFontMetrics().getFontRenderContext()).getAdvanceBetween(previousBreak, currentBreak-1));
+                    longestSingleWord = Math.max(longestSingleWord, pixelLength);
+                }
+                previousBreak = currentBreakEnd;
             }
-            //setMinimumSize(new Dimension(longestSingleWord, 0));
-            setMaximumSize(new Dimension((int)Math.ceil(new TextMeasurer(it, g.getFontMetrics().getFontRenderContext()).getAdvanceBetween(it.getBeginIndex(), it.getEndIndex())), Short.MAX_VALUE));
 
             dimensionsChanged = false;
-            if (text.getIterator().first() == '•')
-                dimensionsChanged = false;
+            
+            setMinimumSize(new Dimension(longestSingleWord, 0));
+            int totalLineSize = (int)Math.ceil(new TextMeasurer(it, g.getFontMetrics().getFontRenderContext()).getAdvanceBetween(it.getBeginIndex(), it.getEndIndex()));
+            setMaximumSize(new Dimension(totalLineSize, Short.MAX_VALUE));
+            
             revalidate();
         }
     }
