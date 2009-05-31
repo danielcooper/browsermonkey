@@ -1,5 +1,6 @@
 package browsermonkey.render;
 
+import browsermonkey.render.*;
 import java.awt.*;
 import java.text.AttributedString;
 import java.util.ArrayList;
