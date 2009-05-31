@@ -15,7 +15,6 @@ public class Renderer {
     private String title = null;
     private ArrayList<Integer> headingNumbering;
     public static final Map<Attribute,Object> DEFAULT_FORMATTING;
-    public static final Map<Attribute,Object> FIXED_DEFAULT_FORMATTING;
 
     public String getHeadingString(int headingLevel) {
         if (headingLevel >= headingNumbering.size()) {
@@ -38,15 +37,16 @@ public class Renderer {
         return headingString.toString();
     }
 
+    public TextRenderNode constructIndentTextNode(Map<Attribute,Object> formatting) {
+        TextRenderNode result = new TextRenderNode(linker);
+        result.addText("&nbsp;&nbsp;&nbsp;&nbsp;", formatting);
+        return result;
+    }
+
     static {
         DEFAULT_FORMATTING = new HashMap<Attribute,Object>();
         DEFAULT_FORMATTING.put(TextAttribute.SIZE, 12f);
         DEFAULT_FORMATTING.put(TextAttribute.FAMILY, "Times New Roman");
-
-        FIXED_DEFAULT_FORMATTING = new HashMap<Attribute,Object>();
-        FIXED_DEFAULT_FORMATTING.put(TextAttribute.SIZE, 12f);
-        FIXED_DEFAULT_FORMATTING.put(TextAttribute.FAMILY, "Times New Roman");
-        FIXED_DEFAULT_FORMATTING.put(TextRenderNode.PRE_ATTRIBUTE, true);
     }
 
     public String getTitle() {
@@ -65,6 +65,7 @@ public class Renderer {
         rendererMap = new HashMap<String, TagRenderer>();
         rendererMap.put("b", new BoldTagRenderer(linker));
         rendererMap.put("strong", new BoldTagRenderer(linker));
+        rendererMap.put("em", new ItalicsTagRenderer(linker));
         rendererMap.put("i", new ItalicsTagRenderer(linker));
         rendererMap.put("table", new TableTagRenderer(linker));
         rendererMap.put("a", new AnchorTagRenderer(linker));
@@ -85,6 +86,8 @@ public class Renderer {
         rendererMap.put("h5", new HeadingTagRenderer(linker));
         rendererMap.put("h6", new HeadingTagRenderer(linker));
         rendererMap.put("u", new UnderlineTagRenderer(linker));
+        rendererMap.put("hr", new HrTagRenderer(linker));
+        rendererMap.put("div", new DivTagRenderer(linker));
     }
 
     public LayoutRenderNode renderRoot(DocumentNode root, float zoom) {

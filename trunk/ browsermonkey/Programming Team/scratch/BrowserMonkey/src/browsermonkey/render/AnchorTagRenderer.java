@@ -19,7 +19,7 @@ public class AnchorTagRenderer extends TagRenderer {
     @Override
     public void render(Renderer renderer, TagDocumentNode tag, LayoutRenderNode parent, Map<Attribute, Object> formatting) {
         Map<Attribute, Object> newFormatting = formatting;
-        String href = tag.getAttributes().get("href");
+        String href = tag.getAttribute("href");
         if (href != null) {
             newFormatting = (Map<Attribute, Object>)((HashMap)formatting).clone();
             newFormatting.put(TextAttribute.FOREGROUND, Color.blue);

@@ -1,6 +1,7 @@
 package browsermonkey.render;
 
 import browsermonkey.document.*;
+import browsermonkey.utility.BrowserMonkeyLogger;
 import java.util.*;
 import javax.swing.event.*;
 import java.awt.*;
@@ -40,33 +41,56 @@ public class DocumentPanel extends JPanel {
         this.setLayout(layout);
 
         GroupLayout.SequentialGroup horizontalIndentLayout = layout.createSequentialGroup();
-        horizontalIndentLayout.addGap(10);
+        horizontalIndentLayout.addGap(8);
         horizontalGroup = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
         horizontalIndentLayout.addGroup(horizontalGroup);
-        horizontalIndentLayout.addGap(10);
+        horizontalIndentLayout.addGap(8);
         layout.setHorizontalGroup(horizontalIndentLayout);
 
         GroupLayout.SequentialGroup verticalIndentLayout = layout.createSequentialGroup();
-        verticalIndentLayout.addGap(10);
+        verticalIndentLayout.addGap(8);
         verticalGroup = layout.createSequentialGroup();
         verticalIndentLayout.addGroup(verticalGroup);
-        verticalIndentLayout.addGap(10);
+        verticalIndentLayout.addGap(8);
         layout.setVerticalGroup(verticalIndentLayout);
     }
 
-    public void load(String path) throws FileNotFoundException, IOException {
+    private String getCurrentFolderPath() {
+        if (document == null)
+            return "";
+        return document.getPath().replaceFirst("[^/\\\\]*$", "");
+    }
+
+    public void load(String path) {
+        load(path, false);
+    }
+
+    public void load(String path, boolean relative) {
         removeAll();
+        if (relative) {
+            path = getCurrentFolderPath()+path;
+        }
         document = new Document(path);
         if (path.startsWith("t "))
             document.loadTest(path.substring(2));
-        else
-            document.load();
+        else {
+            try {
+                document.load();
+            } catch (FileNotFoundException ex) {
+                BrowserMonkeyLogger.warning("File not found: "+path);
+                load("404.html");
+            } catch (IOException ex) {
+                BrowserMonkeyLogger.warning("File read error: "+path);
+                // TODO: Make alternative error page for file read errors.
+                //load("404.html");
+            }
+        }
         
         Renderer r = new Renderer(new DocumentLinker(this));
         rootRenderNode = r.renderRoot(document.getNodeTree(), zoomLevel);
 
-        verticalGroup.addComponent(rootRenderNode, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE);
-        horizontalGroup.addComponent(rootRenderNode, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE);
+        verticalGroup.addComponent(rootRenderNode);
+        horizontalGroup.addComponent(rootRenderNode);
 
         title = r.getTitle();
         

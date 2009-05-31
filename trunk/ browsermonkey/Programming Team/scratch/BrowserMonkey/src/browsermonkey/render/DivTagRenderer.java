@@ -8,18 +8,17 @@ import java.util.*;
  *
  * @author Paul Calcraft
  */
-public class ParagraphTagRenderer extends TagRenderer {
-    public ParagraphTagRenderer(Linkable linker) {
+public class DivTagRenderer extends TagRenderer {
+    public DivTagRenderer(Linkable linker) {
         super(linker);
     }
 
     @Override
     public void render(Renderer renderer, TagDocumentNode tag, LayoutRenderNode parent, Map<Attribute, Object> formatting) {
-        parent.ensureLinespaceDistance(1);
-        
+        LayoutRenderNode div = new LayoutRenderNode(linker, false);
         for (DocumentNode child : tag.getChildren())
-            renderer.render(child, parent, formatting);
-
-        parent.ensureLinespaceDistance(1);
+            renderer.render(child, div, formatting);
+        parent.ensureNewLine();
+        parent.addNode(div, LayoutRenderNode.WidthBehaviour.Maximal);
     }
 }

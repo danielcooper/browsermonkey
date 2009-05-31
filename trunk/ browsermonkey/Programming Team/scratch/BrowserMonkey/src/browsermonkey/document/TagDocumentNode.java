@@ -14,8 +14,10 @@ public class TagDocumentNode extends DocumentNode {
         return type;
     }
 
-    public Map<String, String> getAttributes() {
-        return attributes;
+    public String getAttribute(String attribute) {
+        if (attributes == null)
+            return null;
+        return attributes.get(attribute);
     }
 
     public void setAttributes(Map<String, String> attributes) {

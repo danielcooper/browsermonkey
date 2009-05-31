@@ -57,6 +57,7 @@ public class Parser {
         this.leafTags = new HashSet<String>();
         leafTags.add("br");
         leafTags.add("img");
+        leafTags.add("hr");
         this.listTags = new HashSet<String>();
         listTags.add("li");
         listTags.add("ol");
@@ -138,24 +139,51 @@ public class Parser {
     }
 
     private void postProcess() {
-        // Find all tags that are not inside a pre, and strip their whitespace.
+        // Find all p tags that are not inside a pre, and remove if empty.
         ArrayList<TagDocumentNode> nonPreTags = shallowTagSearch(rootNode, "pre", true);
         for (TagDocumentNode nonPreTag : nonPreTags) {
-            ArrayList<TextDocumentNode> textNodes = textSearch(nonPreTag, false);
+             ArrayList<TextDocumentNode> textNodes = textSearch(nonPreTag, false);
             for (TextDocumentNode textNode : textNodes) {
                 String text = textNode.getText().replaceAll("\\s+", " ");
-                // TODO: Work out when and where to strip whitespace
-                /*int textIndex = nonPreTag.children.indexOf(textNode);
-                if (textIndex == 0)
-                    text = text.trim();
-                else if (textIndex == nonPreTag.children.size()-1)
-                    text.trim();*/
-                if (text.equals(""))
+                //int textIndex = nonPreTag.children.indexOf(textNode);
+                //if (textIndex == 0)
+                //    text = text.trim();
+                //else if (textIndex == nonPreTag.children.size()-1)
+                //    text.trim();
+                if (text.equals(" "))
                     nonPreTag.children.remove(textNode);
                 else
                     textNode.setText(text);
             }
         }
+            /*
+            Iterator<DocumentNode> i = nonPreTag.getChildren().iterator();
+            while (i.hasNext()) {
+                DocumentNode childDocNode = i.next();
+                if (!(childDocNode instanceof TagDocumentNode))
+                    continue;
+                TagDocumentNode child = (TagDocumentNode)childDocNode;
+                if (child.getType().equals("p")) {
+                    boolean isEmpty = true;
+                    for (DocumentNode node : child.getChildren()) {
+                        if (node instanceof TextDocumentNode) {
+                            if (!((TextDocumentNode)node).getText().replaceAll("\\s+", "").isEmpty()) {
+                                isEmpty = false;
+                                break;
+                            }
+                        }
+                        else {
+                            isEmpty = false;
+                                break;
+                        }
+                    }
+                    if (isEmpty) {
+                        //i.remove();
+                        child.getChildren().clear();
+                    }
+                }
+            }
+        }*/
     }
 
     private static ArrayList<TextDocumentNode> textSearch(DocumentNode parent, boolean deep) {

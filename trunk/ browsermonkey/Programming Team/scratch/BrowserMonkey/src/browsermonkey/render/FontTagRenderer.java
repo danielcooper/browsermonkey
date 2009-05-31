@@ -29,8 +29,8 @@ public class FontTagRenderer extends TagRenderer {
     @Override
     public void render(Renderer renderer, TagDocumentNode tag, LayoutRenderNode parent, Map<Attribute, Object> formatting) {
         Map<Attribute, Object> newFormatting = (Map<Attribute, Object>)((HashMap)formatting).clone();
-        String color = tag.getAttributes().get("color");
-        String face = tag.getAttributes().get("face");
+        String color = tag.getAttribute("color");
+        String face = tag.getAttribute("face");
 
         if (color != null) {
             Color colour;

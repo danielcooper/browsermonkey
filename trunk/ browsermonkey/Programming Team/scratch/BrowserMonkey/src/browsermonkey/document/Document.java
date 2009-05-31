@@ -1,6 +1,7 @@
 package browsermonkey.document;
 
 import java.io.*;
+import java.net.*;
 
 /**
  * Represents a document attached to a path, contains the parsed form of the
@@ -30,8 +31,18 @@ public class Document {
      * @throws java.io.IOException
      */
     public void load() throws FileNotFoundException, IOException {
-        FileReader reader = new FileReader(path);
-        BufferedReader br = new BufferedReader(reader);
+        BufferedReader br;
+
+        if (path.startsWith("http://")) {
+            URL url = new URL(path);
+            InputStream in = url.openStream();
+            br = new BufferedReader(new InputStreamReader(in));
+        }
+        else {
+            FileReader reader = new FileReader(path);
+            br = new BufferedReader(reader);
+        }
+        
         char[] buffer = new char[256];
         int charactersRead;
         StringBuilder result = new StringBuilder();
@@ -40,7 +51,7 @@ public class Document {
                 result.append(buffer, 0, charactersRead);
             }
         } catch (IOException ex) {
-            reader.close();
+            br.close();
             throw ex;
         }
         Parser parser = new Parser(result.toString());
