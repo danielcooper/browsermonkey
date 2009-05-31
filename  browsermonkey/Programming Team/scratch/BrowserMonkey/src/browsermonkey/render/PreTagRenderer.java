@@ -21,11 +21,11 @@ public class PreTagRenderer extends TagRenderer {
         newFormatting.put(TextAttribute.FAMILY, "Courier New");
         newFormatting.put(TextAttribute.SIZE, 10);
 
-        parent.addLineBreaks(2);
+        parent.ensureLinespaceDistance(1);
         
         for (DocumentNode child : tag.getChildren())
             renderer.render(child, parent, newFormatting);
 
-        parent.addLineBreaks(2);
+        parent.ensureLinespaceDistance(1);
     }
 }

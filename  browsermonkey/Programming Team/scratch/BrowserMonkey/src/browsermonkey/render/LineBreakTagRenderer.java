@@ -15,6 +15,6 @@ public class LineBreakTagRenderer extends TagRenderer {
 
     @Override
     public void render(Renderer renderer, TagDocumentNode tag, LayoutRenderNode parent, Map<Attribute, Object> formatting) {
-        parent.addLineBreaks(1);
+        parent.addHardLineBreak();
     }
 }

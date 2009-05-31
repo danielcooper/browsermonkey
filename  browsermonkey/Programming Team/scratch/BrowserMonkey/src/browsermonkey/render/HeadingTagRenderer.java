@@ -19,21 +19,20 @@ public class HeadingTagRenderer extends TagRenderer {
         Map<Attribute, Object> newFormatting = (Map<Attribute, Object>)((HashMap)formatting).clone();
         newFormatting.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD);
 
-        parent.ensureNewLine();
-        parent.addLineBreaks(1);
+        parent.ensureLinespaceDistance(1);
 
         int headingLevel = Integer.parseInt(tag.getType().substring(1)) - 1;
 
         LayoutRenderNode headingTextLayoutNode = new LayoutRenderNode(linker);
         TextRenderNode headingNumberNode = new TextRenderNode(linker);
-        headingNumberNode.addText(renderer.getHeadingString(headingLevel)+" ", newFormatting);
-        headingTextLayoutNode.padLeftWithNode(headingNumberNode);
+        headingNumberNode.addText(renderer.getHeadingString(headingLevel)+"&nbsp;", newFormatting);
+        headingTextLayoutNode.addNodePadding(headingNumberNode, null);
 
         for (DocumentNode child : tag.getChildren())
             renderer.render(child, headingTextLayoutNode, newFormatting);
 
-        parent.addNode(headingTextLayoutNode);
+        parent.addNode(headingTextLayoutNode, LayoutRenderNode.WidthBehaviour.Maximal);
 
-        parent.addLineBreaks(1);
+        parent.ensureLinespaceDistance(1);
     }
 }

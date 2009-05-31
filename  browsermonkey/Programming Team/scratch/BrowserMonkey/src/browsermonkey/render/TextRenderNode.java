@@ -10,6 +10,7 @@ import java.util.*;
 import java.text.AttributedCharacterIterator.Attribute;
 import java.util.ArrayList;
 import java.util.regex.*;
+import javax.swing.border.LineBorder;
 
 /**
  * Renders formatted text with word wrap.
@@ -25,7 +26,7 @@ public class TextRenderNode extends RenderNode {
     private static Map<String, Character> characterEntities;
     static {
         characterEntities = new HashMap<String, Character>();
-        characterEntities.put("nbsp", ' ');
+        characterEntities.put("nbsp", '\u00A0');
         characterEntities.put("pound", '£');
         characterEntities.put("copy", '©');
         characterEntities.put("reg", '®');
@@ -41,24 +42,21 @@ public class TextRenderNode extends RenderNode {
         this(linker, false);
     }
 
-    public TextRenderNode(Linkable linker, boolean centred) {
-        this(linker, centred, "");
-    }
-
     /**
      * Constructs a <code>TextRenderComponent</code> with the specified text.
      * @param linker
      * @param centred
-     * @param text
      */
-    public TextRenderNode(Linkable linker, boolean centred, String text) {
+    public TextRenderNode(Linkable linker, boolean centred) {
         super(linker);
 
+        //setBorder(new LineBorder(Color.red));
+
         this.centred = centred;
-        //setBorder(LineBorder.createBlackLineBorder());
-        textString = text;
-        this.text = new AttributedString(textString);
-        this.addMouseListener(new MouseListener() {
+        textString = "";
+        text = new AttributedString(textString);
+        
+        addMouseListener(new MouseListener() {
             public void mouseClicked(MouseEvent e) {
                 click(new Point(e.getX(), e.getY()));
             }
@@ -117,10 +115,13 @@ public class TextRenderNode extends RenderNode {
         return textString.isEmpty();
     }
 
-    public void addText(String text, Map<Attribute,Object> formatting) {
+    public void addText(String newText, Map<Attribute,Object> formatting) {
+        if (newText.isEmpty())
+            return;
+        
         ArrayList<Integer> endIndices = new ArrayList<Integer>();
         ArrayList<Map<Attribute,Object>> formats = new ArrayList<Map<Attribute,Object>>();
-        AttributedCharacterIterator it = this.text.getIterator();
+        AttributedCharacterIterator it = text.getIterator();
         StringBuilder builder = new StringBuilder();
 
         int previousEndIndex = 0;
@@ -134,24 +135,30 @@ public class TextRenderNode extends RenderNode {
 
         builder.append(textString);
 
-        if (isEmpty()) {
-            Boolean preAttribute = (Boolean)formatting.get(PRE_ATTRIBUTE);
-            if (preAttribute == null || preAttribute == false) {
-                text = text.replaceFirst("^ +", "");
-                if (text.isEmpty())
-                    return;
-            }
+        Boolean preAttribute = (Boolean)formatting.get(PRE_ATTRIBUTE);
+        if (preAttribute != null && preAttribute) {
+            // If in pre, replace space with non-breaking space
+            newText = newText.replaceAll(" ", "\u00A0");
+        }
+        else {
+            //regular
+            newText = newText.replaceAll("\\s+", " ");
+            if (newText.startsWith(" ") && (isEmpty() || textString.endsWith(" ")))
+                newText = newText.substring(1);
+
+            if (newText.isEmpty())
+                return;
         }
 
         int currentPos = 0;
         int findPos;
-        while ((findPos = text.indexOf('&', currentPos)) != -1) {
-            int endEntityIndex = text.indexOf(';', findPos+1);
+        while ((findPos = newText.indexOf('&', currentPos)) != -1) {
+            int endEntityIndex = newText.indexOf(';', findPos+1);
             if (endEntityIndex == -1)
                 break;
-            builder.append(text.substring(currentPos, findPos));
+            builder.append(newText.substring(currentPos, findPos));
             boolean entityReplaced = false;
-            String entityText = text.substring(findPos+1, endEntityIndex).toLowerCase();
+            String entityText = newText.substring(findPos+1, endEntityIndex).toLowerCase();
             if (entityText.charAt(0) == '#') {
                 int value;
                 if (entityText.charAt(1) == 'x')
@@ -178,22 +185,22 @@ public class TextRenderNode extends RenderNode {
             }
         }
         
-        builder.append(text.substring(currentPos));
+        builder.append(newText.substring(currentPos));
         endIndices.add(builder.length());
        
         formats.add(formatting);
 
         textString = builder.toString();
-        this.text = new AttributedString(textString);
+        text = new AttributedString(textString);
         
         previousEndIndex = 0;
         for (int i = 0; i < endIndices.size(); i++) {
-            this.text.addAttributes(formats.get(i), previousEndIndex, endIndices.get(i));
+            text.addAttributes(formats.get(i), previousEndIndex, endIndices.get(i));
             previousEndIndex = endIndices.get(i);
         }
     }
 
-    private static Pattern newLinePattern = Pattern.compile("\\r\\n|\\r|\\n");
+    private static Pattern newLinePattern = Pattern.compile("\\r\\n|\\n\\r|\\r|\\n");
     private static Pattern breakableStringPattern = Pattern.compile("\\s+");
 
     @Override
@@ -207,6 +214,11 @@ public class TextRenderNode extends RenderNode {
             }
             return;
         }
+
+        g.clearRect(0, 0, getWidth(), getHeight());
+
+        //this.paintBorder(g);
+
         // If possible, enable text antialiasing according to system settings
         if (g instanceof Graphics2D) {
             Toolkit tk = Toolkit.getDefaultToolkit();
@@ -265,17 +277,15 @@ public class TextRenderNode extends RenderNode {
             // If the width has changed since the last render, the height needs
             // to be updated to fit the wrapped text. We set 0 as the preferred
             // width so it can defer width control to its parent/layout manager.
-            if (!failedToWrap)
-                setPreferredSize(new Dimension(0, coord.y));
 
-
+            TextMeasurer measurer = new TextMeasurer(it, g.getFontMetrics().getFontRenderContext());
 
             int longestSingleWord = 0;
 
             Matcher softLineBreakFinder = breakableStringPattern.matcher(textString);
 
             int previousBreak = 0;
-            while (!softLineBreakFinder.hitEnd()) {
+            while (previousBreak < textString.length()) {
                 int currentBreak = textString.length();
                 int currentBreakEnd = textString.length();
 
@@ -284,20 +294,39 @@ public class TextRenderNode extends RenderNode {
                     currentBreakEnd = softLineBreakFinder.end();
                 }
 
-                if (currentBreak-1 > previousBreak) {
-                    int pixelLength = (int)Math.ceil(new TextMeasurer(it, g.getFontMetrics().getFontRenderContext()).getAdvanceBetween(previousBreak, currentBreak-1));
+                if (currentBreak > previousBreak) {
+                    int pixelLength = (int)Math.ceil(measurer.getAdvanceBetween(previousBreak, currentBreak));
                     longestSingleWord = Math.max(longestSingleWord, pixelLength);
                 }
                 previousBreak = currentBreakEnd;
             }
 
+            int maximumWidth = 0;
+            int minimumHeight = 0;
+            int previousLineBreakIndex = 0;
+            for (Integer lineBreakIndex : hardLineBreaks) {
+                if (lineBreakIndex > previousLineBreakIndex) {
+                    TextLayout singleLineLayout = measurer.getLayout(previousLineBreakIndex, lineBreakIndex);
+                    maximumWidth = Math.max(maximumWidth, (int)Math.ceil(singleLineLayout.getAdvance()));
+                    minimumHeight += (int)Math.ceil(singleLineLayout.getAscent());
+                }
+                previousLineBreakIndex = lineBreakIndex;
+            }
+            
+            int maximumHeight = Short.MAX_VALUE;
+
+            if (!failedToWrap) {
+                minimumHeight = coord.y;
+                maximumHeight = coord.y;
+            }
+
+            setMinimumSize(new Dimension(longestSingleWord, minimumHeight));
+            setMaximumSize(new Dimension(maximumWidth, maximumHeight));
+
             dimensionsChanged = false;
-            
-            setMinimumSize(new Dimension(longestSingleWord, 0));
-            int totalLineSize = (int)Math.ceil(new TextMeasurer(it, g.getFontMetrics().getFontRenderContext()).getAdvanceBetween(it.getBeginIndex(), it.getEndIndex()));
-            setMaximumSize(new Dimension(totalLineSize, Short.MAX_VALUE));
-            
+
             revalidate();
+            repaint();
         }
     }
 

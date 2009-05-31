@@ -11,6 +11,6 @@ public class OrderedListRenderer extends ListTagRenderer{
 
     @Override
     protected String getListElementText(int index) {
-        return "    "+(index+1)+". ";
+        return "&nbsp;&nbsp;&nbsp;&nbsp;"+(index+1)+".&nbsp;";
     }
 }

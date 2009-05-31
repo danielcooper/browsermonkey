@@ -12,10 +12,6 @@ public class DocumentLinker implements Linkable {
     }
 
     public void followLink(String path) {
-        try {
-        documentPanel.load(path);
-        } catch (Exception e) {
-            // TODO: Work out how to handle 404/etc. from links.
-        }
+        documentPanel.load(path, !path.startsWith("http://"));
     }
 }

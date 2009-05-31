@@ -4,6 +4,7 @@ import java.awt.*;
 import java.text.AttributedString;
 import java.util.ArrayList;
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 
 /**
  *
@@ -14,6 +15,8 @@ public class LayoutRenderNode extends RenderNode {
     private GroupLayout.ParallelGroup horizontalGroup;
     private GroupLayout.SequentialGroup verticalGroup;
     private TextRenderNode currentTextNode;
+    private int currentLinespaceDistance = 0;
+    private boolean hasPreviousComponent = false;
     private boolean centred;
 
     public LayoutRenderNode(Linkable linker) {
@@ -23,6 +26,7 @@ public class LayoutRenderNode extends RenderNode {
     public LayoutRenderNode(Linkable linker, boolean centred) {
         super(linker);
         this.centred = centred;
+        //setBorder(LineBorder.createGrayLineBorder());
         
         layout = new GroupLayout(this);
         this.setLayout(layout);
@@ -32,6 +36,12 @@ public class LayoutRenderNode extends RenderNode {
 
         verticalGroup = layout.createSequentialGroup();
         layout.setVerticalGroup(verticalGroup);
+        
+        if (centred) {
+            JComponent spacer = new JComponent() {};
+            horizontalGroup.addComponent(spacer, 0, 0, Short.MAX_VALUE);
+            verticalGroup.addComponent(spacer, 0, 0, 0);
+        }
     }
 
     @Override
@@ -79,46 +89,86 @@ public class LayoutRenderNode extends RenderNode {
             layout.setVerticalGroup(verticalGroup);
     }
 
-    public void padLeftWithNode(RenderNode node) {
-        GroupLayout.SequentialGroup paddedContainer = layout.createSequentialGroup();
-        paddedContainer.addComponent(node);
-        paddedContainer.addGroup(horizontalGroup);
-        layout.setHorizontalGroup(paddedContainer);
+    public void addNodePadding(RenderNode leftNode, RenderNode rightNode) {
+        if (leftNode == null && rightNode == null)
+            return;
+        
+        GroupLayout.SequentialGroup paddingHorizontalContainer = layout.createSequentialGroup();
         GroupLayout.ParallelGroup verticalOverlapper = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
         verticalOverlapper.addGroup(verticalGroup);
-        verticalOverlapper.addComponent(node, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE);
+        
+        if (leftNode != null) {
+            paddingHorizontalContainer.addComponent(leftNode);
+            verticalOverlapper.addComponent(leftNode);
+        }
+        
+        paddingHorizontalContainer.addGroup(horizontalGroup);
+
+        if (rightNode != null) {
+            paddingHorizontalContainer.addComponent(rightNode);
+            verticalOverlapper.addComponent(rightNode);
+        }
+        
+        layout.setHorizontalGroup(paddingHorizontalContainer);
         layout.setVerticalGroup(verticalOverlapper);
     }
 
-    public void addNode(RenderNode node) {
-        verticalGroup.addComponent(node, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE);
-        horizontalGroup.addComponent(node, centred ? GroupLayout.Alignment.CENTER : GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE);
+    public enum WidthBehaviour {
+        Minimal,
+        Maximal,
+        Grow
+    }
+
+    public void addNode(RenderNode node, WidthBehaviour widthBehaviour) {
+        if (hasPreviousComponent)
+            for (int i = 0; i < currentLinespaceDistance; i++)
+                addLineSpace(false);
+        hasPreviousComponent = true;
+        currentLinespaceDistance = 0;
+
+        int widthMax = GroupLayout.DEFAULT_SIZE;
+        if (widthBehaviour == WidthBehaviour.Minimal)
+            widthMax = GroupLayout.PREFERRED_SIZE;
+        else if (widthBehaviour == WidthBehaviour.Grow)
+            widthMax = Short.MAX_VALUE;
+
+        verticalGroup.addComponent(node, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE);
+        horizontalGroup.addComponent(node, centred ? GroupLayout.Alignment.CENTER : GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, widthMax);
     }
 
     public TextRenderNode getTextNode() {
         if (currentTextNode == null) {
             currentTextNode = new TextRenderNode(linker, centred);
-            addNode(currentTextNode);
+            addNode(currentTextNode, centred ? WidthBehaviour.Maximal : WidthBehaviour.Maximal);
         }
         return currentTextNode;
     }
 
-    public void addLineBreaks(int count) {
-        if (count <= 0)
-            return;
-        if (currentTextNode != null) {
-            currentTextNode = null;
-            count--;
-        }
-
-        for (int i = 0; i < count; i++)
-            addLineSpace();
+    public void ensureLinespaceDistance(int distance) {
+        ensureNewLine();
+        currentLinespaceDistance = Math.max(currentLinespaceDistance, distance);
     }
 
-    private void addLineSpace() {
+    public void addHardLineBreak() {
+        if (currentTextNode == null) {
+            addLineSpace(true);
+            hasPreviousComponent = true;
+            currentLinespaceDistance = 0;
+        }
+        else
+            currentTextNode = null;
+    }
+
+    private void addLineSpace(boolean addAsNode) {
         TextRenderNode lineSpace = new TextRenderNode(linker);
-        lineSpace.addText(" ", Renderer.FIXED_DEFAULT_FORMATTING);
-        addNode(lineSpace);
+        lineSpace.addText("&nbsp;", Renderer.DEFAULT_FORMATTING);
+        if (addAsNode) {
+            addNode(lineSpace, WidthBehaviour.Minimal);
+        }
+        else {
+            verticalGroup.addComponent(lineSpace);
+            horizontalGroup.addComponent(lineSpace);
+        }
     }
 
     public void ensureNewLine() {

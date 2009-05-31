@@ -20,6 +20,6 @@ public class CenterTagRenderer extends TagRenderer {
         for (DocumentNode child : tag.getChildren())
             renderer.render(child, div, formatting);
         parent.ensureNewLine();
-        parent.addNode(div);
+        parent.addNode(div, LayoutRenderNode.WidthBehaviour.Grow);
     }
 }

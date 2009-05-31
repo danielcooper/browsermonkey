@@ -16,10 +16,13 @@ public class BlockquoteTagRenderer extends TagRenderer {
     @Override
     public void render(Renderer renderer, TagDocumentNode tag, LayoutRenderNode parent, Map<Attribute, Object> formatting) {
         LayoutRenderNode div = new LayoutRenderNode(linker);
-        div.setPadding(40, 40, 20, 20);
+        TextRenderNode leftNode = renderer.constructIndentTextNode(formatting);
+        TextRenderNode rightNode = renderer.constructIndentTextNode(formatting);
+        div.addNodePadding(leftNode, rightNode);
         for (DocumentNode child : tag.getChildren())
             renderer.render(child, div, formatting);
-        parent.ensureNewLine();
-        parent.addNode(div);
+        parent.ensureLinespaceDistance(1);
+        parent.addNode(div, LayoutRenderNode.WidthBehaviour.Maximal);
+        parent.ensureLinespaceDistance(1);
     }
 }

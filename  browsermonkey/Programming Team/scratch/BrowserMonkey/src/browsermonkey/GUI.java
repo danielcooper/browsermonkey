@@ -259,16 +259,7 @@ public class GUI extends javax.swing.JFrame {
     }
 
     private void loadFile(String path){
-        try {
-            documentPanel.load(path);
-        } catch (FileNotFoundException ex) {
-            BrowserMonkeyLogger.warning("File not found: "+path);
-            loadFile("404.html");
-        } catch (IOException ex) {
-            BrowserMonkeyLogger.warning("File read error: "+path);
-            // TODO: Make alternative error page for file read errors.
-            loadFile("404.html");
-        }
+        documentPanel.load(path);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
