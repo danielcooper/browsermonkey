@@ -95,10 +95,7 @@ public class Parser {
                     if(listTags.contains(currentToken.getTag())){
                         doListedElement(currentToken);
                     }
-//                    //pre elements should not have any children, just text
-//                    if(openElements.size()>=1 && openElements.get(openElements.size()-1).getType().equals("pre")){
-//                        openElements.get(openElements.size()-1).
-//                    }
+                    
                     //TODO Fix pre elements
                     //For singularly nestable tags, check if the last tag is the same. If it is
                     //fix the nesting, if not - carry on.
