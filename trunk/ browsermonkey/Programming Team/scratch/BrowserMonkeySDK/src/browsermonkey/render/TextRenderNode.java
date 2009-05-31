@@ -10,7 +10,6 @@ import java.util.*;
 import java.text.AttributedCharacterIterator.Attribute;
 import java.util.ArrayList;
 import java.util.regex.*;
-import javax.swing.border.LineBorder;
 
 /**
  * Renders formatted text with word wrap.
@@ -214,10 +213,6 @@ public class TextRenderNode extends RenderNode {
             }
             return;
         }
-
-        g.clearRect(0, 0, getWidth(), getHeight());
-
-        //this.paintBorder(g);
 
         // If possible, enable text antialiasing according to system settings
         if (g instanceof Graphics2D) {
