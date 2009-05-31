@@ -15,17 +15,16 @@ import java.util.Set;
  * @author Daniel Cooper, Lawrence Dine
  */
 public class Parser {
-
-    Set<String> singleNestableTags;
-    Set<String> tableTags;
-    Set<String> nestableTags;
-    Set<String> singularlyNestableTags;
-    Set<String> leafTags;
-    Set<String> listTags;
-    DocumentNode rootNode;
-    ArrayList<TagDocumentNode> openElements;
-    String originalPage;
-    Iterator<Token> tokens;
+    private Set<String> singleNestableTags;
+    private Set<String> tableTags;
+    private Set<String> nestableTags;
+    private Set<String> singularlyNestableTags;
+    private Set<String> leafTags;
+    private Set<String> listTags;
+    private DocumentNode rootNode;
+    private ArrayList<TagDocumentNode> openElements;
+    private String originalPage;
+    private Iterator<Token> tokens;
 
     public DocumentNode getRootNode() {
         return rootNode;

@@ -1,5 +1,6 @@
 package browsermonkey.render;
 
+import browsermonkey.render.*;
 import java.util.Map;
 import browsermonkey.document.TagDocumentNode;
 import java.text.AttributedCharacterIterator.Attribute;

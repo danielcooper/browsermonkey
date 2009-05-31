@@ -78,11 +78,9 @@ public class DocumentPanel extends JPanel {
                 document.load();
             } catch (FileNotFoundException ex) {
                 BrowserMonkeyLogger.warning("File not found: "+path);
-                load("404.html");
+                // TODO: load 404 document
             } catch (IOException ex) {
                 BrowserMonkeyLogger.warning("File read error: "+path);
-                // TODO: Make alternative error page for file read errors.
-                //load("404.html");
             }
         }
         
@@ -95,9 +93,13 @@ public class DocumentPanel extends JPanel {
         title = r.getTitle();
         
         // Store the html output into the clipboard for debug.
-        Clipboard systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-		Transferable transferableText = new StringSelection(document.getNodeTree().toDebugString());
-		systemClipboard.setContents(transferableText, null);
+        try {
+            Clipboard systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            Transferable transferableText = new StringSelection(document.getNodeTree().toDebugString());
+            systemClipboard.setContents(transferableText, null);
+        } catch (IllegalStateException ex) {
+            BrowserMonkeyLogger.warning("Couldn't write debug parse information to clipboard.");
+        }
 
         changed();
         revalidate();

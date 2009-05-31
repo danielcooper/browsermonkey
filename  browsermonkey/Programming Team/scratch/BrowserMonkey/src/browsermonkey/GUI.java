@@ -10,6 +10,7 @@ import java.io.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import browsermonkey.utility.BrowserMonkeyLogger;
+import java.util.logging.*;
 
 /**
  *
@@ -29,6 +30,29 @@ public class GUI extends javax.swing.JFrame {
                 panelChanged();
             }
         });
+
+        BrowserMonkeyLogger.addAlertHandler(new Handler() {
+            @Override
+            public void publish(LogRecord record) {
+                if (record.getLevel() == Level.INFO) {
+                    statusBar.setText(record.getMessage());
+                }
+                else if (record.getLevel() == Level.WARNING) {
+                    JOptionPane.showMessageDialog(GUI.this, record.getMessage(), "Notice", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+
+            @Override
+            public void flush() {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+
+            @Override
+            public void close() throws SecurityException {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        });
+
         loadFile("welcome.html");
     }
 

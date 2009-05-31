@@ -2,8 +2,14 @@ package browsermonkey.render;
 
 import java.util.*;
 import browsermonkey.document.*;
+import browsermonkey.utility.BrowserMonkeyLogger;
 import java.text.AttributedCharacterIterator.Attribute;
 import java.awt.font.*;
+import java.io.*;
+import java.lang.reflect.*;
+import java.net.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -57,37 +63,71 @@ public class Renderer {
         this.title = title;
     }
 
+    private void loadRenderers() {
+        rendererMap = new HashMap<String, TagRenderer>();
+
+        Properties rendererMapProperties = new Properties();
+        try {
+            FileInputStream in = new FileInputStream("tagRenderers.properties");
+            rendererMapProperties.load(in);
+
+            File pluginsDirectory = new File("plugins/");
+       
+            String[] pluginJARs = pluginsDirectory.list(new FilenameFilter() {
+                public boolean accept(File dir, String name) {
+                    return (name.endsWith(".jar"));
+                }
+            });
+
+            String jarFiles = "";
+            URL[] urls = new URL[pluginJARs.length];
+            for (int i = 0; i < pluginJARs.length; i++) {
+                urls[i] = new File("plugins/"+pluginJARs[i]).toURI().toURL();
+                jarFiles += "\""+urls[i]+"\"";
+                if (i != pluginJARs.length)
+                    jarFiles += ", ";
+            }
+
+            BrowserMonkeyLogger.info("Loading tag plugins from: "+jarFiles);
+            ClassLoader pluginClassLoader = new URLClassLoader(urls);
+
+            Set<Map.Entry<Object, Object>> rendererMappings = rendererMapProperties.entrySet();
+
+            int rendererCount = 0;
+            int loadedCount = 0;
+
+            for (Map.Entry<Object, Object> entry : rendererMappings) {
+                rendererCount++;
+                try {
+                    Class rendererClass = pluginClassLoader.loadClass(entry.getValue().toString());
+                    Class parameterTypes[] = new Class[] { Linkable.class };
+                    Constructor ctor = rendererClass.getConstructor(parameterTypes);
+                    Object arguments[] = new Object[] { this.linker };
+                    Object newInstance = ctor.newInstance(arguments);
+                    TagRenderer tagRenderer = TagRenderer.class.cast(newInstance);
+
+                    if (tagRenderer != null) {
+                        rendererMap.put(entry.getKey().toString(), tagRenderer);
+                        loadedCount++;
+                    }
+                    
+                } catch (ClassNotFoundException ex) {
+                    BrowserMonkeyLogger.warning("TagRenderer class could not be found in the plugins folder.");
+                } catch (Exception ex) {
+                    BrowserMonkeyLogger.warning("TagRenderer class could not be instantiated: "+ex);
+                }
+            }
+
+            BrowserMonkeyLogger.info(loadedCount+"/"+rendererCount+" TagRenderers loaded successfully.");
+        } catch (IOException ex) {
+            BrowserMonkeyLogger.notice("Could not read tagRenderers.properties: "+ex);
+        }
+    }
+
     public Renderer(Linkable linker) {
         this.linker = linker;
-
         headingNumbering = new ArrayList<Integer>();
-        
-        rendererMap = new HashMap<String, TagRenderer>();
-        rendererMap.put("b", new BoldTagRenderer(linker));
-        rendererMap.put("strong", new BoldTagRenderer(linker));
-        rendererMap.put("em", new ItalicsTagRenderer(linker));
-        rendererMap.put("i", new ItalicsTagRenderer(linker));
-        rendererMap.put("table", new TableTagRenderer(linker));
-        rendererMap.put("a", new AnchorTagRenderer(linker));
-        rendererMap.put("br", new LineBreakTagRenderer(linker));
-        rendererMap.put("p", new ParagraphTagRenderer(linker));
-        rendererMap.put("font", new FontTagRenderer(linker));
-        rendererMap.put("title", new TitleTagRenderer(linker));
-        rendererMap.put("ol", new OrderedListRenderer(linker));
-        rendererMap.put("ul", new BulletListRenderer(linker));
-        rendererMap.put("center", new CenterTagRenderer(linker));
-        rendererMap.put("blockquote", new BlockquoteTagRenderer(linker));
-        rendererMap.put("tt", new TypewriterTextTagRenderer(linker));
-        rendererMap.put("pre", new PreTagRenderer(linker));
-        rendererMap.put("h1", new HeadingTagRenderer(linker));
-        rendererMap.put("h2", new HeadingTagRenderer(linker));
-        rendererMap.put("h3", new HeadingTagRenderer(linker));
-        rendererMap.put("h4", new HeadingTagRenderer(linker));
-        rendererMap.put("h5", new HeadingTagRenderer(linker));
-        rendererMap.put("h6", new HeadingTagRenderer(linker));
-        rendererMap.put("u", new UnderlineTagRenderer(linker));
-        rendererMap.put("hr", new HrTagRenderer(linker));
-        rendererMap.put("div", new DivTagRenderer(linker));
+        loadRenderers();
     }
 
     public LayoutRenderNode renderRoot(DocumentNode root, float zoom) {
