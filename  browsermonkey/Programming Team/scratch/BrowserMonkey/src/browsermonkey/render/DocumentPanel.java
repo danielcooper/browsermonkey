@@ -83,15 +83,7 @@ public class DocumentPanel extends JPanel {
                 BrowserMonkeyLogger.warning("File read error: "+path);
             }
         }
-        
-        Renderer r = new Renderer(new DocumentLinker(this));
-        rootRenderNode = r.renderRoot(document.getNodeTree(), zoomLevel);
 
-        verticalGroup.addComponent(rootRenderNode);
-        horizontalGroup.addComponent(rootRenderNode);
-
-        title = r.getTitle();
-        
         // Store the html output into the clipboard for debug.
         try {
             Clipboard systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -100,6 +92,14 @@ public class DocumentPanel extends JPanel {
         } catch (IllegalStateException ex) {
             BrowserMonkeyLogger.warning("Couldn't write debug parse information to clipboard.");
         }
+        
+        Renderer r = new Renderer(new DocumentLinker(this));
+        rootRenderNode = r.renderRoot(document.getNodeTree(), zoomLevel);
+
+        verticalGroup.addComponent(rootRenderNode);
+        horizontalGroup.addComponent(rootRenderNode);
+
+        title = r.getTitle();
 
         changed();
         revalidate();

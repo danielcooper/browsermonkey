@@ -14,14 +14,16 @@ import java.util.Set;
  * @author Daniel Cooper, Lawrence Dine
  */
 public class Parser {
+    private Set<String> ignoredTags;
+    private Set<String> headTags;
 
-    private Set<String> singleNestableTags;
     private Set<String> tableTags;
     private Set<String> nestableTags;
     private Set<String> singularlyNestableTags;
     private Set<String> leafTags;
     private Set<String> listTags;
-    private DocumentNode rootNode;
+    private TagDocumentNode rootNode;
+    private TagDocumentNode headNode;
     private ArrayList<TagDocumentNode> openElements;
     private String originalPage;
     private Iterator<Token> tokens;
@@ -37,10 +39,12 @@ public class Parser {
         @singuarly_nestable_tags = ['p'] #these tags cannot be nested inside themselfs
         @leaf_tags =['br','img'] #can have no children
         @listed_tags =['li','ol','ul'] #list ele*/
-        this.singleNestableTags = new HashSet<String>();
-        singleNestableTags.add("html");
-        singleNestableTags.add("head");
-        singleNestableTags.add("body");
+        ignoredTags = new HashSet<String>();
+        ignoredTags.add("html");
+        ignoredTags.add("body");
+        ignoredTags.add("head");
+        headTags = new HashSet<String>();
+        headTags.add("title");
         this.tableTags = new HashSet<String>();
         tableTags.add("table");
         tableTags.add("tr");
@@ -69,19 +73,28 @@ public class Parser {
     }
 
     public void parse() {
-        int i = 0;
-        TagDocumentNode newNode = new TagDocumentNode("html", null);
-        openElements.add(newNode);
-        rootNode = newNode;
+        rootNode = new TagDocumentNode("html", null);
+        openElements.add(rootNode);
+        
         while (tokens.hasNext()) {
             Token currentToken = tokens.next();
 
-            if (i == 0 && currentToken.getTag().equals("html")) {
-                continue;
-            }
-
             if (currentToken.getType() == TokenType.TAG) {
+                if (ignoredTags.contains(currentToken.getTag()))
+                    continue;
+
                 if (currentToken.isStartTag()) {
+                    if (headTags.contains(currentToken.getTag())) {
+                        if (headNode == null) {
+                            headNode = new TagDocumentNode("head", null);
+                            rootNode.children.add(0, headNode);
+                        }
+
+                        TagDocumentNode headChildNode = new TagDocumentNode(currentToken.getTag(), currentToken.getAttributes());
+                        headNode.addChild(headChildNode);
+                        openElements.add(headChildNode);
+                        continue;
+                    }
                     //if it's  table tag or if a row has been opened but not a cell - add the approprate elements
                     if (tableTags.contains(currentToken.getTag())) {
                         doTableElement(currentToken);
@@ -124,12 +137,8 @@ public class Parser {
                         this.doTableElement(new Token("<td>", TokenType.TAG));
                     }
                 }
-                if(currentToken.getTag().equals("ghfd")){
-                    i++;
-                }
                 doTextElement(currentToken);
             }
-            i++;
         }
         postProcess();
     }
