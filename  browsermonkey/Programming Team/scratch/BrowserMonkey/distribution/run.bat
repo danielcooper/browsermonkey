@@ -1,2 +1,1 @@
-cd ..\
-java -jar dist\BrowserMonkey.jar
+java -jar BrowserMonkey.jar
