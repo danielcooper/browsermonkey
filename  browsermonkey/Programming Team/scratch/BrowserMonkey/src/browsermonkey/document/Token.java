@@ -82,7 +82,7 @@ public class Token {
         //Determine if the tag is an end tag by looking for a / before the tag name. (</b>)
         int endTagIndex = fullTag.indexOf('/');
         if(endTagIndex != -1){
-            int tagPos = fullTag.indexOf(tag);
+            int tagPos = fullTag.toLowerCase().indexOf(tag);
             if(endTagIndex < tagPos){
                 endTag = true;
             }

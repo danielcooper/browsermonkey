@@ -156,7 +156,7 @@ public class Renderer {
     private TagRenderer getTagRenderer(TagDocumentNode tagNode) {
         TagRenderer renderer = rendererMap.get(tagNode.getType());
         if (renderer == null)
-            renderer = new InvisibleTagRenderer(linker);
+            renderer = new TransparentTagRenderer(linker);
         return renderer;
     }
 }

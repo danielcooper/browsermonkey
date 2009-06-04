@@ -8,13 +8,14 @@ import java.util.Map;
  *
  * @author Paul Calcraft
  */
-public class InvisibleTagRenderer extends TagRenderer {
-    public InvisibleTagRenderer(Linkable linker) {
+public class TransparentTagRenderer extends TagRenderer {
+    public TransparentTagRenderer(Linkable linker) {
         super(linker);
     }
 
     @Override
     public void render(Renderer renderer, TagDocumentNode tag, LayoutRenderNode parent, Map<Attribute, Object> formatting) {
-        // Do nothing.
+        for (DocumentNode child : tag.getChildren())
+            renderer.render(child, parent, formatting);
     }
 }
