@@ -35,7 +35,7 @@ public class Tokeniser {
                 //calculate length of token and move token
                 int nextTagOpen = page.indexOf('<', currentPos + 1);
                 int tagTokenEnd = page.indexOf("-->", currentPos + 4);
-                //TODO Malformed html shiz
+
                 if(nextTagOpen !=-1 && tagTokenEnd > nextTagOpen){
                     currentPos = nextTagOpen;
                 } else {
@@ -45,16 +45,32 @@ public class Tokeniser {
                 int nextTagOpen = page.indexOf('<', currentPos + 1);
                 int tagTokenEnd = page.indexOf('>', currentPos + 1);
                 //Malformed html shiz
-                String tag;
+                String fullTag;
                 if (nextTagOpen!= -1 && tagTokenEnd > nextTagOpen) {
-                    tag = page.substring(currentPos, nextTagOpen) + ">";
+                    fullTag = page.substring(currentPos, nextTagOpen) + ">";
                     tagTokenEnd = nextTagOpen;
                 } else {
-                    tag = page.substring(currentPos, tagTokenEnd + 1);
+                    fullTag = page.substring(currentPos, tagTokenEnd + 1);
                     tagTokenEnd++;
                 }
-                tokens.add(new Token(tag, TokenType.TAG));
+
+                Token token = new Token(fullTag, TokenType.TAG);
+                tokens.add(token);
                 currentPos = tagTokenEnd;
+
+                if (token.getTag().equals("title")) {
+                    int endTitle = page.indexOf("</title>", tagTokenEnd);
+                    String text;
+                    if (endTitle != -1) {
+                        text = page.substring(currentPos, endTitle);
+                        currentPos = endTitle + 8;
+                    } else {
+                        text = page.substring(currentPos, page.length());
+                        currentPos = page.length();
+                    }
+                    tokens.add(new Token(text, TokenType.TEXT));
+                    tokens.add(new Token("</title>", TokenType.TAG));
+                }
             }
         } else {
             int textTokenEnd = page.indexOf('<', currentPos);
