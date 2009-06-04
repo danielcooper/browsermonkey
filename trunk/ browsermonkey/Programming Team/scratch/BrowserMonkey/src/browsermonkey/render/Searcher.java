@@ -40,9 +40,6 @@ public class Searcher {
 
         ArrayList<AttributedTextRange> currentRunRanges = new ArrayList<AttributedTextRange>();
 
-        //int currentRunStartRangeIndex = -1;
-        //int currentRunStartCharacterIndex = -1;
-
         int currentRunCharacterIndex = 0;
         for (int i = 0; i < textRanges.length; i++) {
             
@@ -71,19 +68,12 @@ public class Searcher {
                     currentRunCharacterIndex = 0;
                     currentRunRanges.clear();
                 }
-                /*}
-                else {
-                    if (term.charAt(0) == current) {
-                        currentRunStartRangeIndex = i;
-                        currentRunStartCharacterIndex = iterator.getIndex();
-                        currentRunCharacterIndex = 1;
-                    }
-                }*/
             }
             if (currentRunCharacterIndex > 0) {
                 currentRunRanges.add(new AttributedTextRange(textRanges[i], rangeRunStartIndex, iterator.getEndIndex()));
             }         
         }
-        return 0;
+        
+        return findCount;
     }
 }

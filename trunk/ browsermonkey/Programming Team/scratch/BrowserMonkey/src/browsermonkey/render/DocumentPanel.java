@@ -120,10 +120,10 @@ public class DocumentPanel extends JPanel {
     public void setSearch(String term) {
         ArrayList<AttributedString> textRanges = new ArrayList<AttributedString>();
         Map<AttributedCharacterIterator.Attribute, Object> highlightAttributes = new HashMap<AttributedCharacterIterator.Attribute, Object>();
-        //highlightAttributes.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD);
         highlightAttributes.put(TextAttribute.BACKGROUND, new Color(0x38D878));
         rootRenderNode.extractTextInto(textRanges);
-        Searcher.highlightSearchTerm(textRanges.toArray(new AttributedString[textRanges.size()]), term, highlightAttributes);
+        int resultCount = Searcher.highlightSearchTerm(textRanges.toArray(new AttributedString[textRanges.size()]), term, highlightAttributes);
+        BrowserMonkeyLogger.status(resultCount == 0 ? "Could not find \""+term+"\" in the document." : "Found \""+term+"\" "+resultCount+" times in the document.");
         revalidate();
         repaint();
     }

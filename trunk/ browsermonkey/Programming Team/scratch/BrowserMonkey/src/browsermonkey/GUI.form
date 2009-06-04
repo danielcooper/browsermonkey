@@ -4,6 +4,9 @@
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
     <Property name="title" type="java.lang.String" value="BrowserMonkey"/>
+    <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+      <Connection component="top" name="minimumSize" type="property"/>
+    </Property>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
@@ -23,9 +26,9 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
+          <Component id="statusBar" alignment="0" pref="571" max="32767" attributes="0"/>
+          <Component id="documentScrollPanel" alignment="0" pref="571" max="32767" attributes="0"/>
           <Component id="top" alignment="0" max="32767" attributes="0"/>
-          <Component id="statusBar" alignment="0" pref="703" max="32767" attributes="0"/>
-          <Component id="documentScrollPanel" alignment="0" pref="703" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -42,6 +45,11 @@
   </Layout>
   <SubComponents>
     <Container class="javax.swing.JPanel" name="top">
+      <Properties>
+        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection component="top" name="preferredSize" type="property"/>
+        </Property>
+      </Properties>
 
       <Layout>
         <DimensionLayout dim="0">
@@ -67,11 +75,11 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="searchButton" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="addressField" min="-2" pref="503" max="-2" attributes="0"/>
+                      <Group type="102" alignment="1" attributes="0">
+                          <Component id="addressField" pref="380" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="goButton" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Component id="browseButton" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -86,8 +94,8 @@
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="addressLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="addressField" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="goButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="browseButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="goButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">

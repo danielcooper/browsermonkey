@@ -17,14 +17,18 @@ import java.util.logging.*;
  * @author Paul Calcraft
  */
 public class GUI extends javax.swing.JFrame {
-
     /** Creates new form GUI */
     public GUI() {
+        
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {}
+
         initComponents();
+
         documentScrollPanel.getVerticalScrollBar().setUnitIncrement(25);
+        documentScrollPanel.getHorizontalScrollBar().setUnitIncrement(25);
+        
         documentPanel.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 panelChanged();
@@ -52,8 +56,6 @@ public class GUI extends javax.swing.JFrame {
                 throw new UnsupportedOperationException("Not supported yet.");
             }
         });
-
-        loadFile("welcome.html");
     }
 
     /** This method is called from within the constructor to
@@ -83,6 +85,9 @@ public class GUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("BrowserMonkey");
+        setMinimumSize(top.getMinimumSize());
+
+        top.setMinimumSize(top.getPreferredSize());
 
         addressLabel.setText("Address:");
 
@@ -158,11 +163,11 @@ public class GUI extends javax.swing.JFrame {
                         .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(searchButton))
-                    .addGroup(topLayout.createSequentialGroup()
-                        .addComponent(addressField, javax.swing.GroupLayout.PREFERRED_SIZE, 503, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, topLayout.createSequentialGroup()
+                        .addComponent(addressField, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(goButton)
-                        .addGap(15, 15, 15)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(browseButton)))
                 .addContainerGap())
         );
@@ -173,8 +178,8 @@ public class GUI extends javax.swing.JFrame {
                 .addGroup(topLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(addressLabel)
                     .addComponent(addressField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(goButton)
-                    .addComponent(browseButton))
+                    .addComponent(browseButton)
+                    .addComponent(goButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(topLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(zoomLabel)
@@ -197,9 +202,9 @@ public class GUI extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(statusBar, javax.swing.GroupLayout.DEFAULT_SIZE, 571, Short.MAX_VALUE)
+            .addComponent(documentScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 571, Short.MAX_VALUE)
             .addComponent(top, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(statusBar, javax.swing.GroupLayout.DEFAULT_SIZE, 703, Short.MAX_VALUE)
-            .addComponent(documentScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 703, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -236,35 +241,27 @@ public class GUI extends javax.swing.JFrame {
         documentPanel.setSearch(searchField.getText());
 }//GEN-LAST:event_searchButtonActionPerformed
 
-    private void zoomOutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomOutButtonActionPerformed
-        zoom(-1);
-}//GEN-LAST:event_zoomOutButtonActionPerformed
-
     private void zoomInButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomInButtonActionPerformed
         zoom(1);
 }//GEN-LAST:event_zoomInButtonActionPerformed
 
+    private void zoomOutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomOutButtonActionPerformed
+        zoom(-1);
+}//GEN-LAST:event_zoomOutButtonActionPerformed
+
     //private int zoomLevel = 100;
-    private int zoomLevelIndex = 4;
+    private int zoomLevelIndex = 5;
     private static final int[] zoomLevels = new int[] {
-        60, 70, 80, 90,
+        50, 60, 70, 80, 90,
         100,
-        125, 150, 175, 200
+        125, 150, 175, 200, 250, 300
     };
-    /*private static final int maximumZoom = 250;
-    private static final int minimumZoom = 25;
-    private static final int zoomStep = 25;*/
 
     private void zoom(int levelChange) {
         int newIndex = zoomLevelIndex+levelChange;
-        //int newZoom = zoomLevel+amount;
+
         if (newIndex < 0 || newIndex >= zoomLevels.length)
-        return;
-        //if (newZoom > maximumZoom || newZoom < minimumZoom)
-            
-        /*documentPanel.setZoomLevel(newZoom/100f);
-        zoomLevel = newZoom;
-        zoomLevelLabel.setText(zoomLevel+"%");*/
+            return;
 
         documentPanel.setZoomLevel(zoomLevels[newIndex]/100f);
         zoomLevelIndex = newIndex;
@@ -282,7 +279,7 @@ public class GUI extends javax.swing.JFrame {
             setTitle(documentPanel.getTitle()+" - BrowserMonkey");
     }
 
-    private void loadFile(String path){
+    public void loadFile(String path){
         documentPanel.load(path);
     }
 
