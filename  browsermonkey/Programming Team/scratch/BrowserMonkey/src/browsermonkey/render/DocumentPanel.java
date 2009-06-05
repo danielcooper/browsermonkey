@@ -28,6 +28,7 @@ public class DocumentPanel extends JPanel {
     private GroupLayout.SequentialGroup verticalGroup;
     private float zoomLevel = 1.0f;
     private RenderNode rootRenderNode;
+    private Renderer renderer;
     private URL context;
     private LoaderThread currentLoaderThread = null;
 
@@ -63,6 +64,8 @@ public class DocumentPanel extends JPanel {
         verticalIndentLayout.addGroup(verticalGroup);
         verticalIndentLayout.addGap(8);
         layout.setVerticalGroup(verticalIndentLayout);
+
+        renderer = new Renderer(new DocumentLinker(this));
     }
     
     private class LoaderThread extends SwingWorker<Void, Integer> {
@@ -108,14 +111,13 @@ public class DocumentPanel extends JPanel {
                 BrowserMonkeyLogger.warning("Couldn't write debug parse information to clipboard.");
             }
 
-            Renderer r = new Renderer(new DocumentLinker(DocumentPanel.this), document.getURL());
-            rootRenderNode = r.renderRoot(document.getNodeTree(), zoomLevel);
+            rootRenderNode = renderer.renderRoot(document.getNodeTree(), zoomLevel, context);
 
             removeAll();
             verticalGroup.addComponent(rootRenderNode);
             horizontalGroup.addComponent(rootRenderNode);
 
-            title = r.getTitle();
+            title = renderer.getTitle();
 
             changed();
             revalidate();
@@ -162,7 +164,18 @@ public class DocumentPanel extends JPanel {
         highlightAttributes.put(TextAttribute.BACKGROUND, new Color(0x38D878));
         rootRenderNode.extractTextInto(textRanges);
         int resultCount = Searcher.highlightSearchTerm(textRanges.toArray(new AttributedString[textRanges.size()]), term, highlightAttributes);
-        BrowserMonkeyLogger.status(resultCount == 0 ? "Could not find \""+term+"\" in the document." : "Found \""+term+"\" "+resultCount+" times in the document.");
+        String foundStatus;
+        switch (resultCount) {
+            case 0:
+                foundStatus = "Could not find \""+term+"\" in the document.";
+                break;
+            case 1:
+                foundStatus = "Found \""+term+"\" once in the document.";
+                break;
+            default:
+                foundStatus = "Found \""+term+"\" "+resultCount+" times in the document.";
+        }
+        BrowserMonkeyLogger.status(foundStatus);
         revalidate();
         repaint();
     }

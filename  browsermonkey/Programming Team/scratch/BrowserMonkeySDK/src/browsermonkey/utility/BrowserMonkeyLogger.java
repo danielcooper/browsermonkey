@@ -48,12 +48,14 @@ public class BrowserMonkeyLogger {
 
     public static void status(String status) {
         alertLogger.info(status);
-        info(status);
+        if (ensureOpen())
+            logger.info(status);
     }
 
     public static void notice(String notice) {
         alertLogger.warning(notice);
-        warning(notice);
+        if (ensureOpen())
+            logger.warning(notice);
     }
     
     public static void trace(String string) {
@@ -66,8 +68,8 @@ public class BrowserMonkeyLogger {
             logger.warning(warning);
     }
 
-    public static void info(String error) {
+    public static void info(String info) {
         if (ensureOpen())
-            logger.info(error);
+            logger.info(info);
     }
 }

@@ -43,7 +43,7 @@ public class FileLoader {
         URL result = resolveFile(new File(path));
         if (result != null)
             return result;
-        
+
         try {
             result = new URL(context, path);
         } catch (MalformedURLException ex) {
@@ -52,19 +52,9 @@ public class FileLoader {
 
         if (result.getProtocol().equals("file")) {
             try {
-                File fileForURL = new File(result.toURI().getPath());
-                if (fileForURL.isDirectory())
-                    fileForURL = getIndexFile(fileForURL);
-                else if (!fileForURL.exists())
-                    fileForURL = null;
-
-                if (fileForURL != null) {
-                    result = fileForURL.toURI().toURL();
-                }
-                else
-                    return null;
+                result = resolveFile(new File(result.toURI().getPath()));
             } catch (Exception e) {
-                return null;
+                result =  null;
             }
         }
 
