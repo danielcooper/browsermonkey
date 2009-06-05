@@ -1,11 +1,9 @@
 package browsermonkey.render;
 
-import browsermonkey.render.*;
 import java.awt.*;
 import java.text.AttributedString;
 import java.util.ArrayList;
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 
 /**
  *
@@ -52,6 +50,8 @@ public class LayoutRenderNode extends RenderNode {
                 ((RenderNode)component).setZoomLevel(zoomLevel);
             }
         }
+        revalidate();
+        //repaint();
     }
 
     @Override
@@ -140,7 +140,7 @@ public class LayoutRenderNode extends RenderNode {
     public TextRenderNode getTextNode() {
         if (currentTextNode == null) {
             currentTextNode = new TextRenderNode(linker, centred);
-            addNode(currentTextNode, centred ? WidthBehaviour.Maximal : WidthBehaviour.Maximal);
+            addNode(currentTextNode, WidthBehaviour.Maximal);
         }
         return currentTextNode;
     }

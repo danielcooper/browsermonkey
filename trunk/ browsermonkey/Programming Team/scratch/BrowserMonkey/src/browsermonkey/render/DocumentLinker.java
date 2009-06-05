@@ -12,6 +12,6 @@ public class DocumentLinker implements Linkable {
     }
 
     public void followLink(String path) {
-        documentPanel.load(path, !path.startsWith("http://"));
+        documentPanel.load(path);
     }
 }

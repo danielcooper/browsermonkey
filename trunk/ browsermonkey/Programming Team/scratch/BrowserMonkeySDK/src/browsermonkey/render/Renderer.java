@@ -8,14 +8,13 @@ import java.awt.font.*;
 import java.io.*;
 import java.lang.reflect.*;
 import java.net.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
  * @author Paul Calcraft
  */
 public class Renderer {
+    private URL documentContext;
     private Map<String, TagRenderer> rendererMap;
     private Linkable linker;
     private String title = null;
@@ -61,6 +60,10 @@ public class Renderer {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public byte[] loadResource(String path) {
+        return FileLoader.readFile(FileLoader.getURL(path, documentContext));
     }
 
     private void loadRenderers() {
@@ -124,7 +127,8 @@ public class Renderer {
         }
     }
 
-    public Renderer(Linkable linker) {
+    public Renderer(Linkable linker, URL documentContext) {
+        this.documentContext = documentContext;
         this.linker = linker;
         headingNumbering = new ArrayList<Integer>();
         loadRenderers();

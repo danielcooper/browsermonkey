@@ -35,6 +35,8 @@ public class TextRenderNode extends RenderNode {
         characterEntities.put("amp", '&');
         characterEntities.put("lt", '<');
         characterEntities.put("gt", '>');
+        characterEntities.put("bull", '•');
+        characterEntities.put("raquo", '▼');
     }
 
     public TextRenderNode(Linkable linker) {
@@ -48,8 +50,6 @@ public class TextRenderNode extends RenderNode {
      */
     public TextRenderNode(Linkable linker, boolean centred) {
         super(linker);
-
-        //setBorder(new LineBorder(Color.red));
 
         this.centred = centred;
         textString = "";
@@ -76,6 +76,7 @@ public class TextRenderNode extends RenderNode {
         double dpiCorrection = screenResolution/72d;
         text.addAttribute(TextAttribute.TRANSFORM, new TransformAttribute(AffineTransform.getScaleInstance(zoomLevel*dpiCorrection, zoomLevel*dpiCorrection)));
         dimensionsChanged = true;
+        revalidate();
     }
 
     @Override
@@ -101,8 +102,14 @@ public class TextRenderNode extends RenderNode {
                     aci.setIndex(cumulativeCharacterCount + hitInfo.getCharIndex());
                     Object hrefValue = aci.getAttribute(HREF_ATTRIBUTE);
                     if (hrefValue != null) {
+                        int hrefStart = aci.getRunStart(HREF_ATTRIBUTE);
+                        int hrefEnd = aci.getRunLimit(HREF_ATTRIBUTE);
+                        text.addAttribute(TextAttribute.FOREGROUND, Color.red, hrefStart, hrefEnd);
+                        //revalidate();
+                        repaint();
                         linker.followLink((String)hrefValue);
                     }
+                    return;
                 }
                 
             }
@@ -141,7 +148,6 @@ public class TextRenderNode extends RenderNode {
         }
         else {
             //regular
-            newText = newText.replaceAll("\\s+", " ");
             if (newText.startsWith(" ") && (isEmpty() || textString.endsWith(" ")))
                 newText = newText.substring(1);
 

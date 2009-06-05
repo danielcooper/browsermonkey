@@ -10,20 +10,27 @@ import java.net.*;
  */
 public class Document {
     private String path;
+    private URL url;
+    private URL context;
     private DocumentNode nodeTree;
 
     /**
      * Constructs a new <code>Document</code> with the specified path.
      * @param path the file path
      */
-    public Document(String path) {
+    /*public Document(String path) {
+        this(path, null);
+    }*/
+
+    public Document(String path, URL context) {
         this.path = path;
+        this.context = context;
     }
 
-    public String getPath() {
-        return path;
+    public URL getURL() {
+        return url;
     }
-    
+
     /**
      * Opens the file specified by this <code>Document</code>'s path and
      * parses it, generating the <code>DocumentNode</code> tree.
@@ -31,30 +38,18 @@ public class Document {
      * @throws java.io.IOException
      */
     public void load() throws FileNotFoundException, IOException {
-        BufferedReader br;
+        url = FileLoader.getURL(path, context);
+        byte[] data = FileLoader.readFile(url);
 
-        if (path.startsWith("http://")) {
-            URL url = new URL(path);
-            InputStream in = url.openStream();
-            br = new BufferedReader(new InputStreamReader(in));
+        String pageText;
+        if (data == null) {
+            // TODO: Error
+            pageText = "<title>File Not Found</title>Error 404 - file not found.";
         }
-        else {
-            FileReader reader = new FileReader(path);
-            br = new BufferedReader(reader);
-        }
-        
-        char[] buffer = new char[256];
-        int charactersRead;
-        StringBuilder result = new StringBuilder();
-        try {
-            while ((charactersRead = br.read(buffer)) != -1) {
-                result.append(buffer, 0, charactersRead);
-            }
-        } catch (IOException ex) {
-            br.close();
-            throw ex;
-        }
-        Parser parser = new Parser(result.toString());
+        else
+            pageText = new String(data);
+
+        Parser parser = new Parser(pageText);
         parser.parse();
         nodeTree = parser.getRootNode();
     }
