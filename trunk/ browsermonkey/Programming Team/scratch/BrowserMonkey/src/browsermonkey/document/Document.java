@@ -14,6 +14,7 @@ public class Document {
     private URL context;
     private DocumentNode nodeTree;
     private boolean isConformant;
+    private int error;
 
     /**
      * Returns true if the document is conformant to the html standards.
@@ -24,41 +25,46 @@ public class Document {
     }
 
     /**
-     * Constructs a new <code>Document</code> with the specified path.
-     * @param path the file path
-     * @param context URL context for linking purposes
+     * Returns the error status code of this document.
+     * @return 0 if loaded, otherwise the error code (e.g. 404)
      */
-    /*public Document(String path) {
-        this(path, null);
-    }*/
+    public int getError() {
+        return error;
+    }
 
+    /**
+    * Constructs a new <code>Document</code> with the specified path.
+    * @param path the file path
+    * @param context URL context for linking purposes
+    */
     public Document(String path, URL context) {
         this.path = path;
         this.context = context;
     }
 
     /**
-     * Returns the <code>URL</code> of the current document
-     * @return the <code>URL</code> of the current document
-     */
+    * Returns the <code>URL</code> of the current document
+    * @return the <code>URL</code> of the current document
+    */
     public URL getURL() {
         return url;
     }
-
+     
     /**
-     * Opens the file specified by this <code>Document</code>'s path and
-     * parses it, generating the <code>DocumentNode</code> tree.
-     * @throws java.io.FileNotFoundException
-     * @throws java.io.IOException
-     */
+    * Opens the file specified by this <code>Document</code>'s path and
+    * parses it, generating the <code>DocumentNode</code> tree.
+    * @throws java.io.FileNotFoundException
+    * @throws java.io.IOException
+    */
     public void load() throws FileNotFoundException, IOException {
         url = FileLoader.getURL(path, context);
-        byte[] data = FileLoader.readFile(url);
+        int[] response = new int[1];
+        byte[] data = FileLoader.readFile(url, response);
 
         String pageText;
         if (data == null) {
-            // TODO: Error
-            pageText = "<title>File Not Found</title>Error 404 - file not found.";
+            error = response[0];
+            pageText = "<title>Error retrieving document</title><pre>"+path+"</pre>"+"Error "+error;
         }
         else
             pageText = new String(data);
@@ -67,13 +73,13 @@ public class Document {
         parser.parse();
         isConformant = parser.isConformant();
         nodeTree = parser.getRootNode();
-    }
+     }
 
     /**
      * Load testing method, use the tagText variable to select which load test to use.
      * @param tagText "table" for the table load test, "a" for the non-table version
      */
-    public void loadTest(String tagText) {
+        public void loadTest(String tagText) {
         if (tagText.equals("table")) {
             nodeTree = new TagDocumentNode("html", null,
                 new TextDocumentNode("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."),
@@ -164,7 +170,7 @@ public class Document {
      * Returns the <code>DocumentNode</code> tree for this document.
      * @return Node tree for this Document
      */
-    public DocumentNode getNodeTree() {
-        return nodeTree;
-    }
+     public DocumentNode getNodeTree() {
+         return nodeTree;
+     }
 }

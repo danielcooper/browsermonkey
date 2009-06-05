@@ -90,9 +90,10 @@ public class Tokeniser {
                 currentPos = tagTokenEnd;
 
                 if (token.getTag().equals("title")) {
-                    int endTitle = page.indexOf("</title>", tagTokenEnd);
+                    int endTitle = page.substring(tagTokenEnd).toLowerCase().indexOf("</title>");
                     String text;
                     if (endTitle != -1) {
+                        endTitle += tagTokenEnd;
                         text = page.substring(currentPos, endTitle);
                         currentPos = endTitle + 8;
                     } else {
