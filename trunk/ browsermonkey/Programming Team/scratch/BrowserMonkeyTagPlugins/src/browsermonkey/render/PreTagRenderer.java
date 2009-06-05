@@ -16,16 +16,20 @@ public class PreTagRenderer extends TagRenderer {
 
     @Override
     public void render(Renderer renderer, TagDocumentNode tag, LayoutRenderNode parent, Map<Attribute, Object> formatting) {
+        // Use smaller monospace font for preformatted text.
         Map<Attribute, Object> newFormatting = (Map<Attribute, Object>)((HashMap)formatting).clone();
-        newFormatting.put(TextRenderNode.PRE_ATTRIBUTE, true);
-        newFormatting.put(TextAttribute.FAMILY, "Courier New");
+        newFormatting.put(TextAttribute.FAMILY, "Monospaced");
         newFormatting.put(TextAttribute.SIZE, 10);
 
+        // Ensure there's a gap of at least one line break before the pre.
         parent.ensureLinespaceDistance(1);
-        
+
+        // Render all children into the same parent using the Renderer and the
+        // new formatting.
         for (DocumentNode child : tag.getChildren())
             renderer.render(child, parent, newFormatting);
 
+        // Ensure there's a gap of at least one line break after the pre.
         parent.ensureLinespaceDistance(1);
     }
 }

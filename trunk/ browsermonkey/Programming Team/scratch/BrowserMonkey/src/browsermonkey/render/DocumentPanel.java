@@ -8,8 +8,6 @@ import java.awt.*;
 import java.awt.datatransfer.*;
 import java.awt.font.TextAttribute;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.*;
 import java.text.*;
 import java.util.ArrayList;
@@ -92,15 +90,8 @@ public class DocumentPanel extends JPanel {
             if (path.startsWith("t "))
                 document.loadTest(path.substring(2));
             else {
-                try {
-                    document.load();
-                    context = document.getURL();
-                } catch (FileNotFoundException ex) {
-                    BrowserMonkeyLogger.warning("File not found: "+path);
-                    // TODO: load 404 document
-                } catch (IOException ex) {
-                    BrowserMonkeyLogger.warning("File read error: "+path);
-                }
+                document.load();
+                context = document.getURL();
             }
 
             // Store the html output into the clipboard for debug.
@@ -129,7 +120,7 @@ public class DocumentPanel extends JPanel {
             if (document.getError() != 0) {
                 BrowserMonkeyLogger.status("Could not retrieve document.");
             }
-            else if (document.isIsConformant() && renderer.isConformant())
+            else if (document.isConformant() && renderer.isConformant())
                 BrowserMonkeyLogger.status("Done, page appears to conform to the specification.");
             else
                 BrowserMonkeyLogger.status("Done, page does not conform to the specification. See log file for details.");

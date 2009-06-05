@@ -170,8 +170,16 @@ public class Parser {
                 }
             } else {
                 String text = currentToken.getTag();
-                if (!whitespaceIsPreformatted()) {
+
+                if (whitespaceIsPreformatted()) {
+                    // Non breaking space.
+                    text = text.replaceAll(" ", "\u00A0");
+                }
+                else {
+                    // Regular whitespace handling: collapse all contiguous
+                    // whitespace to a single space.
                     text = text.replaceAll("\\s+", " ");
+                    // Ignore empty text node.
                     if (structureTags.contains(openElements.get(openElements.size() - 1).getType()) && text.equals(" ")) {
                         continue;
                     }

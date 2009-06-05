@@ -10,6 +10,7 @@ import java.io.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import browsermonkey.utility.BrowserMonkeyLogger;
+import java.awt.Point;
 import java.net.URLEncoder;
 import java.util.logging.*;
 
@@ -41,7 +42,6 @@ public class GUI extends javax.swing.JFrame {
             public void publish(LogRecord record) {
                 if (record.getLevel() == Level.INFO) {
                     statusBar.setText(record.getMessage());
-                    statusBar.revalidate();
                     statusBar.repaint();
                 }
                 else if (record.getLevel() == Level.WARNING) {
@@ -203,6 +203,7 @@ public class GUI extends javax.swing.JFrame {
 
         statusBar.setText("Ready");
         statusBar.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 5, 3, 5));
+        statusBar.setMinimumSize(new java.awt.Dimension(0, 0));
 
         documentScrollPanel.setMinimumSize(new java.awt.Dimension(0, 0));
         documentScrollPanel.setViewportView(documentPanel);
@@ -222,7 +223,7 @@ public class GUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(documentScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(statusBar))
+                .addComponent(statusBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -234,7 +235,7 @@ public class GUI extends javax.swing.JFrame {
             address = "http://www.google.co.uk/m/search?q="+URLEncoder.encode(address.substring(2));
         else {
             File f = new File(address);
-            if (!f.exists() && !address.startsWith("http://"))
+            if (!f.exists() && !address.startsWith("http://") && !address.startsWith("file:/"))
                 address = "http://" + address;
         }
         loadFile(address);
@@ -291,8 +292,10 @@ public class GUI extends javax.swing.JFrame {
     }
 
     private void panelChanged() {
-        this.addressField.setText(documentPanel.getAddress());
+        addressField.setText(documentPanel.getAddress());
         addressField.setCaretPosition(addressField.getText().length());
+        addressField.repaint();
+        documentScrollPanel.getViewport().setViewPosition(new Point(0, 0));
         if (documentPanel.getTitle() == null)
             setTitle("BrowserMonkey");
         else

@@ -20,7 +20,7 @@ public class Document {
      * Returns true if the document is conformant to the html standards.
      * @return True if conformant
      */
-    public boolean isIsConformant() {
+    public boolean isConformant() {
         return isConformant;
     }
 
@@ -56,7 +56,7 @@ public class Document {
     * @throws java.io.FileNotFoundException
     * @throws java.io.IOException
     */
-    public void load() throws FileNotFoundException, IOException {
+    public void load() {
         url = FileLoader.getURL(path, context);
         int[] response = new int[1];
         byte[] data = FileLoader.readFile(url, response);
