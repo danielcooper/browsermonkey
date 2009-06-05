@@ -4,8 +4,9 @@ import browsermonkey.utility.BrowserMonkeyLogger;
 import java.util.*;
 
 /**
- *
- * @author Paul Calcraft
+ * Tokeniser class takes the raw text input and produces a useful tree of Tokens
+ * for the Parser to use. It does this mainly by looking for <> characters.
+ * @author Paul Calcraft, Daniel Cooper, Lawrence Dine
  */
 public class Tokeniser {
     private List<Token> tokens;
@@ -13,6 +14,11 @@ public class Tokeniser {
     private int currentPos;
     private boolean conformant;
 
+    /**
+     * Returns true if the tokenisation didn't have to compensate for any
+     * conformance errors.
+     * @return True if conformant
+     */
     public boolean isConformant() {
         return conformant;
     }
@@ -33,14 +39,22 @@ public class Tokeniser {
         conformant = true;
     }
 
+    /**
+     * Tokenise method is used to call the method that does the actual tokenisation
+     * over and over again until the tokenising is complete.
+     */
     public void tokenise() {
         while (currentPos < page.length()) {
             getNextToken();
         }
     }
 
+    /**
+     * This method does all the clever work for tokenising the text. See source
+     * for explanatory comments.
+     */
     public void getNextToken() {
-        if (page.charAt(currentPos) == '<') {
+        if (page.charAt(currentPos) == '<') {   //TODO Detailed in-line comments
             if (page.substring(currentPos + 1, currentPos + 4).equals("!--")) {
                 int tagTokenEnd = page.indexOf("-->", currentPos + 4);
 
@@ -76,10 +90,9 @@ public class Tokeniser {
                 currentPos = tagTokenEnd;
 
                 if (token.getTag().equals("title")) {
-                    int endTitle = page.substring(tagTokenEnd).toLowerCase().indexOf("</title>");
+                    int endTitle = page.indexOf("</title>", tagTokenEnd);
                     String text;
                     if (endTitle != -1) {
-                        endTitle += tagTokenEnd;
                         text = page.substring(currentPos, endTitle);
                         currentPos = endTitle + 8;
                     } else {
@@ -104,6 +117,11 @@ public class Tokeniser {
         }
     }
 
+    /**
+     * After the tokenisation is complete this is used to get an iterator
+     * containing the tokens. This method is used by the <code>Parser</code>.
+     * @return Iterator of Tokens
+     */
     public Iterator<Token> getTokens() {
         return tokens.iterator();
     }
