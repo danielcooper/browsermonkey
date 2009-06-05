@@ -5,7 +5,9 @@ import java.util.Map;
 import browsermonkey.utility.RegexUtility;
 
 /**
- *
+ * Represents a token for use in the tokeniser and the parser. Stores the tag or
+ * text found at that position in the html file and stores information about the
+ * tag if it is one. Such as whether the tag is an end tag and attributes.
  * @author Lawrence Dine
  */
 public class Token {
@@ -15,6 +17,13 @@ public class Token {
     private Map<String, String> attributes;
     private TokenType type;
 
+    /**
+     * Constructor for class token. Creates a new token with the supplied tag and
+     * type, extracts the tag itself and the attributes then sends it to be
+     * classified.
+     * @param fullTag Contains the 'full tag' in the case of text this is just text but in the case of the tag it includes the <> or </> and any attributes
+     * @param type Whether this token is a Tag or Text type
+     */
     public Token(String fullTag, TokenType type){
         this.fullTag = fullTag;
         this.type = type;
@@ -32,39 +41,78 @@ public class Token {
         }
     }
 
+    /**
+     * Returns true if the token contains an end tag.
+     * @return True if token represents end tag
+     */
     public boolean isEndTag(){
         return endTag;
     }
 
+    /**
+     * Returns true if the token contains a start tag.
+     * @return True if this token represents a start tag
+     */
     public boolean isStartTag(){
         return !endTag;
     }
 
+    /**
+     * Returns true if this token has any attributes in its attribute map.
+     * @return True if there are any attributes
+     */
     public boolean hasAttributes(){
         return (attributes.size() > 0);
     }
 
+    /**
+     * Returns the attribute map from this token.
+     * @return Map containing all the attributes stored for this tag token
+     */
     public Map<String, String> getAttributes() {
         return attributes;
     }
 
+    /**
+     * Returns the full tag value used to create the token, i.e: the tag with
+     * all the attributes and the <> still in place.
+     * @return Full tag for this token
+     */
     public String getFullTag(){
         return fullTag;
     }
 
+    /**
+     * Returns the type of this token as a <code>TokenType</code>. Lets you check
+     * to see whether this is a text or tag token.
+     * @return <code>TokenType</code> of this token
+     */
     public TokenType getType(){
         return type;
     }
 
+    /**
+     * Lets you change the tag of the token.
+     * @param tag Tag to change this token to
+     */
     public void setTag(String tag) {
         this.fullTag.replaceFirst(this.tag, tag);
         this.tag = tag;
     }
 
+    /**
+     * Getter for the tag variable.
+     * @return Tag for this token
+     */
     public String getTag(){
         return tag;
     }
 
+    /**
+     * This method extracts any attributes that may be present in the full tag of
+     * this token. It extracts them, separates them and puts them into the attributes
+     * map. Also sets up the variables like endTag.
+     */
     public void classifyTag(){
         String[][] atts = RegexUtility.scan(fullTag, "<[\\w:-]+\\s+(.*)>");
         if (atts.length > 0) {
