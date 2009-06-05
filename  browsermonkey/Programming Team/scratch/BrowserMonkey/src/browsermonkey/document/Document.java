@@ -14,19 +14,19 @@ public class Document {
     private URL context;
     private DocumentNode nodeTree;
     private boolean isConformant;
-    private int error;
 
+    /**
+     * Returns true if the document is conformant to the html standards.
+     * @return True if conformant
+     */
     public boolean isIsConformant() {
         return isConformant;
-    }
-
-    public int getError() {
-        return error;
     }
 
     /**
      * Constructs a new <code>Document</code> with the specified path.
      * @param path the file path
+     * @param context URL context for linking purposes
      */
     /*public Document(String path) {
         this(path, null);
@@ -37,6 +37,10 @@ public class Document {
         this.context = context;
     }
 
+    /**
+     * Returns the <code>URL</code> of the current document
+     * @return the <code>URL</code> of the current document
+     */
     public URL getURL() {
         return url;
     }
@@ -49,13 +53,12 @@ public class Document {
      */
     public void load() throws FileNotFoundException, IOException {
         url = FileLoader.getURL(path, context);
-        int[] response = new int[1];
-        byte[] data = FileLoader.readFile(url, response);
+        byte[] data = FileLoader.readFile(url);
 
         String pageText;
         if (data == null) {
-            error = response[0];
-            pageText = "<title>Error retrieving document</title><pre>"+path+"</pre>"+"Error "+error;
+            // TODO: Error
+            pageText = "<title>File Not Found</title>Error 404 - file not found.";
         }
         else
             pageText = new String(data);
@@ -66,6 +69,10 @@ public class Document {
         nodeTree = parser.getRootNode();
     }
 
+    /**
+     * Load testing method, use the tagText variable to select which load test to use.
+     * @param tagText "table" for the table load test, "a" for the non-table version
+     */
     public void loadTest(String tagText) {
         if (tagText.equals("table")) {
             nodeTree = new TagDocumentNode("html", null,
@@ -153,6 +160,10 @@ public class Document {
             );
     }
 
+    /**
+     * Returns the <code>DocumentNode</code> tree for this document node.
+     * @return Node tree for this DocumentNode
+     */
     public DocumentNode getNodeTree() {
         return nodeTree;
     }
