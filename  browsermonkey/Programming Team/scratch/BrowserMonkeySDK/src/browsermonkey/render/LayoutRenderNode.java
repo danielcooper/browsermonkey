@@ -115,13 +115,27 @@ public class LayoutRenderNode extends RenderNode {
         layout.setVerticalGroup(verticalOverlapper);
     }
 
+    /**
+     * Determines how the layout node will calculate the maximum width.
+     */
     public enum WidthBehaviour {
+        /**
+         * Maximum width will be set to the node's preferred size.
+         */
         Minimal,
+        /**
+         * Maximum width will be set to the node's default maximum width.
+         */
         Maximal,
+        /**
+         * The width will grow to the space given by the layout node.
+         */
         Grow
     }
 
     public void addNode(RenderNode node, WidthBehaviour widthBehaviour) {
+        if (node != currentTextNode)
+            currentTextNode = null;
         if (hasPreviousComponent)
             for (int i = 0; i < currentLinespaceDistance; i++)
                 addLineSpace(false);
@@ -147,16 +161,13 @@ public class LayoutRenderNode extends RenderNode {
     }
 
     public void ensureLinespaceDistance(int distance) {
-        ensureNewLine();
+        currentTextNode = null;
         currentLinespaceDistance = Math.max(currentLinespaceDistance, distance);
     }
 
     public void addHardLineBreak() {
-        if (currentTextNode == null) {
+        if (currentTextNode == null)
             addLineSpace(true);
-            hasPreviousComponent = true;
-            currentLinespaceDistance = 0;
-        }
         else
             currentTextNode = null;
     }
@@ -171,9 +182,5 @@ public class LayoutRenderNode extends RenderNode {
             verticalGroup.addComponent(lineSpace);
             horizontalGroup.addComponent(lineSpace);
         }
-    }
-
-    public void ensureNewLine() {
-        currentTextNode = null;
     }
 }

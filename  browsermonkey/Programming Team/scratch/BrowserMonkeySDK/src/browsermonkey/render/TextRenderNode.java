@@ -91,8 +91,6 @@ public class TextRenderNode extends RenderNode {
             text.add(this.text);
     }
 
-    public static final AttributedCharacterIterator.Attribute PRE_ATTRIBUTE = new AttributedCharacterIterator.Attribute("pre") {};
-
     public static final AttributedCharacterIterator.Attribute HREF_ATTRIBUTE = new AttributedCharacterIterator.Attribute("href") {};
 
     private void click(Point hitPoint) {
@@ -146,19 +144,11 @@ public class TextRenderNode extends RenderNode {
 
         builder.append(textString);
 
-        Boolean preAttribute = (Boolean)formatting.get(PRE_ATTRIBUTE);
-        if (preAttribute != null && preAttribute) {
-            // If in pre, replace space with non-breaking space
-            newText = newText.replaceAll(" ", "\u00A0");
-        }
-        else {
-            //regular
-            if (newText.startsWith(" ") && (isEmpty() || textString.endsWith(" ")))
-                newText = newText.substring(1);
-
-            if (newText.isEmpty())
-                return;
-        }
+        if (newText.startsWith(" ") && (isEmpty() || textString.endsWith(" ")))
+            newText = newText.substring(1);
+        
+        if (newText.isEmpty())
+            return;
 
         int currentPos = 0;
         int findPos;

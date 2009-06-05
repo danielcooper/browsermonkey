@@ -55,7 +55,7 @@ public class Tokeniser {
      */
     public void getNextToken() {
         if (page.charAt(currentPos) == '<') {   //TODO Detailed in-line comments
-            if (page.substring(currentPos + 1, currentPos + 4).equals("!--")) {
+            if (page.length() >= currentPos + 4 && page.substring(currentPos + 1, currentPos + 4).equals("!--")) {
                 int tagTokenEnd = page.indexOf("-->", currentPos + 4);
 
                 if(tagTokenEnd == -1){
@@ -76,6 +76,7 @@ public class Tokeniser {
                 if (tagTokenEnd == -1 || tagTokenEnd > nextTagOpen) {
                     fullTag = page.substring(currentPos, nextTagOpen) + ">";
                     tagTokenEnd = nextTagOpen;
+
                     if (nextTagOpen == page.length())
                         conformanceError("Tag does not end with '>' throughout the document, closing at end of document: "+fullTag);
                     else
@@ -85,9 +86,16 @@ public class Tokeniser {
                     tagTokenEnd++;
                 }
 
+                currentPos = tagTokenEnd;
+
+                if (fullTag.matches("<\\s*/?\\s*>")) {
+                    conformanceError("Empty tag found, ignoring.");
+                    return;
+                }
+
                 Token token = new Token(fullTag, TokenType.TAG);
                 tokens.add(token);
-                currentPos = tagTokenEnd;
+                
 
                 if (token.getTag().equals("title")) {
                     int endTitle = page.substring(tagTokenEnd).toLowerCase().indexOf("</title>");
