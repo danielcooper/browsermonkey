@@ -3,7 +3,7 @@ package browsermonkey.document;
 import browsermonkey.utility.BrowserMonkeyLogger;
 import java.io.*;
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.*;
 import java.util.*;
 
 /**
@@ -66,9 +66,12 @@ public class FileLoader {
             return null;
         
         InputStream urlStream;
+        URLConnection connection;
         ArrayList<Byte> data = new ArrayList<Byte>();
         try {
-            urlStream = url.openStream();
+            connection = url.openConnection();
+            connection.setRequestProperty("User-agent", "Mozilla/5.0");
+            urlStream = connection.getInputStream();
             int b;
             BrowserMonkeyLogger.status("Loading "+url.toString());
             Thread.yield();

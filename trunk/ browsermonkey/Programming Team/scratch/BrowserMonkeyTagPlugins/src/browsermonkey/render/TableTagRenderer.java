@@ -1,6 +1,7 @@
 package browsermonkey.render;
 
 import browsermonkey.document.*;
+import browsermonkey.utility.BrowserMonkeyLogger;
 import java.text.AttributedCharacterIterator.Attribute;
 import javax.swing.*;
 import java.awt.*;
@@ -23,8 +24,13 @@ public class TableTagRenderer extends TagRenderer {
         
         String border;
         if ((border = tag.getAttribute("border")) != null) {
-            borderThickness = Integer.parseInt(border);
-            // TODO: Detect bad value
+            try {
+                borderThickness = Integer.parseInt(border);
+            } catch (NumberFormatException ex) {
+                BrowserMonkeyLogger.conformance("Invalid border attribute value \""+border+"\" in table tag.");
+                renderer.foundConformanceError();
+            }
+            
         }
 
         TableRenderNode tableNode = new TableRenderNode(linker, borderThickness);

@@ -47,11 +47,12 @@ public class LayoutRenderNode extends RenderNode {
     public void setZoomLevel(float zoomLevel) {
         for (Component component : getComponents()) {
             if (component instanceof RenderNode) {
-                ((RenderNode)component).setZoomLevel(zoomLevel);
+                RenderNode node = (RenderNode)component;
+                node.setZoomLevel(zoomLevel);
             }
         }
         revalidate();
-        //repaint();
+        repaint();
     }
 
     @Override

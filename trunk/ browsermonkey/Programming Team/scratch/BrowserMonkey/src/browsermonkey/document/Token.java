@@ -9,15 +9,11 @@ import browsermonkey.utility.RegexUtility;
  * @author Lawrence Dine
  */
 public class Token {
-    String tag;
-    boolean endTag;
-    String fullTag;
-    Map<String, String> attributes;
-    TokenType type;
-
-    public String tag() {
-        return tag;
-    }
+    private String tag;
+    private boolean endTag;
+    private String fullTag;
+    private Map<String, String> attributes;
+    private TokenType type;
 
     public Token(String fullTag, TokenType type){
         this.fullTag = fullTag;
@@ -58,6 +54,11 @@ public class Token {
 
     public TokenType getType(){
         return type;
+    }
+
+    public void setTag(String tag) {
+        this.fullTag.replaceFirst(this.tag, tag);
+        this.tag = tag;
     }
 
     public String getTag(){

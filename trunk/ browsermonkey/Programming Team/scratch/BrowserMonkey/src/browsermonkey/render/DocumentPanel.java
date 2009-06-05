@@ -85,6 +85,7 @@ public class DocumentPanel extends JPanel {
                 } catch (MalformedURLException ex) {
                     context = null;
                 }
+                context = null;
             }
 
             document = new Document(path, context);
@@ -124,9 +125,12 @@ public class DocumentPanel extends JPanel {
             repaint();
 
             Thread.yield();
-
-            BrowserMonkeyLogger.status("Done");
             
+            if (document.isIsConformant() && renderer.isConformant())
+                BrowserMonkeyLogger.status("Done, page appears to conform to the specification.");
+            else
+                BrowserMonkeyLogger.status("Done, page does not conform to the specification. See log file for details.");
+
             currentLoaderThread = null;
 
             return null;

@@ -30,16 +30,16 @@ public class Parser {
     private ArrayList<TagDocumentNode> openElements;
     private String originalPage;
     private Iterator<Token> tokens;
-    private boolean conforms = true;
+    private boolean conformant = true;
 
 
     private void conformanceError(String error){
-            BrowserMonkeyLogger.trace(error);
-            conforms = false;
+        BrowserMonkeyLogger.conformance(error);
+        conformant = false;
     }
 
-    public boolean conforms(){
-        return conforms;
+    public boolean isConformant(){
+        return conformant;
     }
 
     private boolean whitespaceIsPreformatted() {
@@ -99,6 +99,7 @@ public class Parser {
         Tokeniser tokeniser = new Tokeniser(page);
         tokeniser.tokenise();
         tokens = tokeniser.getTokens();
+        conformant = tokeniser.isConformant();
     }
 
     public void parse() {
@@ -111,6 +112,9 @@ public class Parser {
             Token currentToken = tokens.next();
 
             if (currentToken.getType() == TokenType.TAG) {
+                if (currentToken.getTag().equals("th"))
+                    currentToken.setTag("td");
+                
                 if (ignoredTags.contains(currentToken.getTag())) {
                     continue;
                 }
@@ -141,7 +145,7 @@ public class Parser {
                     //perform listed tag functions
                     if (listTags.contains(currentToken.getTag())) {
                         doListedElement(currentToken);
-                    } //TODO Fix pre elements
+                    }
                     //For singularly nestable tags, check if the last tag is the same. If it is
                     //fix the nesting, if not - carry on.
                     else if (singularlyNestableTags.contains(currentToken.getTag())) {
@@ -181,101 +185,12 @@ public class Parser {
                 doTextElement(text);
             }
         }
-    //postProcess();
-    }
-
-    private void postProcess() {
-        // Find all p tags that are not inside a pre, and remove if empty.
-        ArrayList<TagDocumentNode> nonPreTags = shallowTagSearch(rootNode, "pre", true);
-        for (TagDocumentNode nonPreTag : nonPreTags) {
-            ArrayList<TextDocumentNode> textNodes = textSearch(nonPreTag, false);
-            for (TextDocumentNode textNode : textNodes) {
-                String text = textNode.getText().replaceAll("\\s+", " ");
-                //int textIndex = nonPreTag.children.indexOf(textNode);
-                //if (textIndex == 0)
-                //    text = text.trim();
-                //else if (textIndex == nonPreTag.children.size()-1)
-                //    text.trim();
-                if (text.equals(" ")) {
-                    nonPreTag.children.remove(textNode);
-                } else {
-                    textNode.setText(text);
-                }
-            }
-        }
-    /*
-    Iterator<DocumentNode> i = nonPreTag.getChildren().iterator();
-    while (i.hasNext()) {
-    DocumentNode childDocNode = i.next();
-    if (!(childDocNode instanceof TagDocumentNode))
-    continue;
-    TagDocumentNode child = (TagDocumentNode)childDocNode;
-    if (child.getType().equals("p")) {
-    boolean isEmpty = true;
-    for (DocumentNode node : child.getChildren()) {
-    if (node instanceof TextDocumentNode) {
-    if (!((TextDocumentNode)node).getText().replaceAll("\\s+", "").isEmpty()) {
-    isEmpty = false;
-    break;
-    }
-    }
-    else {
-    isEmpty = false;
-    break;
-    }
-    }
-    if (isEmpty) {
-    //i.remove();
-    child.getChildren().clear();
-    }
-    }
-    }
-    }*/
-    }
-
-    private static ArrayList<TextDocumentNode> textSearch(DocumentNode parent, boolean deep) {
-        ArrayList<TextDocumentNode> result = new ArrayList<TextDocumentNode>();
-
-        for (DocumentNode child : parent.getChildren()) {
-            if (child instanceof TextDocumentNode) {
-                TextDocumentNode textNode = (TextDocumentNode) child;
-                result.add(textNode);
-            } else if (deep) {
-                result.addAll(textSearch(child, true));
-            }
-        }
-
-        return result;
-    }
-
-    private static ArrayList<TagDocumentNode> shallowTagSearch(DocumentNode parent, String type, boolean inverse) {
-        ArrayList<TagDocumentNode> result = new ArrayList<TagDocumentNode>();
-
-        if (parent instanceof TagDocumentNode) {
-            TagDocumentNode tagNode = (TagDocumentNode) parent;
-            if (tagNode.getType().equals(type)) {
-                if (inverse) {
-                    return result;
-                }
-
-                result.add(tagNode);
-                return result;
-            } else if (inverse) {
-                result.add(tagNode);
-            }
-        }
-
-        for (DocumentNode child : parent.getChildren()) {
-            result.addAll(shallowTagSearch(child, type, inverse));
-        }
-
-        return result;
     }
 
     //Does a standard list. If the user chooses to not close li tags then it assumes that the next li
     //signifies the start of the tag. Also, if no list type is given, it defaults to ul
     private void doListedElement(Token token) {
-        if (token.tag().equals("li")) {
+        if (token.getTag().equals("li")) {
             if (openElements.size() >= 1) {
                 if (openElements.get(openElements.size() - 1).getType().equals("ol") || openElements.get(openElements.size() - 1).getType().equals("ul")) {
                     doStartToken(token);

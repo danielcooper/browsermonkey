@@ -10,7 +10,7 @@ public class Main {
      */
     public static void main(String[] args) {
         GUI browser = new GUI();
-        String initialFile = "index.html";
+        String initialFile = ".";
         if (args.length > 0) {
             initialFile = args[0];
         }

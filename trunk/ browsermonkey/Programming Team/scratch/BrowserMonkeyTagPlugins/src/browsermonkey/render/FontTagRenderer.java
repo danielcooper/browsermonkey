@@ -1,6 +1,7 @@
 package browsermonkey.render;
 
 import browsermonkey.document.*;
+import browsermonkey.utility.BrowserMonkeyLogger;
 import java.text.AttributedCharacterIterator.Attribute;
 import java.awt.*;
 import java.awt.font.*;
@@ -35,14 +36,25 @@ public class FontTagRenderer extends TagRenderer {
         if (color != null) {
             Color colour;
             if (color.charAt(0) == '#') {
-                colour = new Color(Integer.parseInt(color.substring(1), 16));
-                // TODO: Detect bad number formatting
+                try {
+                    int colourValue = Integer.parseInt(color.substring(1), 16);
+                    if (colourValue > 0xFFFFFF || colourValue < 0x0)
+                        colour = null;
+                    else
+                        colour = new Color(colourValue);
+                } catch (NumberFormatException ex) {
+                    colour = null;
+                }
             }
             else
                 colour = getNamedColour(color);
 
             if (colour != null) {
                 newFormatting.put(TextAttribute.FOREGROUND, colour);
+            }
+            else {
+                BrowserMonkeyLogger.conformance("Invalid color attribute value \""+color+"\" in font tag.");
+                renderer.foundConformanceError();
             }
         }
 
