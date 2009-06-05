@@ -161,8 +161,8 @@ public class Document {
     }
 
     /**
-     * Returns the <code>DocumentNode</code> tree for this document node.
-     * @return Node tree for this DocumentNode
+     * Returns the <code>DocumentNode</code> tree for this document.
+     * @return Node tree for this Document
      */
     public DocumentNode getNodeTree() {
         return nodeTree;
