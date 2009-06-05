@@ -32,12 +32,10 @@ public class Tokeniser {
     public void getNextToken() {
         if (page.charAt(currentPos) == '<') {
             if (page.substring(currentPos + 1, currentPos + 4).equals("!--")) {
-                //calculate length of token and move token
-                int nextTagOpen = page.indexOf('<', currentPos + 1);
                 int tagTokenEnd = page.indexOf("-->", currentPos + 4);
 
-                if(nextTagOpen !=-1 && tagTokenEnd > nextTagOpen){
-                    currentPos = nextTagOpen;
+                if(tagTokenEnd == -1){
+                    currentPos = page.length();
                 } else {
                     currentPos = tagTokenEnd + 3;
                 }

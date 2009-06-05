@@ -127,22 +127,20 @@ public class Renderer {
         }
     }
 
-    public Renderer(Linkable linker, URL documentContext) {
-        this.documentContext = documentContext;
+    public Renderer(Linkable linker) {
         this.linker = linker;
         headingNumbering = new ArrayList<Integer>();
         loadRenderers();
     }
 
-    public LayoutRenderNode renderRoot(DocumentNode root, float zoom) {
+    public LayoutRenderNode renderRoot(DocumentNode root, float zoom, URL documentContext) {
+        this.documentContext = documentContext;
         headingNumbering.clear();
+        title = null;
 
         LayoutRenderNode renderRoot = new LayoutRenderNode(linker);
-
         render(root, renderRoot, DEFAULT_FORMATTING);
-
         renderRoot.setZoomLevel(zoom);
-
         return renderRoot;
     }
 

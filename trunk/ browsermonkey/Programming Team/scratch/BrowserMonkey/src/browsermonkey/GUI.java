@@ -140,6 +140,12 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
+        searchField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchFieldActionPerformed(evt);
+            }
+        });
+
         searchLabel.setText("Search:");
 
         javax.swing.GroupLayout topLayout = new javax.swing.GroupLayout(top);
@@ -253,6 +259,10 @@ public class GUI extends javax.swing.JFrame {
     private void zoomOutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomOutButtonActionPerformed
         zoom(-1);
 }//GEN-LAST:event_zoomOutButtonActionPerformed
+
+    private void searchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchFieldActionPerformed
+        searchButtonActionPerformed(null);
+    }//GEN-LAST:event_searchFieldActionPerformed
 
     //private int zoomLevel = 100;
     private int zoomLevelIndex = 5;
