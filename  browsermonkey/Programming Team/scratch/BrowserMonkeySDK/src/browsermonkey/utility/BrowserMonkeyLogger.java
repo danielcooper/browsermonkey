@@ -58,9 +58,9 @@ public class BrowserMonkeyLogger {
             logger.warning(notice);
     }
     
-    public static void trace(String string) {
+    public static void conformance(String string) {
         if (ensureOpen())
-            logger.fine(string);
+            logger.warning(string);
     }
     
     public static void warning(String warning) {

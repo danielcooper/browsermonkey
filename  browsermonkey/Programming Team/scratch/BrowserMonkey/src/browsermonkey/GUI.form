@@ -26,8 +26,8 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="statusBar" alignment="0" pref="571" max="32767" attributes="0"/>
-          <Component id="documentScrollPanel" alignment="0" pref="571" max="32767" attributes="0"/>
+          <Component id="statusBar" alignment="0" pref="591" max="32767" attributes="0"/>
+          <Component id="documentScrollPanel" alignment="0" pref="591" max="32767" attributes="0"/>
           <Component id="top" alignment="0" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
@@ -36,7 +36,7 @@
           <Group type="102" alignment="0" attributes="0">
               <Component id="top" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="documentScrollPanel" pref="250" max="32767" attributes="0"/>
+              <Component id="documentScrollPanel" pref="326" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="statusBar" min="-2" max="-2" attributes="0"/>
           </Group>
@@ -76,7 +76,7 @@
                           <Component id="searchButton" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
-                          <Component id="addressField" pref="380" max="32767" attributes="0"/>
+                          <Component id="addressField" pref="400" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="goButton" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>

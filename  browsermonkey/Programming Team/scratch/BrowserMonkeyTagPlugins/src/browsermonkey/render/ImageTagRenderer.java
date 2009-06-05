@@ -2,6 +2,7 @@ package browsermonkey.render;
 
 import browsermonkey.document.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.io.*;
 import java.text.AttributedCharacterIterator.Attribute;
 import java.util.*;
@@ -24,8 +25,10 @@ public class ImageTagRenderer extends TagRenderer {
         if (src == null)
             return;
 
+        String hrefValue = (String)formatting.get(TextRenderNode.HREF_ATTRIBUTE);
+
         byte[] imageResource = renderer.loadResource(src);
-        ImageRenderNode img = new ImageRenderNode(linker, imageResource);
+        ImageRenderNode img = new ImageRenderNode(linker, imageResource, hrefValue);
 
         parent.addNode(img, LayoutRenderNode.WidthBehaviour.Maximal);
     }
@@ -33,6 +36,7 @@ public class ImageTagRenderer extends TagRenderer {
     private static class ImageRenderNode extends RenderNode {
         private Image image;
         private static Image redX;
+        private String link;
 
         static {
             try {
@@ -50,8 +54,11 @@ public class ImageTagRenderer extends TagRenderer {
             return image != null;
         }
 
-        public ImageRenderNode(Linkable linker, byte[] imageResource) {
+        public ImageRenderNode(Linkable linker, byte[] imageResource, String link) {
             super(linker);
+
+            this.link = link;
+
             if (imageResource == null)
                 image = null;
             else {
@@ -61,6 +68,17 @@ public class ImageTagRenderer extends TagRenderer {
                     image = null;
                 }
             }
+
+            addMouseListener(new MouseListener() {
+                public void mouseClicked(MouseEvent e) {
+                    click();
+                }
+
+                public void mouseEntered(MouseEvent e) {}
+                public void mouseExited(MouseEvent e) {}
+                public void mousePressed(MouseEvent e) {}
+                public void mouseReleased(MouseEvent e) {}
+            });
             
             updateSizes(1);
         }
@@ -97,6 +115,11 @@ public class ImageTagRenderer extends TagRenderer {
                 g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
             else if (redX != null)
                 g.drawImage(redX, 0, 0, redX.getWidth(null), redX.getHeight(null), null);
+        }
+
+        private void click() {
+            if (link != null)
+                linker.followLink(link);
         }
     }
 }

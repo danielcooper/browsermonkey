@@ -19,6 +19,7 @@ public class Renderer {
     private Linkable linker;
     private String title = null;
     private ArrayList<Integer> headingNumbering;
+    private boolean foundConformanceError;
     public static final Map<Attribute,Object> DEFAULT_FORMATTING;
 
     public String getHeadingString(int headingLevel) {
@@ -40,6 +41,14 @@ public class Renderer {
         }
 
         return headingString.toString();
+    }
+
+    public void foundConformanceError() {
+        foundConformanceError = true;
+    }
+
+    public boolean isConformant() {
+        return !foundConformanceError;
     }
 
     public TextRenderNode constructIndentTextNode(Map<Attribute,Object> formatting) {
@@ -137,6 +146,7 @@ public class Renderer {
         this.documentContext = documentContext;
         headingNumbering.clear();
         title = null;
+        foundConformanceError = false;
 
         LayoutRenderNode renderRoot = new LayoutRenderNode(linker);
         render(root, renderRoot, DEFAULT_FORMATTING);

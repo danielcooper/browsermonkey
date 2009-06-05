@@ -13,6 +13,11 @@ public class Document {
     private URL url;
     private URL context;
     private DocumentNode nodeTree;
+    private boolean isConformant;
+
+    public boolean isIsConformant() {
+        return isConformant;
+    }
 
     /**
      * Constructs a new <code>Document</code> with the specified path.
@@ -51,6 +56,7 @@ public class Document {
 
         Parser parser = new Parser(pageText);
         parser.parse();
+        isConformant = parser.isConformant();
         nodeTree = parser.getRootNode();
     }
 

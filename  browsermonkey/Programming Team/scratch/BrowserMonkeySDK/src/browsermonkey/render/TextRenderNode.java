@@ -37,6 +37,13 @@ public class TextRenderNode extends RenderNode {
         characterEntities.put("gt", '>');
         characterEntities.put("bull", '•');
         characterEntities.put("raquo", '▼');
+        characterEntities.put("para", '¶');
+        characterEntities.put("frac14", '¼');
+        characterEntities.put("frac12", '½');
+        characterEntities.put("frac34", '¾');
+        characterEntities.put("ntilde", 'ñ');
+        characterEntities.put("hellip", '…');
+        //characterEntities.put("", '');
     }
 
     public TextRenderNode(Linkable linker) {
@@ -76,7 +83,6 @@ public class TextRenderNode extends RenderNode {
         double dpiCorrection = screenResolution/72d;
         text.addAttribute(TextAttribute.TRANSFORM, new TransformAttribute(AffineTransform.getScaleInstance(zoomLevel*dpiCorrection, zoomLevel*dpiCorrection)));
         dimensionsChanged = true;
-        revalidate();
     }
 
     @Override
@@ -105,7 +111,6 @@ public class TextRenderNode extends RenderNode {
                         int hrefStart = aci.getRunStart(HREF_ATTRIBUTE);
                         int hrefEnd = aci.getRunLimit(HREF_ATTRIBUTE);
                         text.addAttribute(TextAttribute.FOREGROUND, Color.red, hrefStart, hrefEnd);
-                        //revalidate();
                         repaint();
                         linker.followLink((String)hrefValue);
                     }
@@ -165,14 +170,17 @@ public class TextRenderNode extends RenderNode {
             boolean entityReplaced = false;
             String entityText = newText.substring(findPos+1, endEntityIndex).toLowerCase();
             if (entityText.charAt(0) == '#') {
-                int value;
-                if (entityText.charAt(1) == 'x')
-                    value = Integer.parseInt(entityText.substring(2), 16);
-                else
-                    value = Integer.parseInt(entityText.substring(1));
-                builder.append((char)value);
-                entityReplaced = true;
-                // TODO: Detect invalid characters.
+                try {
+                    int value;
+                    if (entityText.charAt(1) == 'x')
+                        value = Integer.parseInt(entityText.substring(2), 16);
+                    else
+                        value = Integer.parseInt(entityText.substring(1));
+                    builder.append((char)value);
+                    entityReplaced = true;
+                } catch (NumberFormatException ex) {
+                    entityReplaced = false;
+                }
             }
             else {
                 Character character = characterEntities.get(entityText);
