@@ -17,6 +17,7 @@ public class Parser {
     private Set<String> ignoredTags;
     private Set<String> headTags;
 
+    private Set<String> structureTags; // Tags that can't contain text nodes.
     private Set<String> tableTags;
     private Set<String> nestableTags;
     private Set<String> singularlyNestableTags;
@@ -27,6 +28,14 @@ public class Parser {
     private ArrayList<TagDocumentNode> openElements;
     private String originalPage;
     private Iterator<Token> tokens;
+
+    private boolean whitespaceIsPreformatted() {
+        for (TagDocumentNode tag : openElements) {
+            if (tag.getType().equals("pre"))
+                return true;
+        }
+        return false;
+    }
 
     public DocumentNode getRootNode() {
         return rootNode;
@@ -45,6 +54,12 @@ public class Parser {
         ignoredTags.add("head");
         headTags = new HashSet<String>();
         headTags.add("title");
+
+        structureTags = new HashSet<String>();
+        structureTags.add("table");
+        structureTags.add("tr");
+        structureTags.add("td");
+
         this.tableTags = new HashSet<String>();
         tableTags.add("table");
         tableTags.add("tr");
@@ -65,7 +80,7 @@ public class Parser {
         listTags.add("li");
         listTags.add("ol");
         listTags.add("ul");
-        this.openElements = new ArrayList<TagDocumentNode>();
+        
         originalPage = page;
         Tokeniser tokeniser = new Tokeniser(page);
         tokeniser.tokenise();
@@ -73,6 +88,8 @@ public class Parser {
     }
 
     public void parse() {
+        openElements = new ArrayList<TagDocumentNode>();
+
         rootNode = new TagDocumentNode("html", null);
         openElements.add(rootNode);
         
@@ -131,16 +148,22 @@ public class Parser {
                     doEndToken(currentToken);
                 }
             } else {
+                String text = currentToken.getTag();
+                if (!whitespaceIsPreformatted()) {
+                    text = text.replaceAll("\\s+", " ");
+                    if (structureTags.contains(openElements.get(openElements.size() - 1).getType()) && text.equals(" "))
+                        continue;
+                }
                 //add a text element - but not without checking the state of the tables.
                 if (openElements.size() >= 1) {
                     if (openElements.get(openElements.size() - 1).getType().equals("tr") || openElements.get(openElements.size() - 1).getType().equals("table")) {
                         this.doTableElement(new Token("<td>", TokenType.TAG));
                     }
                 }
-                doTextElement(currentToken);
+                doTextElement(text);
             }
         }
-        postProcess();
+        //postProcess();
     }
 
     private void postProcess() {
@@ -292,8 +315,8 @@ public class Parser {
         openElements.get(openElements.size() - 1).addChild(tagNode);
     }
 
-    private void doTextElement(Token token) {
-        TextDocumentNode textNode = new TextDocumentNode(token.getTag());
+    private void doTextElement(String text) {
+        TextDocumentNode textNode = new TextDocumentNode(text);
         openElements.get(openElements.size() - 1).addChild(textNode);
     }
 

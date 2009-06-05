@@ -7,8 +7,10 @@ import javax.swing.event.*;
 import java.awt.*;
 import java.awt.datatransfer.*;
 import java.awt.font.TextAttribute;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.*;
 import java.text.*;
 import java.util.ArrayList;
 import javax.swing.*;
@@ -26,6 +28,8 @@ public class DocumentPanel extends JPanel {
     private GroupLayout.SequentialGroup verticalGroup;
     private float zoomLevel = 1.0f;
     private RenderNode rootRenderNode;
+    private URL context;
+    private LoaderThread currentLoaderThread = null;
 
     public String getTitle() {
         return title;
@@ -36,6 +40,12 @@ public class DocumentPanel extends JPanel {
      */
     public DocumentPanel() {
         this.setBackground(Color.white);
+
+        try {
+            context = new File(System.getProperty("user.dir")).toURI().toURL();
+        } catch (MalformedURLException ex) {
+            context = null;
+        }
 
         layout = new GroupLayout(this);
         this.setLayout(layout);
@@ -54,60 +64,89 @@ public class DocumentPanel extends JPanel {
         verticalIndentLayout.addGap(8);
         layout.setVerticalGroup(verticalIndentLayout);
     }
+    
+    private class LoaderThread extends SwingWorker<Void, Integer> {
+        private String path;
+        private boolean absolute;
 
-    private String getCurrentFolderPath() {
-        if (document == null)
-            return "";
-        return document.getPath().replaceFirst("[^/\\\\]*$", "");
+        public LoaderThread(String path, boolean absolute) {
+            this.path = path;
+            this.absolute = absolute;
+        }
+        
+        @Override
+        protected Void doInBackground() {
+            if (absolute) {
+                try {
+                    context = new File(System.getProperty("user.dir")).toURI().toURL();
+                } catch (MalformedURLException ex) {
+                    context = null;
+                }
+            }
+
+            document = new Document(path, context);
+            if (path.startsWith("t "))
+                document.loadTest(path.substring(2));
+            else {
+                try {
+                    document.load();
+                    context = document.getURL();
+                } catch (FileNotFoundException ex) {
+                    BrowserMonkeyLogger.warning("File not found: "+path);
+                    // TODO: load 404 document
+                } catch (IOException ex) {
+                    BrowserMonkeyLogger.warning("File read error: "+path);
+                }
+            }
+
+            // Store the html output into the clipboard for debug.
+            try {
+                Clipboard systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                Transferable transferableText = new StringSelection(document.getNodeTree().toDebugString());
+                systemClipboard.setContents(transferableText, null);
+            } catch (IllegalStateException ex) {
+                BrowserMonkeyLogger.warning("Couldn't write debug parse information to clipboard.");
+            }
+
+            Renderer r = new Renderer(new DocumentLinker(DocumentPanel.this), document.getURL());
+            rootRenderNode = r.renderRoot(document.getNodeTree(), zoomLevel);
+
+            removeAll();
+            verticalGroup.addComponent(rootRenderNode);
+            horizontalGroup.addComponent(rootRenderNode);
+
+            title = r.getTitle();
+
+            changed();
+            revalidate();
+            repaint();
+
+            Thread.yield();
+
+            BrowserMonkeyLogger.status("Done");
+            
+            currentLoaderThread = null;
+
+            return null;
+        }
     }
 
     public void load(String path) {
         load(path, false);
     }
 
-    public void load(String path, boolean relative) {
-        removeAll();
-        if (relative) {
-            path = getCurrentFolderPath()+path;
-        }
-        document = new Document(path);
-        if (path.startsWith("t "))
-            document.loadTest(path.substring(2));
-        else {
-            try {
-                document.load();
-            } catch (FileNotFoundException ex) {
-                BrowserMonkeyLogger.warning("File not found: "+path);
-                // TODO: load 404 document
-            } catch (IOException ex) {
-                BrowserMonkeyLogger.warning("File read error: "+path);
-            }
-        }
-
-        // Store the html output into the clipboard for debug.
-        try {
-            Clipboard systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-            Transferable transferableText = new StringSelection(document.getNodeTree().toDebugString());
-            systemClipboard.setContents(transferableText, null);
-        } catch (IllegalStateException ex) {
-            BrowserMonkeyLogger.warning("Couldn't write debug parse information to clipboard.");
-        }
-        
-        Renderer r = new Renderer(new DocumentLinker(this));
-        rootRenderNode = r.renderRoot(document.getNodeTree(), zoomLevel);
-
-        verticalGroup.addComponent(rootRenderNode);
-        horizontalGroup.addComponent(rootRenderNode);
-
-        title = r.getTitle();
-
-        changed();
-        revalidate();
-        repaint();
+    public void load(String path, boolean absolute) {
+        if (currentLoaderThread != null)
+            currentLoaderThread.cancel(true);
+        currentLoaderThread = new LoaderThread(path, absolute);
+        currentLoaderThread.execute();
     }
 
     public String getAddress() {
-        return document.getPath();
+        URL url = document.getURL();
+        if (url == null)
+            return "Null address.";
+        return url.toString();
     }
 
     public void setZoomLevel(float zoomLevel) {

@@ -40,6 +40,8 @@ public class GUI extends javax.swing.JFrame {
             public void publish(LogRecord record) {
                 if (record.getLevel() == Level.INFO) {
                     statusBar.setText(record.getMessage());
+                    statusBar.revalidate();
+                    statusBar.repaint();
                 }
                 else if (record.getLevel() == Level.WARNING) {
                     JOptionPane.showMessageDialog(GUI.this, record.getMessage(), "Notice", JOptionPane.INFORMATION_MESSAGE);
@@ -220,7 +222,11 @@ public class GUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void goButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goButtonActionPerformed
-        loadFile(addressField.getText());
+        String address = addressField.getText();
+        File f = new File(address);
+        if (!f.exists() && !address.startsWith("http://"))
+            address = "http://" + address;
+        loadFile(address);
     }//GEN-LAST:event_goButtonActionPerformed
 
     private void browseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browseButtonActionPerformed
@@ -229,7 +235,6 @@ public class GUI extends javax.swing.JFrame {
         if (fc.showOpenDialog(this) != JFileChooser.APPROVE_OPTION)
             return;
         String path = fc.getSelectedFile().getAbsolutePath();
-        addressField.setText(path);
         loadFile(path);
     }//GEN-LAST:event_browseButtonActionPerformed
 
@@ -280,7 +285,7 @@ public class GUI extends javax.swing.JFrame {
     }
 
     public void loadFile(String path){
-        documentPanel.load(path);
+        documentPanel.load(path, true);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

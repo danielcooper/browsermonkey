@@ -58,68 +58,6 @@ public class TableTagRenderer extends TagRenderer {
         parent.addNode(tableNode, LayoutRenderNode.WidthBehaviour.Maximal);
     }
 
-    /*private static class TableBorder extends JComponent {
-        private boolean vertical;
-        private int thickness;
-        private Color colour;
-        private int length;
-
-        public TableBorder(boolean vertical, int thickness) {
-            this(vertical, thickness, Color.black);
-        }
-
-        public TableBorder (boolean vertical, int thickness, Color colour) {
-            this.vertical = vertical;
-            this.thickness = thickness;
-            this.colour = colour;
-            length = 0;
-
-            if (vertical) {
-                setMinimumSize(new Dimension(thickness, 0));
-                setMaximumSize(new Dimension(thickness, 1));
-            }
-            else {
-                setMinimumSize(new Dimension(0, thickness));
-                setMaximumSize(new Dimension(1, thickness));
-            }
-        }
-
-        public Dimension getDesiredSize() {
-            if (vertical)
-                return new Dimension(thickness, length);
-            else
-                return new Dimension(length, thickness);
-        }
-
-        public void setLength(int length) {
-            this.length = length;
-            if (vertical) {
-                setMinimumSize(new Dimension(thickness, 0));
-                setMaximumSize(new Dimension(thickness, length));
-            }
-            else {
-                setMinimumSize(new Dimension(0, thickness));
-                setMaximumSize(new Dimension(length, thickness));
-            }
-        }
-
-        @Override
-        public void setBounds(int x, int y, int width, int height) {
-            Dimension maxSize = getMaximumSize();
-            super.setBounds(0, 0, maxSize.width, maxSize.height);
-        }
-
-        @Override
-        public void paint(Graphics g) {
-            g.setColor(colour);
-            if (!getSize().equals(getDesiredSize())) {
-                g.setColor(Color.red);
-                setMaximumSize(getDesiredSize());
-            }            
-            g.fillRect(0, 0, vertical ? thickness : getWidth(), vertical ? getHeight() : thickness);
-        }
-    }*/
-
     private static class TableRenderNode extends LayoutRenderNode {
         private GroupLayout.SequentialGroup horizontalSequence;
         private GroupLayout.SequentialGroup verticalSequence;
@@ -134,11 +72,9 @@ public class TableTagRenderer extends TagRenderer {
         private int currentColumnIndex = -1;
         private GroupLayout layout;
         private int borderThickness;
-        //private ArrayList<TableBorder> borders;
 
         public TableRenderNode(Linkable linker, int borderThickness) {
             super(linker);
-            //borders = new ArrayList<TableBorder>();
             this.borderThickness = borderThickness;
             layout = new GroupLayout(this);
             this.setLayout(layout);
@@ -158,19 +94,10 @@ public class TableTagRenderer extends TagRenderer {
 
         private void addRowBorder() {
             verticalSequence.addGap(borderThickness);
-            /*TableBorder border = new TableBorder(false, borderThickness);
-            verticalSequence.addComponent(border);
-            horizontalParallelForBorders.addComponent(border);
-            borders.add(border);*/
         }
 
         private void addColumnBorder() {
             horizontalSequence.addGap(borderThickness);
-            /*TableBorder border = new TableBorder(true, borderThickness);
-            horizontalSequence.addComponent(border);
-            verticalParallelForBorders.addComponent(border);
-            borders.add(border);*/
-
         }
 
         public void newRow() {
@@ -188,6 +115,12 @@ public class TableTagRenderer extends TagRenderer {
             addRowBorder();
         }
 
+        private LayoutRenderNode createEmptyCell() {
+            LayoutRenderNode result = new LayoutRenderNode(linker);
+            result.getTextNode().addText("&nbsp;", Renderer.DEFAULT_FORMATTING);
+            return result;
+        }
+
         public void addCell(LayoutRenderNode cell) {
             GroupLayout.ParallelGroup columnLayout;
             if (currentColumnIndex >= columnGroups.size()) {
@@ -198,13 +131,20 @@ public class TableTagRenderer extends TagRenderer {
                 columnGroups.add(columnLayout);
                 horizontalSequence.addGroup(columnLayout);
 
+                for (int i = 0; i < currentRowIndex; i++) {
+                    LayoutRenderNode emptyCell = createEmptyCell();
+                    rowGroups.get(i).addComponent(emptyCell);
+                    columnLayout.addComponent(emptyCell);
+                    tableCells.get(i).add(emptyCell);
+                }
+
                 addColumnBorder();
             }
             else
                 columnLayout = columnGroups.get(currentColumnIndex);
 
-            columnLayout.addComponent(cell/*, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE*/);
-            rowGroups.get(currentRowIndex).addComponent(cell/*, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE*/);
+            columnLayout.addComponent(cell);
+            rowGroups.get(currentRowIndex).addComponent(cell);
 
             tableCells.get(currentRowIndex).add(cell);
 
@@ -243,21 +183,5 @@ public class TableTagRenderer extends TagRenderer {
                     cumulativeX += columnWidths[j] + borderThickness;
             }
         }
-
-        /*@Override
-        public void setBounds(int x, int y, int width, int height) {
-            
-            Dimension size = new Dimension(width, height);
-
-            for (TableBorder border : borders) {
-                if (border.vertical) {
-                    border.setLength(size.height);
-                }
-                else
-                    border.setLength(size.width);
-            }
-
-            super.setBounds(x, y, width, height);
-        }*/
     }
 }
