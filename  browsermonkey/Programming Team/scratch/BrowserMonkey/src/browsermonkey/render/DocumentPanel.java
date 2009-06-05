@@ -126,7 +126,10 @@ public class DocumentPanel extends JPanel {
 
             Thread.yield();
             
-            if (document.isIsConformant() && renderer.isConformant())
+            if (document.getError() != 0) {
+                BrowserMonkeyLogger.status("Could not retrieve document.");
+            }
+            else if (document.isIsConformant() && renderer.isConformant())
                 BrowserMonkeyLogger.status("Done, page appears to conform to the specification.");
             else
                 BrowserMonkeyLogger.status("Done, page does not conform to the specification. See log file for details.");

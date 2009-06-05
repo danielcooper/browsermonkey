@@ -40,9 +40,12 @@ public class FileLoader {
     }
 
     public static URL getURL(String path, URL context) {
-        URL result = resolveFile(new File(path));
-        if (result != null)
-            return result;
+        URL result;
+        if (context == null) {
+            result = resolveFile(new File(path));
+            if (result != null)
+                return result;
+        }
 
         try {
             result = new URL(context, path);
@@ -61,7 +64,7 @@ public class FileLoader {
         return result;
     }
 
-    public static byte[] readFile(URL url) {
+    public static byte[] readFile(URL url, int[] outErrorCode) {
         if (url == null)
             return null;
         
@@ -78,7 +81,12 @@ public class FileLoader {
 
             while ((b = urlStream.read()) != -1)
                 data.add((byte)b);
-        } catch (IOException ex) {
+        } catch (SocketTimeoutException ex) {
+            outErrorCode[0] = 408;
+            return null;
+        }
+        catch (IOException ex) {
+            outErrorCode[0] = 404;
             return null;
         }
         try {

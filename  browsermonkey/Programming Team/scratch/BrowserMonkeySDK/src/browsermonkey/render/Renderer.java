@@ -72,7 +72,8 @@ public class Renderer {
     }
 
     public byte[] loadResource(String path) {
-        return FileLoader.readFile(FileLoader.getURL(path, documentContext));
+        int[] response = new int[1];
+        return FileLoader.readFile(FileLoader.getURL(path, documentContext), response);
     }
 
     private void loadRenderers() {
