@@ -14,9 +14,14 @@ public class Document {
     private URL context;
     private DocumentNode nodeTree;
     private boolean isConformant;
+    private int error;
 
     public boolean isIsConformant() {
         return isConformant;
+    }
+
+    public int getError() {
+        return error;
     }
 
     /**
@@ -44,12 +49,13 @@ public class Document {
      */
     public void load() throws FileNotFoundException, IOException {
         url = FileLoader.getURL(path, context);
-        byte[] data = FileLoader.readFile(url);
+        int[] response = new int[1];
+        byte[] data = FileLoader.readFile(url, response);
 
         String pageText;
         if (data == null) {
-            // TODO: Error
-            pageText = "<title>File Not Found</title>Error 404 - file not found.";
+            error = response[0];
+            pageText = "<title>Error retrieving document</title><pre>"+path+"</pre>"+"Error "+error;
         }
         else
             pageText = new String(data);
