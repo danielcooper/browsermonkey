@@ -4,6 +4,8 @@
  */
 package browsermonkey.document;
 
+import browsermonkey.utility.BrowserMonkeyLogger;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -14,9 +16,9 @@ import java.util.Set;
  * @author Daniel Cooper, Lawrence Dine
  */
 public class Parser {
+
     private Set<String> ignoredTags;
     private Set<String> headTags;
-
     private Set<String> structureTags; // Tags that can't contain text nodes.
     private Set<String> tableTags;
     private Set<String> nestableTags;
@@ -28,11 +30,23 @@ public class Parser {
     private ArrayList<TagDocumentNode> openElements;
     private String originalPage;
     private Iterator<Token> tokens;
+    private boolean conforms = true;
+
+
+    private void conformanceError(String error){
+            BrowserMonkeyLogger.trace(error);
+            conforms = false;
+    }
+
+    public boolean conforms(){
+        return conforms;
+    }
 
     private boolean whitespaceIsPreformatted() {
         for (TagDocumentNode tag : openElements) {
-            if (tag.getType().equals("pre"))
+            if (tag.getType().equals("pre")) {
                 return true;
+            }
         }
         return false;
     }
@@ -80,7 +94,7 @@ public class Parser {
         listTags.add("li");
         listTags.add("ol");
         listTags.add("ul");
-        
+
         originalPage = page;
         Tokeniser tokeniser = new Tokeniser(page);
         tokeniser.tokenise();
@@ -92,13 +106,14 @@ public class Parser {
 
         rootNode = new TagDocumentNode("html", null);
         openElements.add(rootNode);
-        
+
         while (tokens.hasNext()) {
             Token currentToken = tokens.next();
 
             if (currentToken.getType() == TokenType.TAG) {
-                if (ignoredTags.contains(currentToken.getTag()))
+                if (ignoredTags.contains(currentToken.getTag())) {
                     continue;
+                }
 
                 if (currentToken.isStartTag()) {
                     if (headTags.contains(currentToken.getTag())) {
@@ -118,6 +133,7 @@ public class Parser {
                         continue;
                     } else if (openElements.size() >= 1) {
                         if (openElements.get(openElements.size() - 1).getType().equals("tr") || openElements.get(openElements.size() - 1).getType().equals("table")) {
+                            conformanceError("Table Error: correcting with new <td> tag.");
                             doTableElement(new Token("<td>", TokenType.TAG));
                         }
                     }
@@ -130,6 +146,7 @@ public class Parser {
                     //fix the nesting, if not - carry on.
                     else if (singularlyNestableTags.contains(currentToken.getTag())) {
                         if (openElements.size() > 1 && openElements.get(openElements.size() - 1).getType().equals(currentToken.getTag())) {
+                            conformanceError("Tag Nesting Error: closing " +currentToken.getTag()+".");
                             doEndToken(currentToken);
                         }
                         doStartToken(currentToken);
@@ -151,8 +168,9 @@ public class Parser {
                 String text = currentToken.getTag();
                 if (!whitespaceIsPreformatted()) {
                     text = text.replaceAll("\\s+", " ");
-                    if (structureTags.contains(openElements.get(openElements.size() - 1).getType()) && text.equals(" "))
+                    if (structureTags.contains(openElements.get(openElements.size() - 1).getType()) && text.equals(" ")) {
                         continue;
+                    }
                 }
                 //add a text element - but not without checking the state of the tables.
                 if (openElements.size() >= 1) {
@@ -163,7 +181,7 @@ public class Parser {
                 doTextElement(text);
             }
         }
-        //postProcess();
+    //postProcess();
     }
 
     private void postProcess() {
@@ -262,14 +280,17 @@ public class Parser {
                 if (openElements.get(openElements.size() - 1).getType().equals("ol") || openElements.get(openElements.size() - 1).getType().equals("ul")) {
                     doStartToken(token);
                 } else if (openElements.get(openElements.size() - 1).getType().equals("li")) {
+                    conformanceError("List Error: shorthand list notation - closing <li>.");
                     doEndToken(openElements.get(openElements.size() - 1));
                     doStartToken(token);
                 } else {
+                    conformanceError("List Error: correcting with new <ul> tag.");
                     doListedElement(new Token("<ul>", TokenType.TAG));
                     doStartToken(token);
                 }
             } else {
                 //do table token new <ul> token
+                conformanceError("List Error: correcting with new <ul> tag.");
                 doListedElement(new Token("<ul>", TokenType.TAG));
                 doStartToken(token);
             }
@@ -285,10 +306,12 @@ public class Parser {
                 if (openElements.get(openElements.size() - 1).getType().equals("tr")) {
                     doStartToken(token);
                 } else {
+                    conformanceError("Table Error: correcting with new <tr> tag.");
                     doTableElement(new Token("<tr>", TokenType.TAG));
                     doStartToken(token);
                 }
             } else {
+                conformanceError("Table Error: correcting with new <tr> tag.");
                 doTableElement(new Token("<tr>", TokenType.TAG));
                 doStartToken(token);
 
@@ -298,10 +321,12 @@ public class Parser {
                 if (openElements.get(openElements.size() - 1).getType().equals("table")) {
                     doStartToken(token);
                 } else {
+                    conformanceError("Table Error: correcting with new <table> tag.");
                     doTableElement(new Token("<table>", TokenType.TAG));
                     doStartToken(token);
                 }
             } else {
+                conformanceError("Table Error: correcting with new <table> tag.");
                 doTableElement(new Token("<table>", TokenType.TAG));
                 doStartToken(token);
             }
@@ -321,6 +346,7 @@ public class Parser {
     }
 
     private void fixNestingError(Token token) {
+       conformanceError("Nesting Error: on tag " + token.getTag()+".");
         int errorIndex = -1;
         for (int i = openElements.size() - 1; i >= 0; i--) {
             if (openElements.get(i).getType().equals(token.getTag())) {
@@ -333,21 +359,30 @@ public class Parser {
                 openElements.remove(openElements.get(i));
             }
         }
+        
     }
 
     private void fixNestingError(TagDocumentNode tagDocNode) {
+        conformanceError("Nesting Error: on tag " + tagDocNode.getType()+".");
         int errorIndex = -1;
+
         for (int i = openElements.size() - 1; i >= 0; i--) {
             if (openElements.get(i).getType().equals(tagDocNode.getType())) {
                 errorIndex = i;
                 break;
             }
         }
+
         if (errorIndex != -1) {
+
             for (int i = openElements.size() - 1; i >= errorIndex; i--) {
+
                 openElements.remove(openElements.get(i));
             }
         }
+        
+
+
     }
 
     private void doEndToken(Token token) {
