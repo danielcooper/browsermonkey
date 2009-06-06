@@ -302,6 +302,10 @@ public class GUI extends javax.swing.JFrame {
             setTitle(documentPanel.getTitle()+" - BrowserMonkey");
     }
 
+    /**
+     * Used to load a file with a given path.
+     * @param path File path to load the file from
+     */
     public void loadFile(String path){
         documentPanel.load(path, true);
     }
