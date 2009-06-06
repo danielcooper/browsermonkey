@@ -25,6 +25,7 @@ public class TextDocumentNode extends DocumentNode {
 
     @Override
     public String toDebugString() {
+        // Encloses the text in square brackets so whitespace nodes are visible.
         return '['+text+']';
     }
 }

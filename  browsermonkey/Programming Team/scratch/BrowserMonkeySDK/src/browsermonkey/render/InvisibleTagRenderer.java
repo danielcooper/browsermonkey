@@ -5,7 +5,8 @@ import java.text.AttributedCharacterIterator.Attribute;
 import java.util.Map;
 
 /**
- *
+ * Does not render anything into the document for passed nodes or their
+ * children. Used e.g. to hide the contents of script tags.
  * @author Paul Calcraft
  */
 public class InvisibleTagRenderer extends TagRenderer {

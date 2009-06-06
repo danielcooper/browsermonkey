@@ -28,26 +28,32 @@ public abstract class ListTagRenderer extends TagRenderer {
 
         int i = 0;
         for (DocumentNode itemNode : tag.getChildren()) {
-            // Only render li nodes as list items.
-            if (!(itemNode instanceof TagDocumentNode) || !((TagDocumentNode)itemNode).getType().equals("li"))
-                continue;
+            boolean listElement = itemNode instanceof TagDocumentNode && ((TagDocumentNode)itemNode).getType().equals("li");
 
-            // Use the abstract method to retrieve the indentation text, and add
-            // this as padding to the individual list item.
+            // Retrieve the indentation text, and add this as padding to the
+            // individual list item.
             LayoutRenderNode itemLayoutNode = new LayoutRenderNode(linker);
-            TextRenderNode listElementNode = new TextRenderNode(linker);
-            listElementNode.addText(getListElementText(i), formatting);
-            itemLayoutNode.addNodePadding(listElementNode, null);
+            TextRenderNode listPaddingNode;
+            // If it's a list item, use the abstract method to get the right
+            // indentation text.
+            if (listElement) {
+                listPaddingNode = new TextRenderNode(linker);
+                listPaddingNode.addText(getListElementText(i), formatting);
+                // Increase the list item counter.
+                i++;
+            }
+            // Else not a real list item, just indent it.
+            else {
+                listPaddingNode = renderer.constructIndentTextNode(formatting);
+            }
 
-            // Render all children into the list item node using the Renderer.
-            for (DocumentNode child : itemNode.getChildren())
-                renderer.render(child, itemLayoutNode, newFormatting);
+            itemLayoutNode.addNodePadding(listPaddingNode, null);
+
+            // Render item node into padded layout.
+            renderer.render(itemNode, itemLayoutNode, formatting);
 
             // Add the item to the list layout node.
             listNode.addNode(itemLayoutNode, LayoutRenderNode.WidthBehaviour.Maximal);
-
-            // Increase the list item counter.
-            i++;
         }
 
         // Only add line space if we're not already inside a list.

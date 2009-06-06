@@ -20,27 +20,28 @@ public class DefinitionListRenderer extends TagRenderer {
 
         // For each child...
         for (DocumentNode itemNode : tag.getChildren()) {
-            // Only render dd or dt nodes as list items
-            if (!(itemNode instanceof TagDocumentNode))
+            // If not a tag node, render normally.
+            if (!(itemNode instanceof TagDocumentNode)) {
+                renderer.render(itemNode, parent, formatting);
                 continue;
-
-            TagDocumentNode itemTagNode = (TagDocumentNode)itemNode;
-
-            // If dt, render as normal
-            if (itemTagNode.getType().equals("dt")) {
-                for (DocumentNode child : itemNode.getChildren())
-                    renderer.render(child, parent, formatting);
             }
             // If dd, create a layout node and pad with an indent text node to
             // the left.
-            else if (itemTagNode.getType().equals("dd")) {
+            if (((TagDocumentNode)itemNode).getType().equals("dd")) {
                 LayoutRenderNode itemLayoutNode = new LayoutRenderNode(linker);
                 itemLayoutNode.addNodePadding(renderer.constructIndentTextNode(formatting), null);
 
-                for (DocumentNode child : itemNode.getChildren())
-                    renderer.render(child, itemLayoutNode, formatting);
+                // Render dt into padded layout.
+                renderer.render(itemNode, itemLayoutNode, formatting);
 
+                // Add to list.
                 parent.addNode(itemLayoutNode, LayoutRenderNode.WidthBehaviour.Maximal);
+            }
+            // Else render normally, but if dt ensure we're on a new line.
+            else {
+                if (((TagDocumentNode)itemNode).getType().equals("dt"))
+                    parent.ensureNewLine();
+                renderer.render(itemNode, parent, formatting);
             }
         }
 

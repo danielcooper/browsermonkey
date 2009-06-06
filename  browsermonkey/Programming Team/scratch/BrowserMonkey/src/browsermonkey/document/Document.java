@@ -1,5 +1,6 @@
 package browsermonkey.document;
 
+import browsermonkey.utility.IOUtility;
 import java.io.*;
 import java.net.*;
 
@@ -57,9 +58,9 @@ public class Document {
     * @throws java.io.IOException
     */
     public void load() {
-        url = FileLoader.getURL(path, context);
+        url = IOUtility.getURL(path, context);
         int[] response = new int[1];
-        byte[] data = FileLoader.readFile(url, response);
+        byte[] data = IOUtility.readFile(url, response);
 
         String pageText;
         if (data == null) {

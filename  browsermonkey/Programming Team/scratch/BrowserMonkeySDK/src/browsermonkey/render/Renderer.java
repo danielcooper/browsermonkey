@@ -2,7 +2,7 @@ package browsermonkey.render;
 
 import java.util.*;
 import browsermonkey.document.*;
-import browsermonkey.utility.BrowserMonkeyLogger;
+import browsermonkey.utility.*;
 import java.text.AttributedCharacterIterator.Attribute;
 import java.awt.font.*;
 import java.io.*;
@@ -21,6 +21,8 @@ public class Renderer {
     private ArrayList<Integer> headingNumbering;
     private boolean foundConformanceError;
     public static final Map<Attribute,Object> DEFAULT_FORMATTING;
+    public static final String STANDARD_INDENT =
+            "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 
     public String getHeadingString(int headingLevel) {
         if (headingLevel >= headingNumbering.size()) {
@@ -53,7 +55,7 @@ public class Renderer {
 
     public TextRenderNode constructIndentTextNode(Map<Attribute,Object> formatting) {
         TextRenderNode result = new TextRenderNode(linker);
-        result.addText("&nbsp;&nbsp;&nbsp;&nbsp;", formatting);
+        result.addText(STANDARD_INDENT, formatting);
         return result;
     }
 
@@ -73,7 +75,7 @@ public class Renderer {
 
     public byte[] loadResource(String path) {
         int[] response = new int[1];
-        return FileLoader.readFile(FileLoader.getURL(path, documentContext), response);
+        return IOUtility.readFile(IOUtility.getURL(path, documentContext), response);
     }
 
     private void loadRenderers() {
