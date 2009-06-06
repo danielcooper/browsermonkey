@@ -73,6 +73,13 @@ public class Parser {
         return rootNode;
     }
 
+    /**
+     * Constructor for Parser class. Sets up the supplied page as the target to
+     * be parsed. Sets up all the tag arrays so the parser knows how to treat
+     * certain tags. Also creates a <code>Tokeniser</code> and tokenises the
+     * information in the supplied page so the parser can do its work.
+     * @param page Page supplied to be parsed in the form of a string
+     */
     public Parser(String page) {
         /*@single_nestable_tags = ['html','head','body'] #tags that can only be used once
         @table_tags = ['table','tr','td',] #table tags need a special case
@@ -251,7 +258,7 @@ public class Parser {
 
     /**
      * This method manages table tags. It ensures the correct order of table elements and will create new elements if needed
-     * @param the token to add to a table
+     * @param token Token to be used in this table process
      *
      */
     public void doTableElement(Token token) {
