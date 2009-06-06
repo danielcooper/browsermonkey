@@ -5,7 +5,8 @@ import java.text.AttributedCharacterIterator.Attribute;
 import java.util.Map;
 
 /**
- *
+ * Renders a TagDocumentNode's children into the document in place; the effect
+ * of the node itself is transparent.
  * @author Paul Calcraft
  */
 public class TransparentTagRenderer extends TagRenderer {
