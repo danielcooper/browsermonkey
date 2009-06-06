@@ -30,6 +30,10 @@ public class DocumentPanel extends JPanel {
     private URL context;
     private LoaderThread currentLoaderThread = null;
 
+    /**
+     * Getter for the String that holds the title of the page.
+     * @return String containing the page title
+     */
     public String getTitle() {
         return title;
     }
@@ -131,10 +135,19 @@ public class DocumentPanel extends JPanel {
         }
     }
 
+    /**
+     * Loads the page at a given path.
+     * @param path Path to load the page from
+     */
     public void load(String path) {
         load(path, false);
     }
 
+    /**
+     * Allows loading of an absolute path.
+     * @param path Path to load page from
+     * @param absolute Whether the path is absolute
+     */
     public void load(String path, boolean absolute) {
         if (currentLoaderThread != null)
             currentLoaderThread.cancel(true);
@@ -142,6 +155,10 @@ public class DocumentPanel extends JPanel {
         currentLoaderThread.execute();
     }
 
+    /**
+     * Getter for retreieving the URL of the current page as a string.
+     * @return URL of the current page as string
+     */
     public String getAddress() {
         URL url = document.getURL();
         if (url == null)
@@ -149,6 +166,10 @@ public class DocumentPanel extends JPanel {
         return url.toString();
     }
 
+    /**
+     * Used to control the zoom level of a page, sets it to a supplied level.
+     * @param zoomLevel The level to set the zoom to
+     */
     public void setZoomLevel(float zoomLevel) {
         rootRenderNode.setZoomLevel(zoomLevel);
         this.zoomLevel = zoomLevel;
@@ -156,6 +177,13 @@ public class DocumentPanel extends JPanel {
         repaint();
     }
 
+    /**
+     * Used to perform searches on a page. Searches the page for a supplied term
+     * then highlights all instances of that term on the page and reloads it to
+     * show the highlights. Updates the foundStatus variable to allow output if
+     * no items could be found.
+     * @param term Term to be searched for as a string.
+     */
     public void setSearch(String term) {
         ArrayList<AttributedString> textRanges = new ArrayList<AttributedString>();
         Map<AttributedCharacterIterator.Attribute, Object> highlightAttributes = new HashMap<AttributedCharacterIterator.Attribute, Object>();
