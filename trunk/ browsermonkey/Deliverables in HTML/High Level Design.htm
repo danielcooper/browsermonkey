@@ -1,0 +1,898 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=Generator content="Microsoft Word 12 (filtered)">
+<title>High Level Design</title>
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+	{font-family:Tahoma;
+	panose-1:2 11 6 4 3 5 4 4 2 4;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Calibri","sans-serif";}
+h1
+	{mso-style-link:"Heading 1 Char";
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:0cm;
+	page-break-after:avoid;
+	font-size:16.0pt;
+	font-family:"Cambria","serif";
+	font-weight:bold;}
+h2
+	{mso-style-link:"Heading 2 Char";
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:0cm;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:"Cambria","serif";
+	font-weight:bold;}
+h3
+	{mso-style-link:"Heading 3 Char";
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:0cm;
+	page-break-after:avoid;
+	font-size:13.0pt;
+	font-family:"Cambria","serif";
+	font-weight:bold;}
+h4
+	{mso-style-link:"Heading 4 Char";
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:0cm;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:"Calibri","sans-serif";
+	font-weight:bold;}
+h5
+	{mso-style-link:"Heading 5 Char";
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:0cm;
+	font-size:13.0pt;
+	font-family:"Calibri","sans-serif";
+	font-weight:bold;
+	font-style:italic;}
+h6
+	{mso-style-link:"Heading 6 Char";
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:0cm;
+	font-size:11.0pt;
+	font-family:"Calibri","sans-serif";
+	font-weight:bold;}
+p.MsoHeading7, li.MsoHeading7, div.MsoHeading7
+	{mso-style-link:"Heading 7 Char";
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Calibri","sans-serif";}
+p.MsoHeading8, li.MsoHeading8, div.MsoHeading8
+	{mso-style-link:"Heading 8 Char";
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Calibri","sans-serif";
+	font-style:italic;}
+p.MsoHeading9, li.MsoHeading9, div.MsoHeading9
+	{mso-style-link:"Heading 9 Char";
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:0cm;
+	font-size:11.0pt;
+	font-family:"Cambria","serif";}
+p.MsoToc1, li.MsoToc1, div.MsoToc1
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:5.0pt;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Calibri","sans-serif";}
+p.MsoToc2, li.MsoToc2, div.MsoToc2
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:5.0pt;
+	margin-left:11.0pt;
+	font-size:12.0pt;
+	font-family:"Calibri","sans-serif";}
+p.MsoToc3, li.MsoToc3, div.MsoToc3
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:24.0pt;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Arial","sans-serif";}
+p.MsoHeader, li.MsoHeader, div.MsoHeader
+	{mso-style-link:"Header Char";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Calibri","sans-serif";}
+p.MsoFooter, li.MsoFooter, div.MsoFooter
+	{mso-style-link:"Footer Char";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Calibri","sans-serif";}
+p.MsoCaption, li.MsoCaption, div.MsoCaption
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:9.0pt;
+	font-family:"Calibri","sans-serif";
+	color:#4F81BD;
+	font-weight:bold;}
+p.MsoTitle, li.MsoTitle, div.MsoTitle
+	{mso-style-link:"Title Char";
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:0cm;
+	text-align:center;
+	font-size:16.0pt;
+	font-family:"Cambria","serif";
+	font-weight:bold;}
+p.MsoSubtitle, li.MsoSubtitle, div.MsoSubtitle
+	{mso-style-link:"Subtitle Char";
+	margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:0cm;
+	text-align:center;
+	font-size:12.0pt;
+	font-family:"Cambria","serif";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+em
+	{font-family:"Calibri","sans-serif";
+	font-weight:bold;}
+p
+	{margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+pre
+	{mso-style-link:"HTML Preformatted Char";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Courier New";}
+tt
+	{font-family:"Courier New";}
+p.MsoAcetate, li.MsoAcetate, div.MsoAcetate
+	{mso-style-link:"Balloon Text Char";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:8.0pt;
+	font-family:"Tahoma","sans-serif";}
+p.MsoNoSpacing, li.MsoNoSpacing, div.MsoNoSpacing
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Calibri","sans-serif";}
+p.MsoListParagraph, li.MsoListParagraph, div.MsoListParagraph
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:36.0pt;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Calibri","sans-serif";}
+p.MsoListParagraphCxSpFirst, li.MsoListParagraphCxSpFirst, div.MsoListParagraphCxSpFirst
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:36.0pt;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Calibri","sans-serif";}
+p.MsoListParagraphCxSpMiddle, li.MsoListParagraphCxSpMiddle, div.MsoListParagraphCxSpMiddle
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:36.0pt;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Calibri","sans-serif";}
+p.MsoListParagraphCxSpLast, li.MsoListParagraphCxSpLast, div.MsoListParagraphCxSpLast
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:36.0pt;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Calibri","sans-serif";}
+p.MsoQuote, li.MsoQuote, div.MsoQuote
+	{mso-style-link:"Quote Char";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Calibri","sans-serif";
+	font-style:italic;}
+p.MsoIntenseQuote, li.MsoIntenseQuote, div.MsoIntenseQuote
+	{mso-style-link:"Intense Quote Char";
+	margin-top:0cm;
+	margin-right:36.0pt;
+	margin-bottom:0cm;
+	margin-left:36.0pt;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Calibri","sans-serif";
+	font-weight:bold;
+	font-style:italic;}
+span.MsoSubtleEmphasis
+	{color:#5A5A5A;
+	font-style:italic;}
+span.MsoIntenseEmphasis
+	{font-weight:bold;
+	font-style:italic;
+	text-decoration:underline;}
+span.MsoSubtleReference
+	{text-decoration:underline;}
+span.MsoIntenseReference
+	{font-weight:bold;
+	text-decoration:underline;}
+span.MsoBookTitle
+	{font-family:"Cambria","serif";
+	font-weight:bold;
+	font-style:italic;}
+p.MsoTocHeading, li.MsoTocHeading, div.MsoTocHeading
+	{margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:0cm;
+	page-break-after:avoid;
+	font-size:16.0pt;
+	font-family:"Cambria","serif";
+	font-weight:bold;}
+span.TitleChar
+	{mso-style-name:"Title Char";
+	mso-style-link:Title;
+	font-family:"Cambria","serif";
+	font-weight:bold;}
+span.Heading2Char
+	{mso-style-name:"Heading 2 Char";
+	mso-style-link:"Heading 2";
+	font-family:"Cambria","serif";
+	font-weight:bold;}
+span.Heading1Char
+	{mso-style-name:"Heading 1 Char";
+	mso-style-link:"Heading 1";
+	font-family:"Cambria","serif";
+	font-weight:bold;}
+span.BalloonTextChar
+	{mso-style-name:"Balloon Text Char";
+	mso-style-link:"Balloon Text";
+	font-family:"Tahoma","sans-serif";}
+span.HeaderChar
+	{mso-style-name:"Header Char";
+	mso-style-link:Header;}
+span.FooterChar
+	{mso-style-name:"Footer Char";
+	mso-style-link:Footer;}
+span.Heading3Char
+	{mso-style-name:"Heading 3 Char";
+	mso-style-link:"Heading 3";
+	font-family:"Cambria","serif";
+	font-weight:bold;}
+span.Heading4Char
+	{mso-style-name:"Heading 4 Char";
+	mso-style-link:"Heading 4";
+	font-weight:bold;}
+span.Heading5Char
+	{mso-style-name:"Heading 5 Char";
+	mso-style-link:"Heading 5";
+	font-weight:bold;
+	font-style:italic;}
+span.Heading6Char
+	{mso-style-name:"Heading 6 Char";
+	mso-style-link:"Heading 6";
+	font-weight:bold;}
+span.Heading7Char
+	{mso-style-name:"Heading 7 Char";
+	mso-style-link:"Heading 7";}
+span.Heading8Char
+	{mso-style-name:"Heading 8 Char";
+	mso-style-link:"Heading 8";
+	font-style:italic;}
+span.Heading9Char
+	{mso-style-name:"Heading 9 Char";
+	mso-style-link:"Heading 9";
+	font-family:"Cambria","serif";}
+p.Style1, li.Style1, div.Style1
+	{mso-style-name:Style1;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Arial","sans-serif";}
+span.HTMLPreformattedChar
+	{mso-style-name:"HTML Preformatted Char";
+	mso-style-link:"HTML Preformatted";
+	font-family:"Courier New";}
+span.index-def
+	{mso-style-name:index-def;}
+span.SubtitleChar
+	{mso-style-name:"Subtitle Char";
+	mso-style-link:Subtitle;
+	font-family:"Cambria","serif";}
+span.QuoteChar
+	{mso-style-name:"Quote Char";
+	mso-style-link:Quote;
+	font-style:italic;}
+span.IntenseQuoteChar
+	{mso-style-name:"Intense Quote Char";
+	mso-style-link:"Intense Quote";
+	font-weight:bold;
+	font-style:italic;}
+.MsoPapDefault
+	{margin-bottom:10.0pt;
+	line-height:115%;}
+ /* Page Definitions */
+ @page Section1
+	{size:595.3pt 841.9pt;
+	margin:72.0pt 72.0pt 72.0pt 72.0pt;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0cm;}
+ul
+	{margin-bottom:0cm;}
+-->
+</style>
+
+</head>
+
+<body lang=EN-GB link=blue vlink=purple>
+
+<div class=Section1>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='font-size:16.0pt'>&nbsp;</span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:36.0pt;font-family:"Arial","sans-serif"'>BrowserMonkey</span></b></p>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='font-size:16.0pt;font-family:"Arial","sans-serif"'>&nbsp;</span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:16.0pt;font-family:"Arial","sans-serif"'>&nbsp;</span></b></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:16.0pt;font-family:"Arial","sans-serif"'><img width=309
+height=309 id="Picture 5" src="High%20Level%20Design_files/image001.jpg"
+alt="dangly monkey"></span></b></p>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='font-family:"Arial","sans-serif"'>&nbsp;</span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='font-family:"Arial","sans-serif"'>&nbsp;</span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:8.0pt;font-family:"Arial","sans-serif"'>&nbsp;</span></b></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:8.0pt;font-family:"Arial","sans-serif"'>&nbsp;</span></b></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:8.0pt;font-family:"Arial","sans-serif"'>&nbsp;</span></b></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:18.0pt;font-family:"Arial","sans-serif"'>High Level Design
+Document</span></b></p>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='font-family:"Arial","sans-serif"'>&nbsp;</span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='font-family:"Arial","sans-serif"'>v 1.0</span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:18.0pt;font-family:"Arial","sans-serif"'>&nbsp;</span></b></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:14.0pt;font-family:"Arial","sans-serif"'>Software House One</span></b></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>&nbsp;</span></p>
+
+<span style='font-size:12.0pt;font-family:"Arial","sans-serif"'><br clear=all
+style='page-break-before:always'>
+</span>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Arial","sans-serif"'>Version
+History</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;font-family:"Arial","sans-serif"'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>Document
+name: se-proj1/SVNRepository/Design Team/scratch/High Level Design.docx</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>Document
+version: 1.0</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>Document
+author: Daniel Cooper 2009/03/10</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>Document
+author: Merrigan Baylis 2009/03/10</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>Document
+author: Adam McGinness 2009/03/10</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>Document
+author: Paul Calcraft 2009/03/13</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>Document
+auditor: Daniel Cooper 2009/03/13</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>Document
+auditor: Paul Calcraft 2009/03/13</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>Document
+auditor: Sara Aspery 2009/03/13</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>Document
+auditor: Ioanna Kyprianou 2009/03/13</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>Last
+modification date: <span style='color:red'>2009/03/13</span></span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='font-size:16.0pt;font-family:"Arial","sans-serif"'>&nbsp;</span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:16.0pt;font-family:"Arial","sans-serif"'>&nbsp;</span></b></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:16.0pt;font-family:"Arial","sans-serif"'>&nbsp;</span></b></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:36.0pt;font-family:"Arial","sans-serif"'>&nbsp;</span></b></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:36.0pt;font-family:"Arial","sans-serif"'>&nbsp;</span></b></p>
+
+<b><span style='font-size:36.0pt;font-family:"Arial","sans-serif"'><br
+clear=all style='page-break-before:always'>
+</span></b>
+
+<p class=MsoNormal><span style='font-size:26.0pt;font-family:"Arial","sans-serif";
+color:#17365D;letter-spacing:.25pt'>&nbsp;</span></p>
+
+<h1><a name="_Toc224716861"><span style='font-family:"Arial","sans-serif"'>High
+Level Design</span></a></h1>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>&nbsp;</span></p>
+
+<p class=MsoTocHeading><span style='font-family:"Arial","sans-serif"'>Contents</span></p>
+
+<p class=MsoToc1><span
+lang=EN-US><a href="#_Toc224716861"><span lang=EN-GB style='font-family:"Arial","sans-serif"'>High
+Level Design</span><span style='color:windowtext;display:none;text-decoration:
+none'>.. </span><span
+style='color:windowtext;display:none;text-decoration:none'>3</span></a></span></p>
+
+<p class=MsoToc1><span lang=EN-US><a href="#_Toc224716862"><span lang=EN-GB
+style='font-family:"Arial","sans-serif"'>Architectural design</span><span
+style='color:windowtext;display:none;text-decoration:none'>.. </span><span
+style='color:windowtext;display:none;text-decoration:none'>4</span></a></span></p>
+
+<p class=MsoToc2><span lang=EN-US><a href="#_Toc224716863"><span lang=EN-GB
+style='font-family:"Arial","sans-serif"'>Requirement 1 - Basic Render</span><span
+style='color:windowtext;display:none;text-decoration:none'> </span><span
+style='color:windowtext;display:none;text-decoration:none'>5</span></a></span></p>
+
+<p class=MsoToc2><span lang=EN-US><a href="#_Toc224716864"><span lang=EN-GB
+style='font-family:"Arial","sans-serif"'>Requirements 2 &amp; 3 -  Logging
+&amp; Conformance</span><span style='color:windowtext;display:none;text-decoration:
+none'>. </span><span
+style='color:windowtext;display:none;text-decoration:none'>5</span></a></span></p>
+
+<p class=MsoToc2><span lang=EN-US><a href="#_Toc224716865"><span lang=EN-GB
+style='font-family:"Arial","sans-serif"'>Requirements 4 &amp; 5 – Tags and
+Tables</span><span style='color:windowtext;display:none;text-decoration:none'>. </span><span
+style='color:windowtext;display:none;text-decoration:none'>6</span></a></span></p>
+
+<p class=MsoToc2><span lang=EN-US><a href="#_Toc224716866"><span lang=EN-GB
+style='font-family:"Arial","sans-serif"'>Requirement 6 - Links</span><span
+style='color:windowtext;display:none;text-decoration:none'>. </span><span
+style='color:windowtext;display:none;text-decoration:none'>7</span></a></span></p>
+
+<p class=MsoToc2><span lang=EN-US><a href="#_Toc224716867"><span lang=EN-GB
+style='font-family:"Arial","sans-serif"'>Requirement 7 - Search</span><span
+style='color:windowtext;display:none;text-decoration:none'>.. </span><span
+style='color:windowtext;display:none;text-decoration:none'>7</span></a></span></p>
+
+<p class=MsoToc2><span lang=EN-US><a href="#_Toc224716868"><span lang=EN-GB
+style='font-family:"Arial","sans-serif"'>Requirement 8 - Zoom</span><span
+style='color:windowtext;display:none;text-decoration:none'>.. </span><span
+style='color:windowtext;display:none;text-decoration:none'>8</span></a></span></p>
+
+<p class=MsoToc1><span lang=EN-US><a href="#_Toc224716869"><span lang=EN-GB
+style='font-family:"Arial","sans-serif"'>Common tactical policies</span><span
+style='color:windowtext;display:none;text-decoration:none'>. </span><span
+style='color:windowtext;display:none;text-decoration:none'>9</span></a></span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>&nbsp;</span></p>
+
+<span style='font-size:12.0pt;font-family:"Arial","sans-serif"'><br clear=all
+style='page-break-before:always'>
+</span>
+
+<p class=MsoNormal><b><span style='font-size:14.0pt;font-family:"Arial","sans-serif";
+color:#365F91'>&nbsp;</span></b></p>
+
+<h1><a name="_Toc224716862"><span style='font-family:"Arial","sans-serif"'>Architectural
+design</span></a></h1>
+
+<h2><span style='font-family:"Arial","sans-serif"'><img width=601 height=460
+id="Picture 1" src="High%20Level%20Design_files/image002.jpg"></span></h2>
+
+<p class=MsoCaption><span style='font-family:"Arial","sans-serif"'>Figure </span><span style='font-family:"Arial","sans-serif"'>1</span><span style='font-family:"Arial","sans-serif"'>:
+Basic Class Diagram for BrowserMonkey</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>Figure 1
+shows the UML class diagram for the high level class diagram for the browser
+monkey browser.</span></p>
+
+<p class=MsoListParagraphCxSpFirst style='text-indent:-18.0pt'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><b><span style='font-family:"Arial","sans-serif"'>GUI </span></b><span
+style='font-family:"Arial","sans-serif"'>– Displays GUI widgets and windows and
+handles the listeners on those events.</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-18.0pt'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><b><span style='font-family:"Arial","sans-serif"'>DocumentPanel</span></b><span
+style='font-family:"Arial","sans-serif"'> – An extension of the java2d paint pane
+(JPanel) that will act as the rendering surface for the browser.</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-18.0pt'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><b><span style='font-family:"Arial","sans-serif"'>DocumentPresenter</span></b><span
+style='font-family:"Arial","sans-serif"'>- A class that will create RenderNodes
+from the DocumentNode tree and subsequently traverse these to render the
+Document.</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-18.0pt'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><b><span style='font-family:"Arial","sans-serif"'>Searcher </span></b><span
+style='font-family:"Arial","sans-serif"'>– A class that will perform searches
+over nodes in the RenderNodes tree.</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-18.0pt'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><b><span style='font-family:"Arial","sans-serif"'>HotLinker</span></b><span
+style='font-family:"Arial","sans-serif"'> – Does the lookup between the pixel
+point at which a mouse button was clicked and which element was rendered in
+that space, allowing hyperlinks.</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-18.0pt'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><b><span style='font-family:"Arial","sans-serif"'>RenderNode </span></b><span
+style='font-family:"Arial","sans-serif"'>– A render node is a collapsed view of
+the tree, from the root to each leaf, representing a finite space and what is
+rendered in it at an atomic level – e.g. a piece of text with a certain
+formatting.</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-18.0pt'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><b><span style='font-family:"Arial","sans-serif"'>DocumentNode </span></b><span
+style='font-family:"Arial","sans-serif"'>– A representation, possibly corrected,
+of the HTML the browser has been supplied with.</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-18.0pt'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><b><span style='font-family:"Arial","sans-serif"'>Document </span></b><span
+style='font-family:"Arial","sans-serif"'>– One document represents one HTML
+file. Contains the Document Node tree as well as some other run time
+information.</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-18.0pt'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><b><span style='font-family:"Arial","sans-serif"'>Tokeniser </span></b><span
+style='font-family:"Arial","sans-serif"'>– Takes a single HTML stream and
+splits it into Tokens which can then be interpreted.</span></p>
+
+<p class=MsoListParagraphCxSpLast style='text-indent:-18.0pt'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><b><span style='font-family:"Arial","sans-serif"'>Parser </span></b><span
+style='font-family:"Arial","sans-serif"'>– Takes a set of sequential tokens and
+produces a DocumentNode tree.</span></p>
+
+<h2><a name="_Toc224716863"><span style='font-family:"Arial","sans-serif"'>Requirement
+1 - Basic Render</span></a></h2>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>As outlined
+in the requirements, the first deliverable will be the basic render. This will
+have a complete GUI interface but will lack the ability to be able to render
+anything beyond simple text. HTML rendering, links, search and zoom will then
+be added onto this foundation to create a functional – and to specification –
+web browser.</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>In order to
+do any rendering two trees must be built. </span></p>
+
+<p class=MsoListParagraphCxSpFirst style='text-indent:-18.0pt'><span
+style='font-family:"Arial","sans-serif"'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;
+</span></span><b><span style='font-family:"Arial","sans-serif"'>The Document
+Tree – </span></b><span style='font-family:"Arial","sans-serif"'>The document
+tree is very much like the Document Object Model found in modern browsers. It
+will store the browsers internal representation of the HTML, with any rendering
+mode fixes we choose to implement. </span></p>
+
+<p class=MsoListParagraphCxSpLast style='text-indent:-18.0pt'><span
+style='font-family:"Arial","sans-serif"'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;
+</span></span><b><span style='font-family:"Arial","sans-serif"'>The Render Tree
+–</span></b><span style='font-family:"Arial","sans-serif"'> The render tree is
+the resolved version of the document tree. Each leaf on the Document Tree tree
+ultimately leads to some content. The Render tree realises this by collapsing
+each path to each node in the document and creating a self contained object
+with information to allow this object to ‘paint’ itself to a JPanel surface.</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>The render
+works by first building a Document tree of the HTML file it is given, then
+creating a set of RenderNodes from that Document Tree and painting each one, in
+order, onto the paint surface. </span></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><span style='font-family:
+"Arial","sans-serif"'><img width=514 height=274 id="Picture 8"
+src="High%20Level%20Design_files/image003.jpg"></span></p>
+
+<p class=MsoCaption><span style='font-family:"Arial","sans-serif"'>Figure </span><span style='font-family:"Arial","sans-serif"'>2</span><span style='font-family:"Arial","sans-serif"'>:
+Activity Diagram Of Basic Rendering</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>&nbsp;</span></p>
+
+<h2><a name="_Toc224716864"><span style='font-family:"Arial","sans-serif"'>Requirements
+2 &amp; 3 -  Logging &amp; Conformance</span></a></h2>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>After the
+basic render has reached a stable and working state, the next task is to add in
+the ability to render HTML. To do this there must be ‘conformance’ checks which
+test if the HTML supplied is valid, and if it’s not attempt some basic
+correction while producing the document tree.</span></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><span style='font-family:
+"Arial","sans-serif"'><img width=601 height=257 id="Picture 9"
+src="High%20Level%20Design_files/image004.jpg"></span></p>
+
+<p class=MsoCaption><span style='font-family:"Arial","sans-serif"'>Figure </span><span style='font-family:"Arial","sans-serif"'>3</span><span style='font-family:"Arial","sans-serif"'>:
+Activity Diagram of Conformance.</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>Figure 2
+demonstrates in higher detail the full steps which will be taken in order to
+render a file, including the tokenising stage.</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>A very
+similar set of activities will be undertaken for logging (if the user starts
+the program in logging mode.)</span></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><span style='font-family:
+"Arial","sans-serif"'> </span><span style='font-family:"Arial","sans-serif"'><img
+width=601 height=285 id="Picture 10"
+src="High%20Level%20Design_files/image005.jpg"></span></p>
+
+<p class=MsoCaption><span style='font-family:"Arial","sans-serif"'>Figure </span><span style='font-family:"Arial","sans-serif"'>4</span><span style='font-family:"Arial","sans-serif"'>:
+Activity Diagram for Logging</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>&nbsp;</span></p>
+
+<h2><span style='font-family:"Arial","sans-serif"'>&nbsp;</span></h2>
+
+<h2><a name="_Toc224716865"><span style='font-family:"Arial","sans-serif"'>Requirements
+4 &amp; 5 – Tags and Tables</span></a></h2>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>The details
+of the implementation of these two requirements were deemed too low level to
+include in the high level design. Their implementations are encapsulated in the
+DocumentNode class and its associates as seen in this high level design.
+Explanations of their workings will be included in the detailed design
+specification.</span></p>
+
+<h2><span style='font-family:"Arial","sans-serif"'>&nbsp;</span></h2>
+
+<h2><a name="_Toc224716866"><span style='font-family:"Arial","sans-serif"'>Requirement
+6 - Links</span></a></h2>
+
+<p class=MsoNormal style='page-break-after:avoid'><span style='font-family:
+"Arial","sans-serif"'><img width=602 height=350 id="Picture 2"
+src="High%20Level%20Design_files/image006.jpg"></span></p>
+
+<p class=MsoCaption><span style='font-family:"Arial","sans-serif"'>Figure </span><span style='font-family:"Arial","sans-serif"'>5</span><span style='font-family:"Arial","sans-serif"'>:
+Activity Diagram for Links</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>One of the
+major disadvantages of using a 2d canvas to render on is that we have no easy
+way of telling what has been clicked. To get around this limitation, we employ
+a “hotlinker” class. This class takes the position that a mouse click event was
+registered at and looks up what element was rendered in that position. From
+there we can look up the element and then, if required, follow through on a
+hyperlink.</span></p>
+
+<h2><a name="_Toc224716867"><span style='font-family:"Arial","sans-serif"'>Requirement
+7 - Search</span></a><span style='font-family:"Arial","sans-serif"'> </span></h2>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>The Searcher
+Class provides much of the searching functionality. When a Search is entered;
+the DocumentPanel creates a new Searcher object. This Searcher object is then
+passed to the DocumentPresenter as an additional render node processor.</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>The Searcher
+keeps an internal buffer of matched search terms that it builds up – which gets
+emptied if it encounters a ‘breaking character’. A breaking character is a
+character that is not in the search term.</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>As the search
+builds this internal buffer, it also maintains a list of render nodes that
+contains segments of text that were inputted into the buffer. This list is also
+emptied when the buffer id emptied.</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>When the
+searcher has completed its iteration over the document nodes, it splits the
+nodes along the borders of the search term and makes the newly split nodes
+highlighted nodes. The document is then rendered.</span></p>
+
+<p class=MsoNormal><span style='position:absolute;z-index:2;margin-left:273px;
+margin-top:44px;width:285px;height:50px'><img width=285 height=50
+src="High%20Level%20Design_files/image007.gif" alt="Text Box: Bar"></span><span
+style='position:absolute;z-index:1;margin-left:-2px;margin-top:44px;width:285px;
+height:50px'><img width=285 height=50
+src="High%20Level%20Design_files/image008.gif" alt="Text Box: Foo"></span><span
+style='font-family:"Arial","sans-serif"'>Consider the two render nodes “foo”
+and “bar” adjacent to each other. If the user searches for “ob” then the
+following transformation would occur.</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='position:relative;z-index:3;left:-2px;
+top:22px;width:560px;height:71px'><img width=560 height=49
+src="High%20Level%20Design_files/image009.gif"></span><span style='font-family:
+"Arial","sans-serif"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>&nbsp;</span></p>
+
+<h2><span style='font-family:"Arial","sans-serif"'>&nbsp;</span></h2>
+
+<br clear=ALL>
+
+<p class=MsoNormal><img width=685 height=432
+src="High%20Level%20Design_files/image010.jpg" align=left hspace=12><span
+style='font-family:"Arial","sans-serif"'>The Activity diagram for this scenario
+follows.</span></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><span style='font-family:
+"Arial","sans-serif"'>&nbsp;</span></p>
+
+<p class=MsoCaption><span style='font-family:"Arial","sans-serif"'>Figure </span><span style='font-family:"Arial","sans-serif"'>6</span><span style='font-family:"Arial","sans-serif"'>:
+Activity Diagram of Search</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>When a the
+search field is cleared, the page is re-rendered as if there was no search
+term. That is to say – the  RenderNodes are re created from the original
+DocumentNodes.</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>&nbsp;</span></p>
+
+<h2><span style='font-family:"Arial","sans-serif"'>&nbsp;</span></h2>
+
+<h2><span style='font-family:"Arial","sans-serif"'>&nbsp;</span></h2>
+
+<h2><a name="_Toc224716868"><span style='font-family:"Arial","sans-serif"'>Requirement
+8 - Zoom</span></a><span style='font-family:"Arial","sans-serif"'> </span></h2>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>As previously
+discussed in the rendering section, the DocumentPresenter class renders to the
+document panel by iterating over a collection of render nodes and calling the
+paint method on each one. </span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>When a page
+is first rendered it’s drawn with a zoom level of 1, and presented to the user.
+Via the GUI, the user will be presented with widgets which will allow the
+zooming to be changed. When the zoom value is changed the page is then
+re-rendered with the desired zoom level.</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>In essence,
+the zoom is always considered in the rendering of a page, but is set to 1 when
+a page is initially rendered.</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>A zoom value
+of 2 would imply a 200% zoom level and a zoom value of 0.5 would indicate a
+zoom level of 50%.</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>A change in
+the zoom level starts with the change in the GUI zoom level widget. When that
+widget is altered a zoom event will fire. The new zoom level will be compared
+with the current level and if they are different the browser will proceed to re
+render the document with the newly selected level.</span></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><span style='font-family:
+"Arial","sans-serif"'><img width=601 height=330 id="Picture 4"
+src="High%20Level%20Design_files/image011.jpg"></span></p>
+
+<p class=MsoCaption><span style='font-family:"Arial","sans-serif"'>Figure </span><span style='font-family:"Arial","sans-serif"'>7</span><span style='font-family:"Arial","sans-serif"'>:
+Activity Diagram of a Zoom Level Change</span></p>
+
+<h1><span style='font-family:"Arial","sans-serif"'>&nbsp;</span></h1>
+
+<h1><a name="_Toc224716869"><span style='font-family:"Arial","sans-serif"'>Common
+tactical policies</span></a></h1>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>The design
+tries to follow object orientation principles, attempting to minimise coupling
+and keep the responsibilities of each class distinct and manageable. The
+visitor pattern will be used to traverse trees and collections of data where
+possible to make the code more flexible. The strategy pattern will also be
+considered for the handling of the many different tag classes that there are to
+be rendered; avoiding less maintainable methods of handling this such as a
+growing if/else statement. In all places possible the project will try to
+remain extendable and updateable. The ability to perform maintenance on the
+code will hold great importance.</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>This browser
+will be implemented in java and will, where possible, follow established java
+conventions with regard to method, class and variable naming as well as code
+formatting. </span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial","sans-serif"'>SVN will be
+used for version control. This software house will follow a ‘commit early and
+often’ policy – thus ensuring each commit is a small evolutionary change, and
+not anything which would be troublesome to revert.</span></p>
+
+</div>
+
+</body>
+
+</html>
