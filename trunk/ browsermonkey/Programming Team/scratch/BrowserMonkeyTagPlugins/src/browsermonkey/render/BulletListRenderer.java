@@ -18,6 +18,6 @@ public class BulletListRenderer extends ListTagRenderer{
      */
     @Override
     protected String getListElementText(int index) {
-        return "&nbsp;&nbsp;&nbsp;&nbsp;•&nbsp;";
+        return Renderer.STANDARD_INDENT+"•&nbsp;";
     }
 }

@@ -35,5 +35,9 @@ public abstract class DocumentNode {
         children.add(child);
     }
 
+    /**
+     * Returns a debug pseudo-HTML representation of the node and its children.
+     * @return
+     */
     public abstract String toDebugString();
 }

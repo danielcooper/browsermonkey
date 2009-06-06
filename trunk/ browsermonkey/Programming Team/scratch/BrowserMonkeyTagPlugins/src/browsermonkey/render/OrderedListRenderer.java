@@ -18,6 +18,6 @@ public class OrderedListRenderer extends ListTagRenderer{
     @Override
     protected String getListElementText(int index) {
         // Add 1 to index as it is zero-based.
-        return "&nbsp;&nbsp;&nbsp;&nbsp;"+(index+1)+".&nbsp;";
+        return Renderer.STANDARD_INDENT+(index+1)+".&nbsp;";
     }
 }
