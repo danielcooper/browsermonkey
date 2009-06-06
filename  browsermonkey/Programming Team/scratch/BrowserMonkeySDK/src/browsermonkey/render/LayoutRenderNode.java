@@ -42,10 +42,10 @@ public class LayoutRenderNode extends RenderNode {
         // If centred, add an invisible JComponent that can push the width to
         // maximum, so things can be centred in the whole available space.
         if (centred) {
-             // Annonymous subclass, as JComponent is abstract.
-            JComponent spacer = new JComponent() {};
-            horizontalGroup.addComponent(spacer, 0, 0, Short.MAX_VALUE);
-            verticalGroup.addComponent(spacer, 0, 0, 0);
+            // Anonymous subclass, as JComponent is abstract.
+            JComponent widthSpacer = new JComponent() {};
+            horizontalGroup.addComponent(widthSpacer, 0, 0, Short.MAX_VALUE);
+            verticalGroup.addComponent(widthSpacer, 0, 0, 0);
         }
     }
 
@@ -58,9 +58,6 @@ public class LayoutRenderNode extends RenderNode {
                 node.setZoomLevel(zoomLevel);
             }
         }
-        // Redo the layout and repaint.
-        revalidate();
-        repaint();
     }
 
     @Override
