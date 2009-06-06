@@ -14,6 +14,9 @@ import java.util.Set;
 /**
  *
  * @author Daniel Cooper, Lawrence Dine
+ *
+ * Parses a html file, performs corrections and builds a tree of Document Nodes
+ *
  */
 public class Parser {
 
@@ -32,13 +35,23 @@ public class Parser {
     private Iterator<Token> tokens;
     private boolean conformant = true;
 
-
-    private void conformanceError(String error){
+    /**
+     * Logs a new conformance error and ensures that this marks the file
+     * non conforming
+     * @param error - the error text
+     *
+     */
+    private void conformanceError(String error) {
         BrowserMonkeyLogger.conformance(error);
         conformant = false;
     }
 
-    public boolean isConformant(){
+    /**
+     *
+     * @return True if this file is conformant, false otherwise
+     *
+     */
+    public boolean isConformant() {
         return conformant;
     }
 
@@ -51,6 +64,11 @@ public class Parser {
         return false;
     }
 
+    /**
+     *
+     * @return returns the root node of the built document tree
+     *
+     */
     public DocumentNode getRootNode() {
         return rootNode;
     }
@@ -102,6 +120,12 @@ public class Parser {
         conformant = tokeniser.isConformant();
     }
 
+    /**
+     * Executes the parsing function and builds a corrected DocuementNode tree
+     *
+     *
+     *
+     */
     public void parse() {
         openElements = new ArrayList<TagDocumentNode>();
 
@@ -112,9 +136,10 @@ public class Parser {
             Token currentToken = tokens.next();
 
             if (currentToken.getType() == TokenType.TAG) {
-                if (currentToken.getTag().equals("th"))
+                if (currentToken.getTag().equals("th")) {
                     currentToken.setTag("td");
-                
+                }
+
                 if (ignoredTags.contains(currentToken.getTag())) {
                     continue;
                 }
@@ -145,12 +170,11 @@ public class Parser {
                     //perform listed tag functions
                     if (listTags.contains(currentToken.getTag())) {
                         doListedElement(currentToken);
-                    }
-                    //For singularly nestable tags, check if the last tag is the same. If it is
+                    } //For singularly nestable tags, check if the last tag is the same. If it is
                     //fix the nesting, if not - carry on.
                     else if (singularlyNestableTags.contains(currentToken.getTag())) {
                         if (openElements.size() > 1 && openElements.get(openElements.size() - 1).getType().equals(currentToken.getTag())) {
-                            conformanceError("Tag Nesting Error: closing " +currentToken.getTag()+".");
+                            conformanceError("Tag Nesting Error: closing " + currentToken.getTag() + ".");
                             doEndToken(currentToken);
                         }
                         doStartToken(currentToken);
@@ -174,8 +198,7 @@ public class Parser {
                 if (whitespaceIsPreformatted()) {
                     // Non breaking space.
                     text = text.replaceAll(" ", "\u00A0");
-                }
-                else {
+                } else {
                     // Regular whitespace handling: collapse all contiguous
                     // whitespace to a single space.
                     text = text.replaceAll("\\s+", " ");
@@ -195,8 +218,12 @@ public class Parser {
         }
     }
 
-    //Does a standard list. If the user chooses to not close li tags then it assumes that the next li
-    //signifies the start of the tag. Also, if no list type is given, it defaults to ul
+    /**
+     * This methond manages a standard list. If the user chooses to not close li tags then it assumes that the next li
+     * signifies the start of the tag. Also, if no list type is given, it defaults to ul.
+     * @param the token to add to a list
+     *
+     */
     private void doListedElement(Token token) {
         if (token.getTag().equals("li")) {
             if (openElements.size() >= 1) {
@@ -222,9 +249,14 @@ public class Parser {
         }
     }
 
-    //Ensures that tables are properly nested
+    /**
+     * This method manages table tags. It ensures the correct order of table elements and will create new elements if needed
+     * @param the token to add to a table
+     *
+     */
     public void doTableElement(Token token) {
         if (token.getTag().equals("td")) {
+            //checks to ensure that each td has a tr parent, if not it adds a tr to the tree and then appends the td to that.
             if (openElements.size() >= 1) {
                 if (openElements.get(openElements.size() - 1).getType().equals("tr")) {
                     doStartToken(token);
@@ -240,6 +272,7 @@ public class Parser {
 
             }
         } else if (token.getTag().equals("tr")) {
+            //checks to ensure that each tr has a table parent, if not it adds a table to the tree and then appends the tr to that.
             if (openElements.size() >= 1) {
                 if (openElements.get(openElements.size() - 1).getType().equals("table")) {
                     doStartToken(token);
@@ -258,18 +291,33 @@ public class Parser {
         }
     }
 
+    /**
+     * Adds an element to the tree without adding it to the currenly open stack
+     * @param the token to add to a tree
+     *
+     */
     private void doLeafElement(Token token) {
         TagDocumentNode tagNode = new TagDocumentNode(token.getTag(), token.getAttributes());
         openElements.get(openElements.size() - 1).addChild(tagNode);
     }
 
+    /**
+     * Adds an element to the tree without adding it to the currenly open stack
+     * @param the token to add to a tree
+     *
+     */
     private void doTextElement(String text) {
         TextDocumentNode textNode = new TextDocumentNode(text);
         openElements.get(openElements.size() - 1).addChild(textNode);
     }
 
+    /**
+     * To fix a nesting error, we back track down the open element stack and remove the offending open tag, and all below it
+     * @param the token to fix
+     *
+     */
     private void fixNestingError(Token token) {
-       conformanceError("Nesting Error: on tag " + token.getTag()+".");
+        conformanceError("Nesting Error: on tag " + token.getTag() + ".");
         int errorIndex = -1;
         for (int i = openElements.size() - 1; i >= 0; i--) {
             if (openElements.get(i).getType().equals(token.getTag())) {
@@ -282,11 +330,16 @@ public class Parser {
                 openElements.remove(openElements.get(i));
             }
         }
-        
+
     }
 
+    /**
+     * To fix a nesting error, we back track down the open element stack and remove the offending open tag, and all below it
+     * @param the token to fix
+     *
+     */
     private void fixNestingError(TagDocumentNode tagDocNode) {
-        conformanceError("Nesting Error: on tag " + tagDocNode.getType()+".");
+        conformanceError("Nesting Error: on tag " + tagDocNode.getType() + ".");
         int errorIndex = -1;
 
         for (int i = openElements.size() - 1; i >= 0; i--) {
@@ -303,11 +356,16 @@ public class Parser {
                 openElements.remove(openElements.get(i));
             }
         }
-        
+
 
 
     }
 
+    /**
+     * Removes a token from the stack
+     * @param the token to end
+     *
+     */
     private void doEndToken(Token token) {
         if (token.getTag().equals(openElements.get(openElements.size() - 1).getType())) {
             openElements.remove(openElements.size() - 1);
@@ -316,6 +374,11 @@ public class Parser {
         }
     }
 
+    /**
+     * Removes a token from the stack
+     * @param the token to end
+     *
+     */
     private void doEndToken(TagDocumentNode tagDocNode) {
         if (tagDocNode.getType().equals(openElements.get(openElements.size() - 1).getType())) {
             openElements.remove(openElements.size() - 1);
@@ -324,6 +387,11 @@ public class Parser {
         }
     }
 
+    /**
+     * Adds a element to the stack and appends it to appropriate parent elements
+     * @param the token to start
+     *
+     */
     private void doStartToken(Token token) {
         TagDocumentNode newNode = new TagDocumentNode(token.getTag(), token.getAttributes());
 
