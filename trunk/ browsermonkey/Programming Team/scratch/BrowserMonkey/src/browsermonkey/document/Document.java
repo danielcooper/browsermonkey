@@ -54,8 +54,6 @@ public class Document {
     /**
     * Opens the file specified by this <code>Document</code>'s path and
     * parses it, generating the <code>DocumentNode</code> tree.
-    * @throws java.io.FileNotFoundException
-    * @throws java.io.IOException
     */
     public void load() {
         url = IOUtility.getURL(path, context);
