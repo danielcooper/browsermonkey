@@ -15,7 +15,8 @@ import java.net.URLEncoder;
 import java.util.logging.*;
 
 /**
- *
+ * GUI class, handles the GUI for the browser. Contains code to allow user to
+ * open files, search and zoom and connects them to the relevant other classes.
  * @author Paul Calcraft
  */
 public class GUI extends javax.swing.JFrame {
