@@ -606,53 +606,14 @@ since our previous one was no longer able to stay with us for personal reasons.
 We lost a member of the QA team on similar grounds as well. We are now left
 with only 9 team members.</p>
 
-<h1><span style='position:relative;z-index:-2'><span style='position:absolute;
-left:35px;top:-32px;width:562px;height:898px'><img width=562 height=898
-src="Low%20Level%20Design_files/image002.gif"></span></span><a
-name="_Toc229293548">Architectural </a>Design</h1>
+<h1><a
+name="_Toc229293548">Architectural Design</a>
+<img width=966 height=1544
 
-<h1>&nbsp;</h1>
+src="Low%20Level%20Design_files/high/Class%20Diagram.png"></h1>
 
-<h1>&nbsp;</h1>
 
-<h1>&nbsp;</h1>
-
-<h1>&nbsp;</h1>
-
-<h1>&nbsp;</h1>
-
-<h1>&nbsp;</h1>
-
-<h1>&nbsp;</h1>
-
-<h1>&nbsp;</h1>
-
-<h1>&nbsp;</h1>
-
-<h1>&nbsp;</h1>
-
-<h1>&nbsp;</h1>
-
-<h1>&nbsp;</h1>
-
-<h1>&nbsp;</h1>
-
-<h1>&nbsp;</h1>
-
-<h1>&nbsp;</h1>
-
-<h1>&nbsp;</h1>
-
-<h1>&nbsp;</h1>
-
-<h1>&nbsp;</h1>
-
-<h1>&nbsp;</h1>
-
-<h1>&nbsp;</h1>
-
-<p class=FigureCaptionStyle><span style='position:absolute;z-index:2;
-margin-left:22px;margin-top:33px;width:593px;height:41px'>
+<p class=FigureCaptionStyle><span>
 
 <table cellpadding=0 cellspacing=0>
  <tr>
@@ -728,14 +689,14 @@ When a Token is destructed, its TokenType instance should be destructed also.</p
 document into a tree of DocumentNodes which can later be rendered into a RenderNode
 tree.</p>
 
-<p class=MsoNormal style='page-break-after:avoid'><img border=0 width=609
-height=736 src="Low%20Level%20Design_files/image003.gif"></p>
+<p class=MsoNormal style='page-break-after:avoid'><img border=0
+src="Low%20Level%20Design_files/high/Parser and Tokeniser Sequence.png"></p>
 
 <p class=FigureCaptionStyle><span lang=EN-US>Figure </span><span
 lang=EN-US>2</span><span lang=EN-US>: Parser and Tokeniser Sequence Diagram</span></p>
 
-<h2><img border=0 width=526 height=394
-src="Low%20Level%20Design_files/image004.gif"></h2>
+<h2><img border=0
+src="Low%20Level%20Design_files/high/Parsing and Tokeniser Start.png"></h2>
 
 <p class=FigureCaptionStyle><span lang=EN-US>Figure </span><span
 lang=EN-US>3</span><span lang=EN-US>: Parser Initial Object Diagram</span></p>
@@ -762,8 +723,8 @@ the following example HTML file has been constructed:</span></p>
 <p class=MsoNormal><span lang=EN-US>The Object Diagram below shows the result
 of the parser as executed on this HTML file.</span></p>
 
-<p class=MsoNormal style='page-break-after:avoid'><img border=0 width=601
-height=628 src="Low%20Level%20Design_files/image005.gif"></p>
+<p class=MsoNormal style='page-break-after:avoid'><img border=0
+src="Low%20Level%20Design_files/high/Parsing and Tokeniser End.png"></p>
 
 <p class=FigureCaptionStyle><span lang=EN-US>Figure </span><span
 lang=EN-US>4</span><span lang=EN-US>: Parser Completed Object Diagram</span></p>
@@ -4219,8 +4180,8 @@ code while being compliant on standard code (as proved by the standard example).
 
 <h1><a name="_Toc229293555"><span style='background:white'>Renderer</span></a></h1>
 
-<p class=MsoNormal style='page-break-after:avoid'><img border=0 width=601
-height=412 id="Picture 2" src="Low%20Level%20Design_files/image006.gif"></p>
+<p class=MsoNormal style='page-break-after:avoid'><img border=0 
+id="Picture 2" src="Low%20Level%20Design_files/high/Rendering Sequence.png"></p>
 
 <p class=FigureCaptionStyle><span lang=EN-US>Figure </span><span
 lang=EN-US>5</span><span lang=EN-US>: Renderer Sequence Diagram: Rendering the
@@ -4249,8 +4210,8 @@ used for the parser will be used for demonstration:</span></p>
 <p class=MsoNormal><span style='background:white'>Before the renderer process
 begins, the state is as follows:</span></p>
 
-<p class=MsoNormal style='page-break-after:avoid'><img border=0 width=601
-height=515 id="Picture 8" src="Low%20Level%20Design_files/image007.gif"></p>
+<p class=MsoNormal style='page-break-after:avoid'><img border=0
+id="Picture 8" src="Low%20Level%20Design_files/high/Renderer Start Object Diagram.png"></p>
 
 <p class=FigureCaptionStyle><span lang=EN-US>Figure </span><span
 lang=EN-US>6</span><span lang=EN-US>: Renderer Initial Object Diagram</span></p>
@@ -4263,8 +4224,8 @@ tree, the root of which is the HTML tag, a TagDocumentNode object called htmlRoo
 <p class=MsoNormal><span style='background:white'>After the process, the
 following is the state of the system:</span></p>
 
-<p class=MsoNormal style='page-break-after:avoid'><img border=0 width=601
-height=440 id="Picture 9" src="Low%20Level%20Design_files/image008.gif"></p>
+<p class=MsoNormal style='page-break-after:avoid'><img border=0 
+id="Picture 9" src="Low%20Level%20Design_files/high/Renderer End Object Diagram.png"></p>
 
 <p class=FigureCaptionStyle><span lang=EN-US>Figure </span><span
 lang=EN-US>7</span><span lang=EN-US>: Renderer Completed Object Diagram</span></p>
@@ -4493,8 +4454,8 @@ should initiate (by calling back to the Renderer) the rendering of their childre
 software </span>makes use of the previous processes linked together. To
 illustrate how these are linked, here is a sequence diagram for this process:</p>
 
-<p class=MsoNormal style='page-break-after:avoid'><img border=0 width=601
-height=356 id="Picture 1" src="Low%20Level%20Design_files/image009.gif"></p>
+<p class=MsoNormal style='page-break-after:avoid'><img border=0
+id="Picture 1" src="Low%20Level%20Design_files/high/View Manual Sequence.png"></p>
 
 <p class=FigureCaptionStyle><span lang=EN-US>Figure </span><span
 lang=EN-US>8</span><span lang=EN-US>: View Manual Sequence Diagram</span></p>
@@ -4522,8 +4483,8 @@ thought.</span></p>
 <p class=MsoNormal><span style='background:white'>The below sequence diagram
 illustrates the steps that are required.</span></p>
 
-<p class=MsoNormal style='page-break-after:avoid'><img border=0 width=601
-height=320 id="Picture 3" src="Low%20Level%20Design_files/image010.gif"></p>
+<p class=MsoNormal style='page-break-after:avoid'><img border=0
+id="Picture 3" src="Low%20Level%20Design_files/high/Search Sequence.png"></p>
 
 <p class=FigureCaptionStyle><span lang=EN-US>Figure </span><span
 lang=EN-US>9</span><span lang=EN-US>: Search Sequence Diagram</span></p>
@@ -4543,8 +4504,8 @@ viewed. The user would then opt to search via the GUI, and the following would
 be the resulting Object Diagram. This assumes the user has searched for “Test
 bold”:</p>
 
-<p class=MsoNormal style='page-break-after:avoid'><img border=0 width=601
-height=432 id="Picture 10" src="Low%20Level%20Design_files/image011.gif"></p>
+<p class=MsoNormal style='page-break-after:avoid'><img border=0
+id="Picture 10" src="Low%20Level%20Design_files/high/Search End Object Diagram.png"></p>
 
 <p class=FigureCaptionStyle><span lang=EN-US>Figure </span><span
 lang=EN-US>10</span><span lang=EN-US>: Search Completed Object Diagram</span></p>
@@ -4558,8 +4519,8 @@ search text specifically.</p>
 
 <h1><a name="_Toc229293564">Zoom</a></h1>
 
-<p class=MsoNormal style='page-break-after:avoid'><img border=0 width=601
-height=353 id="Picture 4" src="Low%20Level%20Design_files/image012.gif"></p>
+<p class=MsoNormal style='page-break-after:avoid'><img border=0
+id="Picture 4" src="Low%20Level%20Design_files/high/Zoom Sequence.png"></p>
 
 <p class=FigureCaptionStyle><span lang=EN-US>Figure </span><span
 lang=EN-US>11</span><span lang=EN-US>: Zoom Sequence Diagram</span></p>
@@ -4576,8 +4537,8 @@ following:</p>
 
 <p class=MsoNormal>&nbsp;</p>
 
-<p class=MsoNormal style='page-break-after:avoid'><img border=0 width=601
-height=450 id="Picture 11" src="Low%20Level%20Design_files/image013.gif"></p>
+<p class=MsoNormal style='page-break-after:avoid'><img border=0
+id="Picture 11" src="Low%20Level%20Design_files/high/Zoom End Object Diagram.png"></p>
 
 <p class=FigureCaptionStyle><span lang=EN-US>Figure </span><span
 lang=EN-US>12</span><span lang=EN-US>: Zoom Completed Object Diagram</span></p>
@@ -4594,8 +4555,8 @@ write lots of explicit zooming code.</p>
 
 <h1><a name="_Toc229293565">Follow Link</a></h1>
 
-<p class=MsoNormal style='page-break-after:avoid'><img border=0 width=601
-height=153 id="Picture 5" src="Low%20Level%20Design_files/image014.gif"></p>
+<p class=MsoNormal style='page-break-after:avoid'><img border=0
+id="Picture 5" src="Low%20Level%20Design_files/high/Follow Link Sequence.png"></p>
 
 <p class=FigureCaptionStyle><span lang=EN-US>Figure </span><span
 lang=EN-US>13</span><span lang=EN-US>: Follow Link Sequence Diagram</span></p>
@@ -4610,8 +4571,8 @@ destination.html. For brevity, the detailed document and render trees have been
 omitted, they would be very similar to those featured in the Renderer Completed
 Object Diagram.</p>
 
-<p class=MsoNormal style='page-break-after:avoid'><img border=0 width=601
-height=215 id="Picture 12" src="Low%20Level%20Design_files/image015.gif"></p>
+<p class=MsoNormal style='page-break-after:avoid'><img border=0
+id="Picture 12" src="Low%20Level%20Design_files/high/Follow Link Start Object Diagram.png"></p>
 
 <p class=FigureCaptionStyle><span lang=EN-US>Figure </span><span
 lang=EN-US>14</span><span lang=EN-US>: Follow Link Initial Object Diagram</span></p>
@@ -4619,8 +4580,8 @@ lang=EN-US>14</span><span lang=EN-US>: Follow Link Initial Object Diagram</span>
 <p class=MsoNormal>After the link is clicked, the state of the system would be
 the following:</p>
 
-<p class=MsoNormal style='page-break-after:avoid'><img border=0 width=601
-height=215 id="Picture 13" src="Low%20Level%20Design_files/image016.gif"></p>
+<p class=MsoNormal style='page-break-after:avoid'><img border=0
+id="Picture 13" src="Low%20Level%20Design_files/high/Follow Link End Object Diagram.png"></p>
 
 <p class=FigureCaptionStyle><span lang=EN-US>Figure </span><span
 lang=EN-US>15</span><span lang=EN-US>: Follow Link Completed Object Diagram</span></p>
