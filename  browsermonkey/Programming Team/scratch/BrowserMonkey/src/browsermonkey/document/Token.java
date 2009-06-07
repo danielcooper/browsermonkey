@@ -117,7 +117,7 @@ public class Token {
         String[][] atts = RegexUtility.scan(fullTag, "<[\\w:-]+\\s+(.*)>");
         if (atts.length > 0) {
             String[][] attributeStrings = RegexUtility.scan(atts[0][0], "\\s*([\\w:-]+)\\s*=\\s*(\"[^\"]*\"|'[^']*'|[^\"'>][^\\s>]*)");
-
+            //Regex grabs any attributes from the tag and stores them in a hash map
             attributes = new HashMap<String, String>();
 
             for (String[] attribute : attributeStrings) {
