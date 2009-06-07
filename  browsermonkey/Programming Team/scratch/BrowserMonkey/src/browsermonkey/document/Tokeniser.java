@@ -54,27 +54,26 @@ public class Tokeniser {
      * for explanatory comments.
      */
     public void getNextToken() {
-        if (page.charAt(currentPos) == '<') {   //TODO Detailed in-line comments
-            if (page.length() >= currentPos + 4 && page.substring(currentPos + 1, currentPos + 4).equals("!--")) {
-                int tagTokenEnd = page.indexOf("-->", currentPos + 4);
-
-                if(tagTokenEnd == -1){
+        if (page.charAt(currentPos) == '<') {   //If the character at the current position in the text is a < and therefore is opening a tag
+            if (page.length() >= currentPos + 4 && page.substring(currentPos + 1, currentPos + 4).equals("!--")) {   //First we do a check to see if it's a comment
+                int tagTokenEnd = page.indexOf("-->", currentPos + 4);          //If it is then we skip it without doing anything
+                if(tagTokenEnd == -1){                                          //Conformance testing
                     currentPos = page.length();
                     conformanceError("Comment tag does not end, treating rest of the document as a comment.");
                 } else {
-                    currentPos = tagTokenEnd + 3;
+                    currentPos = tagTokenEnd + 3;               //Skipped
                 }
             } else {
-                int nextTagOpen = page.indexOf('<', currentPos + 1);
+                int nextTagOpen = page.indexOf('<', currentPos + 1);            // if itisn't a comment we check for the next open and close tags
                 int tagTokenEnd = page.indexOf('>', currentPos + 1);
 
                 if (nextTagOpen == -1) {
-                    nextTagOpen = page.length();
+                    nextTagOpen = page.length();        //check in case this is the last tag and there is no next tag
                 }
 
                 String fullTag;
-                if (tagTokenEnd == -1 || tagTokenEnd > nextTagOpen) {
-                    fullTag = page.substring(currentPos, nextTagOpen) + ">";
+                if (tagTokenEnd == -1 || tagTokenEnd > nextTagOpen) {               //Conformance fixing for if the next end tag is after an open tag
+                    fullTag = page.substring(currentPos, nextTagOpen) + ">";        //instead of breaking it treats the whole text between the open and close as being one tag
                     tagTokenEnd = nextTagOpen;
 
                     if (nextTagOpen == page.length())
@@ -86,18 +85,18 @@ public class Tokeniser {
                     tagTokenEnd++;
                 }
 
-                currentPos = tagTokenEnd;
+                currentPos = tagTokenEnd;               //Moving on current position by length of tag
 
                 if (fullTag.matches("<\\s*/?\\s*>")) {
                     conformanceError("Empty tag found, ignoring.");
                     return;
                 }
 
-                Token token = new Token(fullTag, TokenType.TAG);
+                Token token = new Token(fullTag, TokenType.TAG);           //creating a new tag token with the tag stored
                 tokens.add(token);
                 
 
-                if (token.getTag().equals("title")) {
+                if (token.getTag().equals("title")) {               //Special case handling for title tag
                     int endTitle = page.substring(tagTokenEnd).toLowerCase().indexOf("</title>");
                     String text;
                     if (endTitle != -1) {
@@ -114,7 +113,7 @@ public class Tokeniser {
                 }
             }
         } else {
-            int textTokenEnd = page.indexOf('<', currentPos);
+            int textTokenEnd = page.indexOf('<', currentPos);       //This scoops all text between tags into a text token
             String text;
             if (textTokenEnd != -1) {
                 text = page.substring(currentPos, textTokenEnd);

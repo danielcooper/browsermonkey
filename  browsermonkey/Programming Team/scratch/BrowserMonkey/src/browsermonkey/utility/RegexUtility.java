@@ -5,7 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- *
+ * RegexUtlity class is used to provide regex functionality.
  * @author Paul Calcraft
  */
 public class RegexUtility {
