@@ -1,0 +1,915 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=Generator content="Microsoft Word 12 (filtered)">
+<title>Programming Documentation</title>
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+	{font-family:Tahoma;
+	panose-1:2 11 6 4 3 5 4 4 2 4;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Arial","sans-serif";}
+h1
+	{mso-style-link:"Heading 1 Char";
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:48.6pt;
+	text-indent:-21.6pt;
+	page-break-after:avoid;
+	font-size:16.0pt;
+	font-family:"Arial","sans-serif";
+	font-weight:bold;}
+h2
+	{margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:28.8pt;
+	text-indent:-28.8pt;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:"Arial","sans-serif";
+	font-weight:bold;
+	font-style:italic;}
+h3
+	{margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:36.0pt;
+	text-indent:-36.0pt;
+	page-break-after:avoid;
+	font-size:13.0pt;
+	font-family:"Arial","sans-serif";
+	font-weight:bold;}
+h4
+	{margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:43.2pt;
+	text-indent:-43.2pt;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:"Arial","sans-serif";
+	font-weight:bold;}
+h5
+	{margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:50.4pt;
+	text-indent:-50.4pt;
+	font-size:13.0pt;
+	font-family:"Arial","sans-serif";
+	font-weight:bold;
+	font-style:italic;}
+h6
+	{margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:57.6pt;
+	text-indent:-57.6pt;
+	font-size:11.0pt;
+	font-family:"Arial","sans-serif";
+	font-weight:bold;}
+p.MsoHeading7, li.MsoHeading7, div.MsoHeading7
+	{margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:64.8pt;
+	text-indent:-64.8pt;
+	font-size:12.0pt;
+	font-family:"Arial","sans-serif";}
+p.MsoHeading8, li.MsoHeading8, div.MsoHeading8
+	{margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:72.0pt;
+	text-indent:-72.0pt;
+	font-size:12.0pt;
+	font-family:"Arial","sans-serif";
+	font-style:italic;}
+p.MsoHeading9, li.MsoHeading9, div.MsoHeading9
+	{margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:79.2pt;
+	text-indent:-79.2pt;
+	font-size:11.0pt;
+	font-family:"Arial","sans-serif";}
+p.MsoToc1, li.MsoToc1, div.MsoToc1
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Arial","sans-serif";}
+p.MsoToc2, li.MsoToc2, div.MsoToc2
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:12.0pt;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Arial","sans-serif";}
+p.MsoToc3, li.MsoToc3, div.MsoToc3
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:24.0pt;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Arial","sans-serif";}
+p.MsoToc4, li.MsoToc4, div.MsoToc4
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:5.0pt;
+	margin-left:36.0pt;
+	font-size:12.0pt;
+	font-family:"Calibri","sans-serif";}
+p.MsoToc5, li.MsoToc5, div.MsoToc5
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:5.0pt;
+	margin-left:48.0pt;
+	font-size:12.0pt;
+	font-family:"Calibri","sans-serif";}
+p.MsoToc6, li.MsoToc6, div.MsoToc6
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:5.0pt;
+	margin-left:60.0pt;
+	font-size:12.0pt;
+	font-family:"Calibri","sans-serif";}
+p.MsoToc7, li.MsoToc7, div.MsoToc7
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:5.0pt;
+	margin-left:72.0pt;
+	font-size:12.0pt;
+	font-family:"Calibri","sans-serif";}
+p.MsoToc8, li.MsoToc8, div.MsoToc8
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:5.0pt;
+	margin-left:84.0pt;
+	font-size:12.0pt;
+	font-family:"Calibri","sans-serif";}
+p.MsoToc9, li.MsoToc9, div.MsoToc9
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:5.0pt;
+	margin-left:96.0pt;
+	font-size:12.0pt;
+	font-family:"Calibri","sans-serif";}
+p.MsoHeader, li.MsoHeader, div.MsoHeader
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Arial","sans-serif";}
+p.MsoFooter, li.MsoFooter, div.MsoFooter
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Arial","sans-serif";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+p
+	{margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+pre
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Courier New";}
+tt
+	{font-family:"Courier New";}
+p.MsoAcetate, li.MsoAcetate, div.MsoAcetate
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:8.0pt;
+	font-family:"Tahoma","sans-serif";}
+p.MsoNoSpacing, li.MsoNoSpacing, div.MsoNoSpacing
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Arial","sans-serif";}
+p.MsoListParagraph, li.MsoListParagraph, div.MsoListParagraph
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:36.0pt;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Arial","sans-serif";}
+p.MsoListParagraphCxSpFirst, li.MsoListParagraphCxSpFirst, div.MsoListParagraphCxSpFirst
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:36.0pt;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Arial","sans-serif";}
+p.MsoListParagraphCxSpMiddle, li.MsoListParagraphCxSpMiddle, div.MsoListParagraphCxSpMiddle
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:36.0pt;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Arial","sans-serif";}
+p.MsoListParagraphCxSpLast, li.MsoListParagraphCxSpLast, div.MsoListParagraphCxSpLast
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:36.0pt;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Arial","sans-serif";}
+p.Style1, li.Style1, div.Style1
+	{mso-style-name:Style1;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Arial","sans-serif";}
+span.Heading1Char
+	{mso-style-name:"Heading 1 Char";
+	mso-style-link:"Heading 1";
+	font-family:"Arial","sans-serif";
+	font-weight:bold;}
+span.index-def
+	{mso-style-name:index-def;}
+p.Code, li.Code, div.Code
+	{mso-style-name:Code;
+	mso-style-link:"Code Char";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Courier New";}
+span.CodeChar
+	{mso-style-name:"Code Char";
+	mso-style-link:Code;
+	font-family:"Courier New";}
+.MsoChpDefault
+	{font-size:12.0pt;}
+ /* Page Definitions */
+ @page Section1
+	{size:612.0pt 792.0pt;
+	margin:36.0pt 53.85pt 45.1pt 62.95pt;
+	border:solid windowtext 1.0pt;
+	padding:24.0pt 24.0pt 24.0pt 24.0pt;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0cm;}
+ul
+	{margin-bottom:0cm;}
+-->
+</style>
+
+</head>
+
+<body lang=EN-GB link=blue vlink=purple>
+
+<div class=Section1>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='font-size:16.0pt'>&nbsp;</span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:36.0pt'>BrowserMonkey</span></b></p>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='font-size:16.0pt'>&nbsp;</span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:16.0pt'>&nbsp;</span></b></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:16.0pt'><img width=309 height=309 id="Picture 3"
+src="Programming_files/image001.jpg" alt="dangly monkey"></span></b></p>
+
+<p class=MsoNormal align=center style='text-align:center'>&nbsp;</p>
+
+<p class=MsoNormal align=center style='text-align:center'>&nbsp;</p>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:8.0pt'>&nbsp;</span></b></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:8.0pt'>&nbsp;</span></b></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:8.0pt'>&nbsp;</span></b></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:18.0pt'>Programming Documentation</span></b></p>
+
+<p class=MsoNormal align=center style='text-align:center'>&nbsp;</p>
+
+<p class=MsoNormal align=center style='text-align:center'>v 1.0</p>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:18.0pt'>&nbsp;</span></b></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:14.0pt'>Software House One</span></b></p>
+
+<p class=MsoNormal><span class=MsoHyperlinkFollowed> </span></p>
+
+<u><span style='font-size:12.0pt;font-family:"Arial","sans-serif";color:purple'><br
+clear=all style='page-break-before:always'>
+</span></u>
+
+<p class=MsoNormal><u><span style='color:purple'><span style='text-decoration:
+ none'>&nbsp;</span></span></u></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt'>Version History</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt'>&nbsp;</span></b></p>
+
+<p class=MsoNoSpacing><span lang=EN-US>Document name: Programming Team/baselined/Documentation.pdf</span></p>
+
+<p class=MsoNoSpacing><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNoSpacing><span lang=EN-US>Document version: 1.0</span></p>
+
+<p class=MsoNoSpacing><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNoSpacing><span lang=EN-US>Document author: Paul Calcraft
+2009/06/07</span></p>
+
+<p class=MsoNoSpacing><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNoSpacing><span lang=EN-US>Document auditor: Ioanna Kyprianou
+2009/06/08</span></p>
+
+<p class=MsoNoSpacing><span lang=EN-US>Document auditor: Daniel Cooper
+2009/06/08</span></p>
+
+<p class=MsoNoSpacing><span lang=EN-US>Document auditor: Paul Calcraft 2009/06/08</span></p>
+
+<p class=MsoNoSpacing><span lang=EN-US>Document auditor: Sohani Amiruzzaman 2009/06/08</span></p>
+
+<u><span lang=EN-US style='font-size:12.0pt;font-family:"Arial","sans-serif";
+color:purple'><br clear=all style='page-break-before:always'>
+</span></u>
+
+<p class=MsoNoSpacing><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-bottom:10.0pt;line-height:115%'><u><span
+style='color:purple'><span style='text-decoration:none'>&nbsp;</span></span></u></p>
+
+<p class=MsoNormal style='margin-bottom:10.0pt;line-height:115%'><b><span
+style='font-size:16.0pt;line-height:115%'>Table of Contents</span></b></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoToc1><a
+href="#_Toc232141872">1<span style='font-size:11.0pt;font-family:"Calibri","sans-serif";
+color:windowtext;text-decoration:none'>        </span>Navigating the Code<span
+style='color:windowtext;display:none;text-decoration:none'>. </span><span
+style='color:windowtext;display:none;text-decoration:none'>4</span></a></p>
+
+<p class=MsoToc1><a href="#_Toc232141873">2<span style='font-size:11.0pt;
+font-family:"Calibri","sans-serif";color:windowtext;text-decoration:none'>        </span>Running
+the Software<span style='color:windowtext;display:none;text-decoration:none'>. </span><span
+style='color:windowtext;display:none;text-decoration:none'>5</span></a></p>
+
+<p class=MsoToc1><a href="#_Toc232141874">3<span style='font-size:11.0pt;
+font-family:"Calibri","sans-serif";color:windowtext;text-decoration:none'>        </span>Changes
+from the Low Level Design<span style='color:windowtext;display:none;text-decoration:
+none'>.. </span><span
+style='color:windowtext;display:none;text-decoration:none'>6</span></a></p>
+
+<p class=MsoToc2><a href="#_Toc232141875">3.1<span style='font-size:11.0pt;
+font-family:"Calibri","sans-serif";color:windowtext;text-decoration:none'>         </span>RenderNode<span
+style='color:windowtext;display:none;text-decoration:none'>. </span><span
+style='color:windowtext;display:none;text-decoration:none'>6</span></a></p>
+
+<p class=MsoToc2><a href="#_Toc232141876">3.2<span style='font-size:11.0pt;
+font-family:"Calibri","sans-serif";color:windowtext;text-decoration:none'>         </span>LayoutRenderNode<span
+style='color:windowtext;display:none;text-decoration:none'>. </span><span
+style='color:windowtext;display:none;text-decoration:none'>6</span></a></p>
+
+<p class=MsoToc2><a href="#_Toc232141877">3.3<span style='font-size:11.0pt;
+font-family:"Calibri","sans-serif";color:windowtext;text-decoration:none'>         </span>Renderer<span
+style='color:windowtext;display:none;text-decoration:none'> </span><span
+style='color:windowtext;display:none;text-decoration:none'>6</span></a></p>
+
+<p class=MsoToc2><a href="#_Toc232141878">3.4<span style='font-size:11.0pt;
+font-family:"Calibri","sans-serif";color:windowtext;text-decoration:none'>         </span>IOUtility<span
+style='color:windowtext;display:none;text-decoration:none'>. </span><span
+style='color:windowtext;display:none;text-decoration:none'>7</span></a></p>
+
+<p class=MsoToc2><a href="#_Toc232141879">3.5<span style='font-size:11.0pt;
+font-family:"Calibri","sans-serif";color:windowtext;text-decoration:none'>         </span>Swing
+worker threads<span style='color:windowtext;display:none;text-decoration:none'>. </span><span
+style='color:windowtext;display:none;text-decoration:none'>7</span></a></p>
+
+<p class=MsoToc1><a href="#_Toc232141880">4<span style='font-size:11.0pt;
+font-family:"Calibri","sans-serif";color:windowtext;text-decoration:none'>        </span>Extensibility<span
+style='color:windowtext;display:none;text-decoration:none'>. </span><span
+style='color:windowtext;display:none;text-decoration:none'>8</span></a></p>
+
+<p class=MsoToc1><a href="#_Toc232141881">5<span style='font-size:11.0pt;
+font-family:"Calibri","sans-serif";color:windowtext;text-decoration:none'>        </span>Extra
+features<span style='color:windowtext;display:none;text-decoration:none'>. </span><span
+style='color:windowtext;display:none;text-decoration:none'>8</span></a></p>
+
+<p class=MsoToc2><a href="#_Toc232141882">5.1<span style='font-size:11.0pt;
+font-family:"Calibri","sans-serif";color:windowtext;text-decoration:none'>         </span>Images<span
+style='color:windowtext;display:none;text-decoration:none'>. </span><span
+style='color:windowtext;display:none;text-decoration:none'>8</span></a></p>
+
+<p class=MsoToc2><a href="#_Toc232141883">5.2<span style='font-size:11.0pt;
+font-family:"Calibri","sans-serif";color:windowtext;text-decoration:none'>         </span>Table
+layout system<span style='color:windowtext;display:none;text-decoration:none'>.. </span><span
+style='color:windowtext;display:none;text-decoration:none'>8</span></a></p>
+
+<p class=MsoToc2><a href="#_Toc232141884">5.3<span style='font-size:11.0pt;
+font-family:"Calibri","sans-serif";color:windowtext;text-decoration:none'>         </span>Debugging
+and testing<span style='color:windowtext;display:none;text-decoration:none'>. </span><span
+style='color:windowtext;display:none;text-decoration:none'>9</span></a></p>
+
+<p class=MsoNormal><span class=MsoHyperlinkFollowed><span style='color:windowtext;
+text-decoration:none'>&nbsp;</span></span></p>
+
+<p class=MsoNormal><u><span style='color:purple'><span style='text-decoration:
+ none'>&nbsp;</span></span></u></p>
+
+<u><span style='font-size:12.0pt;font-family:"Arial","sans-serif";color:purple'><br
+clear=all style='page-break-before:always'>
+</span></u>
+
+<p class=MsoNormal><u><span style='color:purple'><span style='text-decoration:
+ none'>&nbsp;</span></span></u></p>
+
+<p class=MsoNormal><u><span style='color:purple'><span style='text-decoration:
+ none'>&nbsp;</span></span></u></p>
+
+<h1><a name="_Toc232141872">1<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Navigating the Code</a></h1>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>As stated in our previous Deliverable, we are using Google
+Code for our source control. The link to our project is:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><a href="http://code.google.com/p/browsermonkey/">http://code.google.com/p/browsermonkey/</a></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>On the SVN, our code is located in the Programming
+Team/baselined/ directory, and consists of 3 (NetBeans) projects, each with
+their own directory. Each project directory has a /src/ subfolder with all the
+packages and their classes as subdirectories/files – the java files can be
+accessed directly this way if not using NetBeans to open the projects. The 3
+projects that comprise our software are:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoListParagraphCxSpFirst style='margin-left:38.25pt;text-indent:-18.0pt'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>BrowserMonkey – the browser itself</p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-left:38.25pt;text-indent:
+-18.0pt'><span style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>BrowserMonkeySDK – the set of shared libraries needed to develop
+rendering plugins</p>
+
+<p class=MsoListParagraphCxSpLast style='margin-left:38.25pt;text-indent:-18.0pt'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>BrowserMonkeyTagPlugins – the set of TagRenderers implemented for
+our project</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>Both of the other projects directly depend on the SDK as a
+linked library project, while the browser project knows nothing of the plugins
+and vice versa. The browser attempts to load any jar files within its /plugins/
+directory dynamically on start up, and uses only the interface specified in the
+SDK project to interact with them.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>When the TagPlugins project is built, a build script
+(specified in BrowserMonkeyTagPlugins/build.xml) is used to copy the newly
+compiled jar into BrowserMonkey/plugins/ and BrowserMonkey/dist/plugins. This
+means when running the browser after compiling the plugins, the browser will
+use the latest plugin code. If you wish to clean and build the main browser
+project, this will delete the dist directory and then rebuild BrowserMonkey
+into BrowserMonkey/dist. Because it deletes the dist directory in the cleaning
+process, it loses the tag plugins jar file, so you should clean and build the
+plugins project afterwards to automatically copy the jar back across.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>Note that the browser will not choke if the plugins aren’t
+there, it will make a note in the log file that the renderers could not be
+loaded, and all pages will render with no specialisation of tags – so just each
+tag’s inner text will show.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>The <b>JavaDocs</b> for the 3 projects are available here:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>Programming Team/baselined/BrowserMonkey/dist/javadoc/index.html</p>
+
+<p class=MsoNormal>Programming Team/baselined/BrowserMonkeySDK/dist/javadoc/index.html</p>
+
+<p class=MsoNormal>Programming Team/baselined/BrowserMonkeyTagPlugins/dist/javadoc/index.html</p>
+
+<span style='font-size:12.0pt;font-family:"Arial","sans-serif"'><br clear=all
+style='page-break-before:always'>
+</span>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h1><a name="_Toc232141873">2<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Running the Software</a></h1>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>To run the software, execute the following batch file:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><i>Programming Team/baselined/run.bat</i></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>The batch file does the following (if not running on
+Windows, follow these instructions to execute):</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>Run:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><i>Programming
+Team/baselined/BrowserMonkey/dist/BrowserMonkey.jar</i></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>With the working/user directory set as:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><i>Programming Team/baselined/BrowserMonkey</i></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>This is so it can load all the files it needs, like the
+start up page, the tagRenderers.properties, and the TagPlugins.jar in the
+plugins directory from where they have been setup.</p>
+
+<span style='font-size:12.0pt;font-family:"Arial","sans-serif"'><br clear=all
+style='page-break-before:always'>
+</span>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h1><a name="_Toc232141874">3<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Changes from the Low Level Design</a></h1>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h2><a name="_Toc232141875">3.1<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;
+</span>RenderNode</a></h2>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>In order to implement zooming functionality correctly, we
+added a setZoomLevel(float level) method to the RenderNode class (and then
+implemented it in all subclasses). In the design we had envisioned the
+DocumentPanel traversing the RenderNode tree, finding any TextRenderNodes and
+applying zoom to those. This way would have been highly restrictive, and indeed
+it was – we implemented zooming on images and for this we needed a general way
+to zoom any RenderNode. This setZoomLevel method is responsible for zooming a given
+RenderNode and all the components it contains. This allows the DocumentPanel to
+simply call setZoomLevel on the root RenderNode and have everything filter
+through and work. </p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>We also added a method called
+extractTextInto(ArrayList&lt;AttributedString&gt;) which, for any given
+RenderNode, should extract a reference to every text node’s AttributedString
+(using depth first search on child components) into the array list. This
+allowed us to implement searching functionality. The searching works how we
+designed it, but in order to effectively get the AttributedStrings from the
+text nodes without using really specialised code, and without the DocumentPanel
+having to traverse the RenderNode tree itself, this was the logical conclusion.
+It solves the problem in a similar way to the setZoomLevel method, above.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h2><a name="_Toc232141876">3.2<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;
+</span>LayoutRenderNode</a></h2>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>There were more subtle issues of component layout that
+needed to be addressed, than we had considered in our low level design. Things
+like indentation, padding, resize behaviour, and distance between sections of
+text (for correct paragraphing). For this we added methods to the
+LayoutRenderNode that the TagRenderers could use to manipulate the layout of
+the components. The methods added include ensureNewLine (replacing
+breakTextNode from the design), ensureLinespaceDistance, setNodePadding, and
+setPadding, but there are a few more subtle tweaks (like allowing a node added
+to a LayoutRenderNode to specify how its width should be resized).</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h2><a name="_Toc232141877">3.3<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;
+</span>Renderer</a></h2>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>The renderer previously was imagined to have very little
+state; it was more of a class to perform some hard work for us using
+reflection-loaded TagRenderers. It became apparent that it should hold state of
+the document it is rendering, in order to provide needed functionality to the
+TagRenderers for certain types of tags. For example, the only way we could
+implement headings correctly (as per the user requirements, where &lt;hn&gt;
+(n=1-6) tags show the actual heading numbers) was to store the state of the
+heading numbering in the Renderer and provide a public method for a TagRenderer
+to retrieve and update this state. We also used state for determining the title
+of the document. We couldn’t allow the TagRenderers to communicate with the
+DocumentPanel or GUI itself, so we stored a title property that the TitleTagRenderer
+could set on the Renderer, which is retrieved by the DocumentPanel and then GUI
+after loading.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>Some utility methods and static properties were also defined
+for convenience, like an attribute map representing default formatting, and a
+method for constructing a new text node representing standard indentation.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>A big addition to the project was support of linked images.
+This did not make it into the customer requirements but was indicated as still
+desirable; we managed to implement it successfully. In order to do so, we
+needed TagRenderers to be able to load external resources, so we made a
+loadResource method in the Renderer which uses our IO methods. For this to work
+correctly, the Renderer needed to know the URL context of the document it was
+rendering, so that it could load these external resources from relative paths.
+To facilitate this, the DocumentPanel now passes the context URL in the
+renderRoot method on the Renderer and it is stored as a private property of the
+Renderer.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h2><a name="_Toc232141878">3.4<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;
+</span>IOUtility</a></h2>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>In our design, file input was imagined to be solely the
+responsibility of the Document itself. As we added image support and needed
+external resources to be loaded as well, we decided to take out the file and
+URL handling from the Document and into an external utility class in the SDK
+project that both the Document (in the browser main project) and Renderer (in
+the SDK project) could access. It does all the hard work of determining where
+to look for files and actually making connections and retrieving the data byte
+by byte. Because of this abstraction, adding internet support was quite
+painless. We just needed to ensure we opened a URL connection, and caught all
+the errors correctly.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h2><a name="_Toc232141879">3.5<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;
+</span>Swing worker threads</a></h2>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>As we added internet support and had files that were loading
+slowly it became apparent we could no longer block waiting for the full input
+file on the GUI thread – the program became immediately unresponsive until
+either the page was fully loaded (including all resources), or it timed out. To
+solve this we used swing to create a worker thread for page loading
+functionality. We initiate this in the DocumentPanel, and it’s setup to cancel
+the current loading operation (if not finished) when the user decides they wish
+to navigate elsewhere while another page is loading.</p>
+
+<span style='font-size:12.0pt;font-family:"Arial","sans-serif"'><br clear=all
+style='page-break-before:always'>
+</span>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h1><a name="_Toc232141880">4<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Extensibility</a></h1>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>The renderer is extremely extensible. All tags that are
+rendered use the tagRenderers.properties file to dictate what class is used to
+render them, here is a snippet:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=Code style='margin-left:36.0pt'>b =
+browsermonkey.render.BoldTagRenderer</p>
+
+<p class=Code style='margin-left:36.0pt'>strong = browsermonkey.render.BoldTagRenderer</p>
+
+<p class=Code style='margin-left:36.0pt'>em =
+browsermonkey.render.ItalicsTagRenderer</p>
+
+<p class=Code style='margin-left:36.0pt'>i =
+browsermonkey.render.ItalicsTagRenderer</p>
+
+<p class=Code style='margin-left:36.0pt'>table =
+browsermonkey.render.TableTagRenderer</p>
+
+<p class=Code style='margin-left:36.0pt'>a =
+browsermonkey.render.AnchorTagRenderer</p>
+
+<p class=Code style='margin-left:36.0pt'>br =
+browsermonkey.render.LineBreakTagRenderer</p>
+
+<p class=Code style='margin-left:36.0pt'>p = browsermonkey.render.ParagraphTagRenderer</p>
+
+<p class=Code style='margin-left:36.0pt'>font =
+browsermonkey.render.FontTagRenderer</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>The actual classes themselves can be added to with great
+ease, without having to even recompile the BrowserMonkey project. One could
+create a new project that links to the SDK library, and implement a set of
+TagRenderers in there. To hook them up, the compiled jar file for this new
+project would just need to be placed (alongside the existing TagPlugins.jar, or
+not) inside the /plugins/ directory, and the new TagRenderers would need to be
+named in the properties file for the appropriate tag types. Our Renderer
+searches the plugins directory for all jar files and uses them all to try to
+find classes of the given names, which is why multiple jar files can be used
+simultaneously, allowing very easy extension to the browser in terms of what
+tags it can render (and indeed redefining what it currently renders and how it
+does it). </p>
+
+<h1><a name="_Toc232141881">5<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Extra features</a></h1>
+
+<h2><a name="_Toc232141882">5.1<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;
+</span>Images</a></h2>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>We implemented images in our application, which was above
+and beyond our specification. Thanks to our systems of extensibility this took
+relatively little effort (though some functionality requirements cascaded from
+this as outlined above). The ImageTagRenderer has a private class
+ImageRenderNode which is the JComponent itself that renders an image on its
+surface, the TagRenderer adds a new ImageRenderNode into the render tree for
+each “img” tag. It supports zooming, and even links.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h2><a name="_Toc232141883">5.2<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;
+</span>Table layout system</a></h2>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>When it came to table layout, the initial implementation
+split each table into equispaced columns given the full width it had available
+to it. While this was fine, it was not as good as we wanted it to be. We
+decided to make tables shrink to only the size they need to be. This caused a
+lot of problems with text nodes resizing themselves, word wrap, and all sorts
+of concerns, but we finally got it implemented, and now tables are much more
+impressive. We also implemented the border attribute on tables (default is
+1pixel) which was not required by the specification. These two additions to
+table layout make browsing web sites much closer to the real thing.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h2><a name="_Toc232141884">5.3<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;
+</span>Debugging and testing</a></h2>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>At the start of the project when the parser and tokeniser
+were not yet implemented, a debug feature was added to allow testing of
+rendering features. We could type for example “t b” in the address bar and it
+would build a document node tree with a b tag put in the middle somewhere to
+see how the renderer handled it. This did not need to be rewritten for simple
+tests – it just constructs a tag with the given type. We added basic attribute
+support (for attribute values without spaces) so we could do “t font
+face=Arial” and it would build a test document correctly. When it came to
+tables, we implemented a specialised test (as we couldn’t interpret a whole
+table definition from a “t...” input. When you typed “t table” a special table
+test was constructed. We later added nested tables to this for further testing.
+This testing functionality is still available in the final renderer by using “t
+“-type strings in the address bar. </p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>Another debug feature added was to output the DocumentNode
+tree as constructed by the tokeniser and parser. This allowed us to see exactly
+where errors were occurring in the file loading process, and whether certain
+problems were because of the parser or because of the renderer. The feature
+copied a full debug string output of the DocumentNode into the system clipboard
+to be pasted wherever, and inspected. The following code was used (now
+commented out in the build):</p>
+
+<p class=Code>&nbsp;</p>
+
+<p class=Code style='margin-left:36.0pt'>try {</p>
+
+<p class=Code style='margin-left:72.0pt'>Clipboard systemClipboard =
+Toolkit.getDefaultToolkit().getSystemClipboard();</p>
+
+<p class=Code style='margin-left:72.0pt'>&nbsp;</p>
+
+<p class=Code style='margin-left:72.0pt'>Transferable transferableText = new
+StringSelection(document.getNodeTree().toDebugString());</p>
+
+<p class=Code style='margin-left:72.0pt'>&nbsp;</p>
+
+<p class=Code style='margin-left:72.0pt'>systemClipboard.setContents(transferableText,
+null);</p>
+
+<p class=Code style='margin-left:36.0pt'>&nbsp;</p>
+
+<p class=Code style='margin-left:36.0pt'>} catch (IllegalStateException ex) {</p>
+
+<p class=Code style='margin-left:72.0pt'>BrowserMonkeyLogger.warning(&quot;Couldn't
+write debug parse information to clipboard.&quot;);</p>
+
+<p class=Code style='margin-left:36.0pt'>}</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>This was particularly useful in implementing pre tags, and
+the HTML auto-correction for non-conforming documents.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>When it came to implementing internet functionality with
+pages that have extremely complicated (and often corrupt) structure, it was
+very difficult to get everything working correctly, especially within swing’s
+component layout system. With something as involved as GUI rendering and swing,
+it is very difficult to use traditional debugging methods, and sometimes simply
+unfeasible. To solve this, we occasionally would modify the rendering code to
+show extra borders and background colours for different types of components to
+allow us to see exactly where the boundaries of all our RenderNodes are, and
+how our text nodes are resizing themselves.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>The following screenshot demonstrates this on a Google labs
+page. A light gray is used for the background of any text nodes, and a dark
+gray border shows the boundaries of all LayoutRenderNodes.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><img border=0 width=602 height=376 id="Picture 1"
+src="Programming_files/image002.jpg"></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>This debugging technique was absolutely vital in getting
+text node zooming and the new table layout system working correctly.</p>
+
+</div>
+
+</body>
+
+</html>
