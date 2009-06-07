@@ -5,7 +5,7 @@ import java.text.*;
 import java.text.AttributedCharacterIterator.Attribute;
 
 /**
- *
+ * The Searcher class carries out all searching operations for the browser.
  * @author Paul Calcraft
  */
 public class Searcher {
@@ -25,6 +25,14 @@ public class Searcher {
         }
     }
 
+    /**
+     * Searches through the document highlighting any words that match the term
+     * provided.
+     * @param textRanges Static class used to store results
+     * @param term Term to be searched for
+     * @param highlightAttributes Adds a highlight attribute to any terms found
+     * @return Number of results found
+     */
     public static int highlightSearchTerm(AttributedString[] textRanges, String term, Map<Attribute, Object> highlightAttributes) {
         for (AttributedString textRange : textRanges) {
             for (Attribute attribute : highlightAttributes.keySet())
