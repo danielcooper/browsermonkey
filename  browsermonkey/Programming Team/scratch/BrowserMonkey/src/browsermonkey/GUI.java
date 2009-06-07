@@ -233,6 +233,9 @@ public class GUI extends javax.swing.JFrame {
         String address = addressField.getText();
         if (address.startsWith("g "))
             address = "http://www.google.co.uk/m/search?q="+URLEncoder.encode(address.substring(2));
+        else if (address.startsWith("t ")) {
+            // Don't modify address, used for testing.
+        }
         else {
             File f = new File(address);
             if (!f.exists() && !address.startsWith("http://") && !address.startsWith("file:/"))

@@ -5,7 +5,6 @@ import browsermonkey.utility.BrowserMonkeyLogger;
 import java.util.*;
 import javax.swing.event.*;
 import java.awt.*;
-import java.awt.datatransfer.*;
 import java.awt.font.TextAttribute;
 import java.io.File;
 import java.net.*;
@@ -20,6 +19,7 @@ import javax.swing.*;
  */
 public class DocumentPanel extends JPanel {
     private Document document;
+    private String requestURL;
     private String title;
     private GroupLayout layout;
     private GroupLayout.ParallelGroup horizontalGroup;
@@ -98,15 +98,18 @@ public class DocumentPanel extends JPanel {
                 context = document.getURL();
             }
 
-            // Store the html output into the clipboard for debug.
+            /*
+             * DEBUG, DISABLED
+             * Store the html output into the clipboard for debug.
             try {
-                Clipboard systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                Transferable transferableText = new StringSelection(document.getNodeTree().toDebugString());
+                java.awt.datatransfer.Clipboard systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                java.awt.datatransfer.Transferable transferableText = new java.awt.datatransfer.StringSelection(document.getNodeTree().toDebugString());
                 systemClipboard.setContents(transferableText, null);
             } catch (IllegalStateException ex) {
                 BrowserMonkeyLogger.warning("Couldn't write debug parse information to clipboard.");
             }
-
+            */
+            
             rootRenderNode = renderer.renderRoot(document.getNodeTree(), zoomLevel, context);
 
             removeAll();
@@ -149,6 +152,7 @@ public class DocumentPanel extends JPanel {
      * @param absolute Whether the path is absolute
      */
     public void load(String path, boolean absolute) {
+        requestURL = path;
         if (currentLoaderThread != null)
             currentLoaderThread.cancel(true);
         currentLoaderThread = new LoaderThread(path, absolute);
@@ -162,7 +166,7 @@ public class DocumentPanel extends JPanel {
     public String getAddress() {
         URL url = document.getURL();
         if (url == null)
-            return "Null address.";
+            return requestURL;
         return url.toString();
     }
 

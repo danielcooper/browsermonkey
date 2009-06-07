@@ -197,9 +197,6 @@
             <EmptyBorder bottom="3" left="5" right="5" top="3"/>
           </Border>
         </Property>
-        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-          <Dimension value="[0, 0]"/>
-        </Property>
       </Properties>
     </Component>
     <Container class="javax.swing.JScrollPane" name="documentScrollPanel">
