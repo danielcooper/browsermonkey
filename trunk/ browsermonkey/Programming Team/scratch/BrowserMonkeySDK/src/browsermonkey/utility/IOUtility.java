@@ -86,8 +86,11 @@ public class IOUtility {
      * @return
      */
     public static byte[] readFile(URL url, int[] outErrorCode) {
-        if (url == null)
+        if (url == null) {
+            // URL not found/parsed.
+            outErrorCode[0] = 404;
             return null;
+        }
         
         InputStream urlStream;
         URLConnection connection;

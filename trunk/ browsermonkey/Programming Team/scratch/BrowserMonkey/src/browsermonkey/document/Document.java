@@ -1,7 +1,6 @@
 package browsermonkey.document;
 
 import browsermonkey.utility.IOUtility;
-import java.io.*;
 import java.net.*;
 
 /**
