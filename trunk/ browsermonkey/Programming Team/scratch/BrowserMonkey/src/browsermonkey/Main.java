@@ -1,12 +1,13 @@
 package browsermonkey;
 
 /**
- *
+ * Main method used to initialise the program.
  * @author Paul Calcraft
  */
 public class Main {
     /**
-     * @param args the command line arguments
+     * Sets up the GUI and allows you to specify a file to be run straight away.
+     * @param args Enter a filepath here to load the browser with that file
      */
     public static void main(String[] args) {
         GUI browser = new GUI();
